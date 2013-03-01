@@ -3,6 +3,7 @@ CHECK	Ufos für Spieler 1 bis 4 (zB in verschiedenen Farben)
 
 	Block (unzerstörbar) (für Weltraumszenario zB Meteore) für mehr abwechslung auch verschiedene typen möglich
 
+<<<<<<< HEAD
 	Kiste (zerstörbar) (für Weltraumszenario zb weltraumschrott) für mehr abwechslung auch verschiedene typen möglich
 
 	Bombe (für Weltraumszenario zb Metallbox mit 4 Öffnungen für Laser)
@@ -14,6 +15,19 @@ CHECK	Ufos für Spieler 1 bis 4 (zB in verschiedenen Farben)
 	Explosien des Ufos (einfach ein Bild mit Flammen und Trümmern
 
 	Ufoschrott (liegt nach Explosion sehr kurz da)
+=======
+CHECK??	Kiste (zerstörbar) (für Weltraumszenario zb weltraumschrott) für mehr abwechslung auch verschiedene typen möglich
+
+CHECK	Bombe (für Weltraumszenario zb Metallbox mit 4 Öffnungen für Laser)
+
+CHECK	Laser horizontal/Laser vertikal & Laser Ende
+
+CHECK	Hintergrundbild (sehr dunkles Blau mit vereinzelt Sternen (evtl. 1-2 pro feld) für mehr abwechslung verschiedene typen notwendig!
+
+	Explosien des Ufos (einfach ein Bild mit Flammen und Trümmern
+
+CHECK	Ufoschrott (liegt nach Explosion sehr kurz da)
+>>>>>>> Images
 
 	Titelbild (im Menühintergrund) (erstmal nicht so wichtig) 
 
