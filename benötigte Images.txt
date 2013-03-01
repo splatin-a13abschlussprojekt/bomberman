@@ -1,0 +1,17 @@
+[für Basti]
+Ufos für Spieler 1 bis 4 (zB in verschiedenen Farben)
+Block (unzerstörbar) (für Weltraumszenario zB Meteore) für mehr abwechslung auch verschiedene typen möglich
+Kiste (zerstörbar) (für Weltraumszenario zb weltraumschrott) für mehr abwechslung auch verschiedene typen möglich
+Bombe (für Weltraumszenario zb Metallbox mit 4 Öffnungen für Laser)
+Laser horizontal
+Laser vertikal 
+Hintergrundbild (sehr dunkles Blau mit vereinzelt Sternen (evtl. 1-2 pro feld) für mehr abwechslung verschiedene typen notwendig!
+Explosien des Ufos (einfach ein Bild mit Flammen und Trümmern
+Ufoschrott (liegt nach Explosion sehr kurz da)
+Titelbild (im Menühintergrund) (erstmal nicht so wichtig) 
+
+[Items Vorschläge, bzw für Basti die Images]
+Fast --> schnellere Bewegung
+Energie --> Bomben strahlen/sprengen weiter
+BombUp --> +1 Bombe
+(Kick --> Bombe wird bei berührung bis zu Hindernis weggetreten) 
