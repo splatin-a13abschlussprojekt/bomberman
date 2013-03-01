@@ -1,8 +1,8 @@
-program ProjectTest;
+program ProjectBomberman;
 
 uses
   Forms,
-  UnitTest in 'UnitTest.pas' {Form1};
+  UnitInterface in 'UnitInterface.pas' {Form1};
 
 {$R *.res}
 
