@@ -61,10 +61,10 @@ end;
 procedure TPlayer.Move(direction: TDirection);
 begin
   case direction of
-    U : if FPosition.X < 15 then inc(FPosition.X);
-    L : if FPosition.Y > 0 then dec(FPosition.Y);
-    D : if FPosition.X > 0 then dec(FPosition.X);
-    R : if FPosition.Y < 15 then inc(FPosition.Y);
+    U : if FPosition.X < 15 then inc(FPosition.Y);
+    L : if FPosition.Y > 0 then dec(FPosition.X);
+    D : if FPosition.X > 0 then dec(FPosition.Y);
+    R : if FPosition.Y < 15 then inc(FPosition.X);
   end;
 end;
 
