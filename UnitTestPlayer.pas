@@ -39,28 +39,32 @@ end;
 
 procedure TForm2.Button1Click(Sender: TObject);
 begin
-  player1.Move(U);
   with Image1 do
-  Top:=Top-height;
+  If player1.Position.Y<15 then Top:=Top-height;
+  player1.Move(U);
   ShowMessage(player1.GetPositionString);
 end;
 
 procedure TForm2.Button2Click(Sender: TObject);
 begin
+  with Image1 do
+  If player1.Position.X>0 then Left:=Left-width;
   player1.Move(L);
   ShowMessage(player1.GetPositionString);
 end;
 
 procedure TForm2.Button3Click(Sender: TObject);
 begin
-  player1.Move(D);
   with Image1 do
-  Top:=Top+height;
+  If player1.Position.Y>0 then Top:=Top+height;
+  player1.Move(D);
   ShowMessage(player1.GetPositionString);
 end;
 
 procedure TForm2.Button4Click(Sender: TObject);
 begin
+  with Image1 do
+  If player1.Position.X<15 then Left:=Left+width;
   player1.Move(R);
   ShowMessage(player1.GetPositionString);
 end;
