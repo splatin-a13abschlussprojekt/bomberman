@@ -25,7 +25,7 @@ implementation
 
 procedure TForm1.FormKeyPress(Sender: TObject; var Key: Char);
 begin
-  Form2.Button1Click(Form2);
+  Form2.Button1Click;
   with Image1 do
   If player1.Position.Y<15 then Top:=Top-height;
 end;

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls  {,Vcl.ExtCtrls};
+  Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls {,Vcl.ExtCtrls};
 
 type
   TForm2 = class(TForm)
@@ -18,7 +18,6 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
-    procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
   public
@@ -38,15 +37,10 @@ begin
   player1:=TPlayer.Create;
 end;
 
-procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);
-begin
-  Showmessage('Hallo');
-end;
-
 procedure TForm2.Button1Click(Sender: TObject);
 begin
-//  with Form1.Image1 do
-//  If player1.Position.Y<15 then Top:=Top-height;
+  with Image1 do
+  If player1.Position.Y<15 then Top:=Top-height;
   player1.Move(U);
   ShowMessage(player1.GetPositionString);
 end;
