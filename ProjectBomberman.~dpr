@@ -8,8 +8,7 @@ uses
   UnitPosition in 'UnitPosition.pas',
   UnitDirection in 'UnitDirection.pas',
   UnitCoordinate in 'UnitCoordinate.pas',
-  UnitField in 'UnitField.pas',
-  UnitContent in 'UnitContent.pas';
+  UnitField in 'UnitField.pas';
 
 {$R *.res}
 

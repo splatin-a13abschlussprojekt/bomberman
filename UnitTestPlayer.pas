@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls  {,Vcl.ExtCtrls};
+  Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
+  UnitPosition;
 
 type
   TForm2 = class(TForm)
@@ -27,20 +28,96 @@ type
 
 var
   Form2: TForm2;
-  player1: TPlayer;
+  Player1,Player2,Player3,Player4: TPlayer;
+  Field: Array [0..15, 0..15] of TField;  // PR: Array für die Felder
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm2.FormCreate(Sender: TObject);
+procedure CreateFields; // PR: erzeugt Spielfeld
+var i,j,k: Integer;
+    Pos: TPosition;
+    Cont: TContent;
 begin
-  player1:=TPlayer.Create;
+for i:=0 to 15 do for j:=0 to 15 do
+  begin
+  Pos.X:=i;
+  Pos.Y:=j;
+  Randomize;
+  k:=Random(10)+1;
+    Case k of
+      1..5: Cont:=meteorit;
+      6..7: Cont:=earth;
+      8..10: Cont:=empty;
+    end;
+  Field[i,j]:=TField.Create(Pos,Cont);
+  end;
 end;
 
-procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);
+procedure CreatePlayers(NumOfPlayers:Integer);  // PR: Erzeugt Spieler
+var i: Integer;
+    StartPos: TPosition;
 begin
-  Showmessage('Hallo');
+for i:=1 to NumOfPlayers do
+  begin
+    Case i of
+      1:
+      begin
+      StartPos.X:=0;
+      StartPos.Y:=0;
+      Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Field[StartPos.X,StartPos.Y].Content:=player;
+      Field[StartPos.X+1,StartPos.Y].Content:=empty;
+      Field[StartPos.X,StartPos.Y+1].Content:=empty;
+      end;
+      2:
+      begin
+      StartPos.X:=15;
+      StartPos.Y:=0;
+      Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Field[StartPos.X,StartPos.Y].Content:=player;
+      Field[StartPos.X-1,StartPos.Y].Content:=empty;
+      Field[StartPos.X,StartPos.Y+1].Content:=empty;
+      end;
+      3:
+      begin
+      StartPos.X:=0;
+      StartPos.Y:=15;
+      Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Field[StartPos.X,StartPos.Y].Content:=player;
+      Field[StartPos.X+1,StartPos.Y].Content:=empty;
+      Field[StartPos.X,StartPos.Y-1].Content:=empty;
+      end;
+      4:
+      begin
+      StartPos.X:=15;
+      StartPos.Y:=15;
+      Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Field[StartPos.X,StartPos.Y].Content:=player;
+      Field[StartPos.X-1,StartPos.Y].Content:=empty;
+      Field[StartPos.X,StartPos.Y-1].Content:=empty;
+      end;
+    end;
+  end;
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+  CreateFields;
+  CreatePlayers(1);
+  KeyPreview:=true;
+end;
+
+procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
+begin
+  Case Key of
+    'w': Player1.Move(U);
+    'a': Player1.Move(L);
+    's': Player1.Move(D);
+    'd': Player1.Move(R);
+  end;
+  ShowMessage(player1.GetPositionString);
 end;
 
 procedure TForm2.Button1Click(Sender: TObject);

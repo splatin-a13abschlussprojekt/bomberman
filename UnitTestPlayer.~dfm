@@ -1,9 +1,9 @@
 object Form2: TForm2
-  Left = 375
-  Top = 170
+  Left = 621
+  Top = 91
+  Width = 655
+  Height = 452
   Caption = 'Form2'
-  ClientHeight = 412
-  ClientWidth = 622
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,6 +12,7 @@ object Form2: TForm2
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnKeyPress = FormKeyPress
   PixelsPerInch = 96
   TextHeight = 13
   object Image1: TImage
@@ -6169,6 +6170,7 @@ object Form2: TForm2
       0000}
     Proportional = True
     Stretch = True
+    Visible = False
   end
   object Button1: TButton
     Left = 168

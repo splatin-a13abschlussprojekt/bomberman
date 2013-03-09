@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, UnitTestPlayer, UnitPlayer, Vcl.ExtCtrls;
+  Dialogs, UnitTestPlayer, UnitPlayer, ExtCtrls;
 
 type
   TForm1 = class(TForm)

@@ -1,0 +1,10 @@
+unit UnitContent;
+
+interface
+
+type
+  TContent = (empty,meteorit,earth,item,player); // Inhalt eines Feldes
+
+implementation
+
+end.
