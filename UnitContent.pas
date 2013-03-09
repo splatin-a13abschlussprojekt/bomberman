@@ -3,7 +3,7 @@ unit UnitContent;
 interface
 
 type
-  TContent = (empty,meteorit,earth,item,player); // PR: Inhalt eines Feldes
+  TContent = (empty,meteorit,earth,item,player,bomb); // PR: Inhalt eines Feldes
 
 implementation
 

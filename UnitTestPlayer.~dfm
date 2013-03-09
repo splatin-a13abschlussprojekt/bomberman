@@ -1,8 +1,8 @@
 object Form2: TForm2
-  Left = 621
-  Top = 91
-  Width = 655
-  Height = 452
+  Left = 322
+  Top = 144
+  Width = 967
+  Height = 532
   Caption = 'Form2'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -6207,5 +6207,25 @@ object Form2: TForm2
     Caption = 'Button1'
     TabOrder = 3
     OnClick = Button4Click
+  end
+  object StringGrid1: TStringGrid
+    Left = 408
+    Top = 48
+    Width = 425
+    Height = 425
+    ColCount = 16
+    DefaultColWidth = 25
+    DefaultRowHeight = 25
+    FixedCols = 0
+    RowCount = 16
+    FixedRows = 0
+    TabOrder = 4
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = Timer1Timer
+    Left = 160
+    Top = 192
   end
 end

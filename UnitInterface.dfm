@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 134
-  Top = 65
+  Left = 228
+  Top = 210
   Width = 655
   Height = 450
   Caption = 'Form1'
@@ -6169,5 +6169,14 @@ object Form1: TForm1
       0000}
     Proportional = True
     Stretch = True
+  end
+  object Button1: TButton
+    Left = 176
+    Top = 64
+    Width = 73
+    Height = 49
+    Caption = 'Form2'
+    TabOrder = 0
+    OnClick = Button1Click
   end
 end
