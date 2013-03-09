@@ -123,15 +123,20 @@ begin
     's': Player1.Move(D);
     'd': Player1.Move(R);
   end;
-  Case Field[Player1.Position.X,Player1.Position.Y].Content of
-    empty,item,player:
-      begin
-      Field[Player1.Position.X,Player1.Position.Y].Content:=player;
-      Field[PosMem.X,PosMem.Y].Content:=empty;
+  Case Key of
+    'w','a','s','d':
+    begin
+      Case Field[Player1.Position.X,Player1.Position.Y].Content of
+        empty,item,player:
+        begin
+        Field[PosMem.X,PosMem.Y].Content:=empty;
+        Field[Player1.Position.X,Player1.Position.Y].Content:=player;
+        end;
+        meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
-    meteorit,earth,bomb: Player1.Position:=PosMem;
+    ShowMessage(Player1.GetPositionString);
+    end;
   end;
-  ShowMessage(Player1.GetPositionString);
 end;
 
 procedure TForm2.Button1Click(Sender: TObject);
