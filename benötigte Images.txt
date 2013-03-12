@@ -1,7 +1,7 @@
 [für Basti]
 CHECK	Ufos für Spieler 1 bis 4 (zB in verschiedenen Farben)
 
-	Block (unzerstörbar) (für Weltraumszenario zB Meteore) für mehr abwechslung auch verschiedene typen möglich
+[CHECK]	Block (unzerstörbar) (für Weltraumszenario zB Meteore) für mehr abwechslung auch verschiedene typen möglich
 
 <<<<<<< HEAD
 =======
