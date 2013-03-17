@@ -36,6 +36,7 @@ var
   Form2: TForm2;
   Player1,Player2,Player3,Player4: TPlayer;
   Field: Array [0..15, 0..15] of TField;  // PR: Array für die Felder
+  Bilder: Array [0..1] of TPicture;
 
 implementation
 
@@ -208,7 +209,7 @@ for i:=0 to 15 do for j:=0 to 15 do
                 end;}
       earth: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26,0); {StringGrid1.Cells[i,j]:='E';}
       item: StringGrid1.Cells[i,j]:='I';
-      player: ImageListUfos.Draw(StringGrid1.Canvas, i*26,j*26,0);
+      player: ImageListUfos.Draw(StringGrid1.Canvas, i,j,0);
       bomb: StringGrid1.Cells[i,j]:='B';
     end;
   end;
