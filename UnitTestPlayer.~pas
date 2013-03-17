@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids;
+  UnitPosition, Grids, Vcl.ImgList;
 
 type
   TForm2 = class(TForm)
@@ -16,6 +16,9 @@ type
     Image1: TImage;
     StringGrid1: TStringGrid;
     Timer1: TTimer;
+    ImageListUfos: TImageList;
+    ImageListObjects: TImageList;
+    ImageListBackground: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -106,6 +109,7 @@ for i:=1 to NumOfPlayers do
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
+//var i: Integer;
 begin
   CreateFields;
   CreatePlayers(1);
@@ -129,14 +133,10 @@ begin
       Case Field[Player1.Position.X,Player1.Position.Y].Content of
         empty,item,player:
         begin
-        Field[Player1.Position.X,Player1.Position.Y].Content:=player;
         Field[PosMem.X,PosMem.Y].Content:=empty;
-        end;
-        meteorit,earth,bomb:
-        begin
-        Player1.Position:=PosMem;
         Field[Player1.Position.X,Player1.Position.Y].Content:=player;
         end;
+        meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
     ShowMessage(Player1.GetPositionString);
     end;
@@ -176,16 +176,39 @@ begin
 end;
 
 procedure TForm2.Timer1Timer(Sender: TObject); // PR: Testvisualisierung des Spielfeldes
-var i,j: Integer;
+var i,j,meteoritenauswahl, bgload: Integer; //RV: bgload=backgroundload
 begin
+  //RV: Hintergrund laden
+  for bgload := 0 to 8 do
+    with ImageListBackground do
+    begin
+      case bgload of
+      0: Draw(StringGrid1.Canvas, 0, 0, bgload);
+      1: Draw(StringGrid1.Canvas, 149, 0, bgload);
+      2: Draw(StringGrid1.Canvas, 298, 0, bgload);
+      3: Draw(StringGrid1.Canvas, 0, 149, bgload);
+      4: Draw(StringGrid1.Canvas, 149, 149, bgload);
+      5: Draw(StringGrid1.Canvas, 298, 149, bgload);
+      6: Draw(StringGrid1.Canvas, 0, 298, bgload);
+      7: Draw(StringGrid1.Canvas, 149, 298, bgload);
+      8: Draw(StringGrid1.Canvas, 298, 298, bgload);
+      end;
+    end;
+
+//RV: Content der Felder anzeigen
 for i:=0 to 15 do for j:=0 to 15 do
   begin
+    //Randomize;
     Case Field[i,j].Content of
-      empty: StringGrid1.Cells[i,j]:='';
-      meteorit: StringGrid1.Cells[i,j]:='M';
-      earth: StringGrid1.Cells[i,j]:='E';
+      empty: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, 5);
+      meteorit: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, 1);
+                {begin
+                  meteoritenauswahl:=Random(4)+1;
+                  ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, meteoritenauswahl);
+                end;}
+      earth: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26,0); {StringGrid1.Cells[i,j]:='E';}
       item: StringGrid1.Cells[i,j]:='I';
-      player: StringGrid1.Cells[i,j]:='P';
+      player: ImageListUfos.Draw(StringGrid1.Canvas, i*26,j*26,0);
       bomb: StringGrid1.Cells[i,j]:='B';
     end;
   end;

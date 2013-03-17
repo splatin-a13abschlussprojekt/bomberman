@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids, Vcl.ImgList;
+  UnitPosition, Grids, Vcl.ImgList, ImgList;
 
 type
   TForm2 = class(TForm)
@@ -109,12 +109,28 @@ for i:=1 to NumOfPlayers do
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
+var bgload: Integer;
 //var i: Integer;
 begin
   CreateFields;
   CreatePlayers(1);
   KeyPreview:=true;
   Timer1.Enabled:=true;
+  for bgload := 0 to 8 do
+    with ImageListBackground do
+    begin
+      case bgload of
+      0: Draw(StringGrid1.Canvas, 0, 0, bgload);
+      1: Draw(StringGrid1.Canvas, 149, 0, bgload);
+      2: Draw(StringGrid1.Canvas, 298, 0, bgload);
+      3: Draw(StringGrid1.Canvas, 0, 149, bgload);
+      4: Draw(StringGrid1.Canvas, 149, 149, bgload);
+      5: Draw(StringGrid1.Canvas, 298, 149, bgload);
+      6: Draw(StringGrid1.Canvas, 0, 298, bgload);
+      7: Draw(StringGrid1.Canvas, 149, 298, bgload);
+      8: Draw(StringGrid1.Canvas, 298, 298, bgload);
+      end;
+    end;
 end;
 
 procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
@@ -179,21 +195,6 @@ procedure TForm2.Timer1Timer(Sender: TObject); // PR: Testvisualisierung des Spi
 var i,j,meteoritenauswahl, bgload: Integer; //RV: bgload=backgroundload
 begin
   //RV: Hintergrund laden
-  for bgload := 0 to 8 do
-    with ImageListBackground do
-    begin
-      case bgload of
-      0: Draw(StringGrid1.Canvas, 0, 0, bgload);
-      1: Draw(StringGrid1.Canvas, 149, 0, bgload);
-      2: Draw(StringGrid1.Canvas, 298, 0, bgload);
-      3: Draw(StringGrid1.Canvas, 0, 149, bgload);
-      4: Draw(StringGrid1.Canvas, 149, 149, bgload);
-      5: Draw(StringGrid1.Canvas, 298, 149, bgload);
-      6: Draw(StringGrid1.Canvas, 0, 298, bgload);
-      7: Draw(StringGrid1.Canvas, 149, 298, bgload);
-      8: Draw(StringGrid1.Canvas, 298, 298, bgload);
-      end;
-    end;
 
 //RV: Content der Felder anzeigen
 for i:=0 to 15 do for j:=0 to 15 do
