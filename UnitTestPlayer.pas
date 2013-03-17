@@ -109,14 +109,14 @@ for i:=1 to NumOfPlayers do
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
-var bgload: Integer;
+var bgload: Integer; //RV: bgload=backgroundload
 //var i: Integer;
 begin
   CreateFields;
   CreatePlayers(1);
   KeyPreview:=true;
   Timer1.Enabled:=true;
-  for bgload := 0 to 8 do
+  for bgload := 0 to 8 do                  //RV: Hintergrund laden
     with ImageListBackground do
     begin
       case bgload of
@@ -192,10 +192,8 @@ begin
 end;
 
 procedure TForm2.Timer1Timer(Sender: TObject); // PR: Testvisualisierung des Spielfeldes
-var i,j,meteoritenauswahl, bgload: Integer; //RV: bgload=backgroundload
+var i,j,meteoritenauswahl: Integer;
 begin
-  //RV: Hintergrund laden
-
 //RV: Content der Felder anzeigen
 for i:=0 to 15 do for j:=0 to 15 do
   begin
