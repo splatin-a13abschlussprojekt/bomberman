@@ -5,14 +5,10 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids, Vcl.ImgList, ImgList;
+  UnitPosition, Grids, {Vcl.ImgList,} ImgList;
 
 type
   TForm2 = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
     Image1: TImage;
     StringGrid1: TStringGrid;
     Timer1: TTimer;
@@ -20,10 +16,6 @@ type
     ImageListObjects: TImageList;
     ImageListBackground: TImageList;
     procedure FormCreate(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure Timer1Timer(Sender: TObject);
   private
@@ -36,6 +28,7 @@ var
   Form2: TForm2;
   Player1,Player2,Player3,Player4: TPlayer;
   Field: Array [0..15, 0..15] of TField;  // PR: Array für die Felder
+  Changes: Array of TPosition; // PR: Array für Refresh.Interface
 
 implementation
 
@@ -51,7 +44,7 @@ for i:=0 to 15 do for j:=0 to 15 do
   begin
   Pos.X:=i;
   Pos.Y:=j;
-  k:=Random(10)+1;
+  k:=Random(10)+1; // PR: zufälliges Füllen
     Case k of
       1..7: Cont:=meteorit;
       8: Cont:=earth;
@@ -61,7 +54,7 @@ for i:=0 to 15 do for j:=0 to 15 do
   end;
 end;
 
-procedure CreatePlayers(NumOfPlayers:Integer);  // PR: Erzeugt Spieler
+procedure CreatePlayers(NumOfPlayers:Integer);  // PR: erzeugt Spieler
 var i: Integer;
     StartPos: TPosition;
 begin
@@ -81,7 +74,7 @@ for i:=1 to NumOfPlayers do
       begin
       StartPos.X:=15;
       StartPos.Y:=0;
-      Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Player2:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
       Field[StartPos.X,StartPos.Y].Content:=player;
       Field[StartPos.X-1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y+1].Content:=empty;
@@ -90,7 +83,7 @@ for i:=1 to NumOfPlayers do
       begin
       StartPos.X:=0;
       StartPos.Y:=15;
-      Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Player3:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
       Field[StartPos.X,StartPos.Y].Content:=player;
       Field[StartPos.X+1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y-1].Content:=empty;
@@ -99,7 +92,7 @@ for i:=1 to NumOfPlayers do
       begin
       StartPos.X:=15;
       StartPos.Y:=15;
-      Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Player4:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
       Field[StartPos.X,StartPos.Y].Content:=player;
       Field[StartPos.X-1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y-1].Content:=empty;
@@ -114,6 +107,7 @@ var bgload: Integer; //RV: bgload=backgroundload
 begin
   CreateFields;
   CreatePlayers(1);
+  SetLength(Changes,0);
   KeyPreview:=true;
   Timer1.Enabled:=true;
   for bgload := 0 to 8 do                  //RV: Hintergrund laden
@@ -151,44 +145,15 @@ begin
         begin
         Field[PosMem.X,PosMem.Y].Content:=empty;
         Field[Player1.Position.X,Player1.Position.Y].Content:=player;
+        SetLength(Changes,High(Changes)+2); // PR: Speicherung der Änderungen
+        Changes[High(Changes)-1]:=PosMem;
+        Changes[High(Changes)]:=Player1.Position;
         end;
         meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
     ShowMessage(Player1.GetPositionString);
     end;
   end;
-end;
-
-procedure TForm2.Button1Click(Sender: TObject);
-begin
-//  with Form1.Image1 do
-//  If player1.Position.Y<15 then Top:=Top-height;
-  player1.Move(U);
-  ShowMessage(player1.GetPositionString);
-end;
-
-procedure TForm2.Button2Click(Sender: TObject);
-begin
-  with Image1 do
-  If player1.Position.X>0 then Left:=Left-width;
-  player1.Move(L);
-  ShowMessage(player1.GetPositionString);
-end;
-
-procedure TForm2.Button3Click(Sender: TObject);
-begin
-  with Image1 do
-  If player1.Position.Y>0 then Top:=Top+height;
-  player1.Move(D);
-  ShowMessage(player1.GetPositionString);
-end;
-
-procedure TForm2.Button4Click(Sender: TObject);
-begin
-  with Image1 do
-  If player1.Position.X<15 then Left:=Left+width;
-  player1.Move(R);
-  ShowMessage(player1.GetPositionString);
 end;
 
 procedure TForm2.Timer1Timer(Sender: TObject); // PR: Testvisualisierung des Spielfeldes

@@ -6172,42 +6172,6 @@ object Form2: TForm2
     Stretch = True
     Visible = False
   end
-  object Button1: TButton
-    Left = 168
-    Top = 56
-    Width = 49
-    Height = 49
-    Caption = 'Button1'
-    TabOrder = 0
-    OnClick = Button1Click
-  end
-  object Button2: TButton
-    Left = 120
-    Top = 104
-    Width = 49
-    Height = 49
-    Caption = 'Button1'
-    TabOrder = 1
-    OnClick = Button2Click
-  end
-  object Button3: TButton
-    Left = 168
-    Top = 104
-    Width = 49
-    Height = 49
-    Caption = 'Button1'
-    TabOrder = 2
-    OnClick = Button3Click
-  end
-  object Button4: TButton
-    Left = 216
-    Top = 104
-    Width = 49
-    Height = 49
-    Caption = 'Button1'
-    TabOrder = 3
-    OnClick = Button4Click
-  end
   object StringGrid1: TStringGrid
     Left = 408
     Top = 63
@@ -6219,7 +6183,7 @@ object Form2: TForm2
     FixedCols = 0
     RowCount = 16
     FixedRows = 0
-    TabOrder = 4
+    TabOrder = 0
   end
   object Timer1: TTimer
     Enabled = False
