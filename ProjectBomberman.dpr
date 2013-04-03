@@ -9,7 +9,9 @@ uses
   UnitDirection in 'UnitDirection.pas',
   UnitCoordinate in 'UnitCoordinate.pas',
   UnitField in 'UnitField.pas',
-  UnitContent in 'UnitContent.pas';
+  UnitContent in 'UnitContent.pas',
+  UnitMenu in 'UnitMenu.pas' {FormMenu},
+  UnitCreatePlayerGroupbox in 'UnitCreatePlayerGroupbox.pas';
 
 {$R *.res}
 
@@ -17,5 +19,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TFormMenu, FormMenu);
   Application.Run;
 end.

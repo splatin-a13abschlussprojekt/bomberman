@@ -54,7 +54,7 @@ for i:=0 to 15 do for j:=0 to 15 do
   end;
 end;
 
-procedure CreatePlayers(NumOfPlayers:Integer);  // PR: Erzeugt Spieler
+procedure CreatePlayers(NumOfPlayers:Integer);  // PR: erzeugt Spieler
 var i: Integer;
     StartPos: TPosition;
 begin
