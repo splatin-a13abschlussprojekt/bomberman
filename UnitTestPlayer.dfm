@@ -6188,7 +6188,6 @@ object Form2: TForm2
   object Timer1: TTimer
     Enabled = False
     Interval = 100
-    OnTimer = Timer1Timer
     Left = 160
     Top = 192
   end

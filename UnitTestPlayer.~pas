@@ -16,8 +16,8 @@ type
     ImageListObjects: TImageList;
     ImageListBackground: TImageList;
     procedure FormCreate(Sender: TObject);
-    procedure FormKeyPress(Sender: TObject; var Key: Char);
-    procedure Timer1Timer(Sender: TObject);
+    procedure LoadInterface(Sender: TObject);
+    procedure Refresh(Sender: TObject; var Pos: Array of TPosition);
   private
     { Private declarations }
   public
@@ -102,29 +102,12 @@ for i:=1 to NumOfPlayers do
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
-var bgload: Integer; //RV: bgload=backgroundload
-//var i: Integer;
 begin
   CreateFields;
   CreatePlayers(1);
-  SetLength(Changes,0);
+  SetLength(Changes,2);   //RV: Changes hat gleich den Wert 2
   KeyPreview:=true;
-  Timer1.Enabled:=true;
-  for bgload := 0 to 8 do                  //RV: Hintergrund laden
-    with ImageListBackground do
-    begin
-      case bgload of
-      0: Draw(StringGrid1.Canvas, 0, 0, bgload);
-      1: Draw(StringGrid1.Canvas, 149, 0, bgload);
-      2: Draw(StringGrid1.Canvas, 298, 0, bgload);
-      3: Draw(StringGrid1.Canvas, 0, 149, bgload);
-      4: Draw(StringGrid1.Canvas, 149, 149, bgload);
-      5: Draw(StringGrid1.Canvas, 298, 149, bgload);
-      6: Draw(StringGrid1.Canvas, 0, 298, bgload);
-      7: Draw(StringGrid1.Canvas, 149, 298, bgload);
-      8: Draw(StringGrid1.Canvas, 298, 298, bgload);
-      end;
-    end;
+//  Timer1.Enabled:=true;
 end;
 
 procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
@@ -149,16 +132,59 @@ begin
         Changes[High(Changes)-1]:=PosMem;
         Changes[High(Changes)]:=Player1.Position;
         end;
-        meteorit,earth,bomb: Player1.Position:=PosMem;
+        meteorit,earth,bomb:
+        begin
+        Player1.Position:=PosMem;
+        //SetLength(Changes,2); // PR: Speicherung der Änderungen //RV: unnötig...
+        Changes[0]:=PosMem;
+        Changes[1]:=Player1.Position;
+        end;
       end;
-    ShowMessage(Player1.GetPositionString);
+    //ShowMessage(Player1.GetPositionString);
+    LoadInterface(Form2);
+    Refresh(Form2, Changes)
     end;
   end;
 end;
 
-procedure TForm2.Timer1Timer(Sender: TObject); // PR: Testvisualisierung des Spielfeldes
-var i,j,meteoritenauswahl: Integer;
+procedure TForm2.Refresh(Sender: TObject; var Pos: Array of TPosition);
 begin
+
+//wenn sich Plyer1 bewegt
+  If (Changes[0].X<>Changes[1].X) or (Changes[0].Y<>Changes[1].Y) then
+  begin
+
+//RV: altes Feld refreshen
+    Case Field[Changes[0].X,Changes[0].Y].Content of
+      empty: ImageListObjects.Draw(StringGrid1.Canvas, Changes[0].X*26, Changes[0].Y*26, 5);
+      bomb: StringGrid1.Cells[Changes[0].X,Changes[0].Y]:='B';
+    end;
+
+//RV: neues Feld refreshen
+  ImageListUfos.Draw(StringGrid1.Canvas, Changes[1].X*26,Changes[1].Y*26,0);
+
+  end;
+end;
+
+procedure TForm2.LoadInterface(Sender: TObject); // PR: Testvisualisierung des Spielfeldes
+var i,j,meteoritenauswahl, bgload: Integer;   //RV: bgload=backgroundload
+begin
+for bgload := 0 to 8 do             //RV: Hintergrund laden
+  with ImageListBackground do
+  begin
+    case bgload of
+    0: Draw(StringGrid1.Canvas, 0, 0, bgload);
+    1: Draw(StringGrid1.Canvas, 149, 0, bgload);
+    2: Draw(StringGrid1.Canvas, 298, 0, bgload);
+    3: Draw(StringGrid1.Canvas, 0, 149, bgload);
+    4: Draw(StringGrid1.Canvas, 149, 149, bgload);
+    5: Draw(StringGrid1.Canvas, 298, 149, bgload);
+    6: Draw(StringGrid1.Canvas, 0, 298, bgload);
+    7: Draw(StringGrid1.Canvas, 149, 298, bgload);
+    8: Draw(StringGrid1.Canvas, 298, 298, bgload);
+    end;
+  end;
+
 //RV: Content der Felder anzeigen
 for i:=0 to 15 do for j:=0 to 15 do
   begin
