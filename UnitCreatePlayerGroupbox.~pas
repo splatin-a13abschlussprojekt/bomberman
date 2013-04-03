@@ -109,6 +109,7 @@ begin
     4: Caption:='Rechts';
     5: Caption:='Bombe';
    end;
+
    Font:=StandardFont();
    Font.Color:=clWhite;
    Height:=20;

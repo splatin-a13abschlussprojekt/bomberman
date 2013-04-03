@@ -37,7 +37,6 @@ type
     NumberOfPlayersEdit: TEdit;
     NumberOfPlayersLabel: TLabel;
     procedure FormCreate(Sender: TObject);
-    procedure ControlButtonClick(Sender: TObject);
     procedure ControlButtonKeyPress(Sender: TObject; var Key: Char);
     procedure PanelExpectKey();
     procedure PanelGotKey();
@@ -47,6 +46,8 @@ type
     procedure ImageMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ImageMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
     { Private-Deklarationen }
@@ -89,16 +90,6 @@ begin
     end;
    SetDragDropImageforGroupbox(i);
   end;
-end;
-
-procedure TFormMenu.ControlButtonClick(Sender: TObject);
-begin
- GroupNumber:=0;
- Repeat
-  inc(GroupNumber);
- until Sender = PlayerGroupbox[GroupNumber].ControlButton;
- PanelNumber:=1;
- PanelExpectKey();
 end;
 
 procedure TFormMenu.ControlButtonKeyPress(Sender: TObject; var Key: Char);
@@ -225,6 +216,17 @@ begin
    Playergroupbox[i].DragDropImage.Image.Picture:=VImage.Picture;
    VImage.Free;
   end;
+end;
+
+procedure TFormMenu.ButtonMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  GroupNumber:=0;
+ Repeat
+  inc(GroupNumber);
+ until Sender = PlayerGroupbox[GroupNumber].ControlButton;
+ PanelNumber:=1;
+ PanelExpectKey();
 end;
 
 end.

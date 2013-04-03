@@ -142,7 +142,7 @@ begin
 
  with PlayerGroupbox[GroupNumber].ControlPanel[PanelNumber] do
   begin
-   Caption:=Key;
+   Caption:=AnsiUpperCase(Key);
    PanelGotKey();
   end;
  Inc(PanelNumber);

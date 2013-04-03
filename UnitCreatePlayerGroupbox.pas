@@ -193,7 +193,7 @@ begin
    Left:=10;
    Top:=PlayerGroupbox[i].NameEdit.Top+Playergroupbox[i].NameLabel.Height+25;
    Caption:='Steuerung ändern';
-   OnClick:=FormMenu.ControlButtonClick;
+   OnMouseUp:=FormMenu.ButtonMouseUp;
    OnKeyPress:=FormMenu.ControlButtonKeyPress;
    Visible:=true;
   end;
