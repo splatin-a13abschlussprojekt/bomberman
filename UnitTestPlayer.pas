@@ -11,14 +11,15 @@ type
   TForm2 = class(TForm)
     Image1: TImage;
     StringGrid1: TStringGrid;
-    Timer1: TTimer;
     ImageListUfos: TImageList;
     ImageListObjects: TImageList;
     ImageListBackground: TImageList;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
-    procedure Refresh(Sender: TObject; var Pos: Array of TPosition);
+    procedure Refresh(Sender: TObject; var Pos: TPosition);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -29,7 +30,6 @@ var
   Form2: TForm2;
   Player1,Player2,Player3,Player4: TPlayer;
   Field: Array [0..15, 0..15] of TField;  // PR: Array für die Felder
-  Changes: Array of TPosition; // PR: Array für Refresh.Interface
 
 implementation
 
@@ -68,7 +68,7 @@ for i:=1 to NumOfPlayers do
       StartPos.Y:=0;
       Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
       Field[StartPos.X,StartPos.Y].Content:=player;
-      Field[StartPos.X+1,StartPos.Y].Content:=empty;
+      Field[StartPos.X+1,StartPos.Y].Content:=empty; // PR: hier wird sichergestellt, dass der Spieler Platz hat
       Field[StartPos.X,StartPos.Y+1].Content:=empty;
       end;
       2:
@@ -106,13 +106,11 @@ procedure TForm2.FormCreate(Sender: TObject);
 begin
   CreateFields;
   CreatePlayers(1);
-  SetLength(Changes,2);   //RV: Changes hat gleich den Wert 2
   KeyPreview:=true;
-//  Timer1.Enabled:=true;
 end;
 
 procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
-var PosMem: TPosition;
+var PosMem, Pos: TPosition;
 begin
   PosMem:=Player1.Position;
   Case Key of
@@ -126,45 +124,30 @@ begin
     begin
       Case Field[Player1.Position.X,Player1.Position.Y].Content of
         empty,item,player:
-        begin
-        Field[PosMem.X,PosMem.Y].Content:=empty;
-        Field[Player1.Position.X,Player1.Position.Y].Content:=player;
-        SetLength(Changes,High(Changes)+2); // PR: Speicherung der Änderungen
-        Changes[High(Changes)-1]:=PosMem;
-        Changes[High(Changes)]:=Player1.Position;
-        end;
-        meteorit,earth,bomb:
-        begin
-        Player1.Position:=PosMem;
-        //SetLength(Changes,2); // PR: Speicherung der Änderungen //RV: unnötig...
-        Changes[0]:=PosMem;
-        Changes[1]:=Player1.Position;
-        end;
+          begin
+          Field[PosMem.X,PosMem.Y].Content:=empty;
+          Field[Player1.Position.X,Player1.Position.Y].Content:=player;
+          Refresh(Form2, PosMem);
+          Pos:=Player1.Position;
+          Refresh(Form2, Pos);
+          end;
+        meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
     //ShowMessage(Player1.GetPositionString);
-    LoadInterface(Form2);
-    Refresh(Form2, Changes)
     end;
   end;
 end;
 
-procedure TForm2.Refresh(Sender: TObject; var Pos: Array of TPosition);
+procedure TForm2.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
+var bgload: Integer;
 begin
-
-//wenn sich Plyer1 bewegt
-  If (Changes[0].X<>Changes[1].X) or (Changes[0].Y<>Changes[1].Y) then
-  begin
-
-//RV: altes Feld refreshen
-    Case Field[Changes[0].X,Changes[0].Y].Content of
-      empty: ImageListObjects.Draw(StringGrid1.Canvas, Changes[0].X*26, Changes[0].Y*26, 5);
-      bomb: StringGrid1.Cells[Changes[0].X,Changes[0].Y]:='B';
-    end;
-
-//RV: neues Feld refreshen
-  ImageListUfos.Draw(StringGrid1.Canvas, Changes[1].X*26,Changes[1].Y*26,0);
-
+// PR: Aktualisierung eines Feldes je nach Content
+  Case Field[Pos.X,Pos.Y].Content of
+    empty: ImageListObjects.Draw(StringGrid1.Canvas, Pos.X*26, Pos.Y*26, 5); // PR: Was bewirkt das? - Hier müsste nur der Hintergrund DIESES Feldes geladen werden...
+    bomb: StringGrid1.Cells[Pos.X,Pos.Y]:='B';
+    player: ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,0);
   end;
+
 end;
 
 procedure TForm2.LoadInterface(Sender: TObject); // PR: Testvisualisierung des Spielfeldes
@@ -203,6 +186,11 @@ for i:=0 to 15 do for j:=0 to 15 do
       bomb: StringGrid1.Cells[i,j]:='B';
     end;
   end;
+end;
+
+procedure TForm2.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
+begin
+LoadInterface(Form2);
 end;
 
 end.
