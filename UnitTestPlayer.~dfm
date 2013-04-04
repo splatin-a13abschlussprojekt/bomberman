@@ -1,8 +1,8 @@
 object Form2: TForm2
-  Left = 343
-  Top = 140
+  Left = 4
+  Top = 184
   Width = 984
-  Height = 532
+  Height = 530
   Caption = 'Form2'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,6 +11,7 @@ object Form2: TForm2
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   PixelsPerInch = 96
@@ -6183,7 +6184,7 @@ object Form2: TForm2
     FixedCols = 0
     RowCount = 16
     FixedRows = 0
-    TabOrder = 0
+    TabOrder = 1
   end
   object Button1: TButton
     Left = 408
@@ -6191,7 +6192,7 @@ object Form2: TForm2
     Width = 105
     Height = 33
     Caption = 'LoadInterface'
-    TabOrder = 1
+    TabOrder = 0
     OnClick = Button1Click
   end
   object ImageListUfos: TImageList
