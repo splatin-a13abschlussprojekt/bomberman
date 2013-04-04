@@ -6216,6 +6216,7 @@ object FormMenu: TFormMenu
       Font.Name = 'Arial'
       Font.Style = []
       ParentFont = False
+      OnMouseUp = SettingSuddendeathMouseUp
     end
     object SettingSuddenDeathLabel2: TLabel
       Left = 143

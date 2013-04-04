@@ -6,18 +6,18 @@ uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
      Dialogs, StdCtrls, ExtCtrls;
 
  {Prozeduren zum Erstellen und setzten der Eigenschaften (Groupbox)}
-    function StandardFont():TFont;
-    procedure SetDragDropImageforGroupbox(i:Byte);
-    procedure SetControlLabel(i,j:Byte);
-    procedure SetControlPanel(i,j:Byte);
-    procedure SetControlButton(i:Byte);
-    procedure SetNameEdit(i:Byte);
-    procedure SetNameLabel(i:Byte);
-    procedure SetHeader(i:Byte);
-    procedure SetPanels(i:Byte);
-    procedure CreatePlayerGroupbox(i:Byte);
+    function StandardFont():TFont; //Arial 12
+    procedure SetDragDropImageforGroupbox(i:Byte); //als 9.
+    procedure SetControlLabel(i,j:Byte);     //als 8.
+    procedure SetControlPanel(i,j:Byte);     //als 7.
+    procedure SetControlButton(i:Byte);      //als 6.
+    procedure SetNameEdit(i:Byte);           //als 5.
+    procedure SetNameLabel(i:Byte);          //als 4.
+    procedure SetHeader(i:Byte);             //als 3.
+    procedure SetPanels(i:Byte);             //als 2.
+    procedure CreatePlayerGroupbox(i:Byte);  //als 1.
  {Settings}
-    procedure CreateSettingObjects();
+    procedure CreateSettingObjects();        //CheckImage für Sudden Death
     procedure SetSettingObjects();
 
 implementation
@@ -51,7 +51,6 @@ begin
    Height:=80;
    Visible:=true;
   end;
- PlayerGroupbox[i].DragDropImage.Occupied:=false;
  with PlayerGroupbox[i].DragDropImage.Panel do
   begin
    Name:='ImagePanel'+IntToStr(i);
@@ -113,7 +112,6 @@ begin
     4: Caption:='Rechts';
     5: Caption:='Bombe';
    end;
-
    Font:=StandardFont();
    Font.Color:=clWhite;
    Height:=20;
@@ -178,7 +176,7 @@ begin
    Font:=StandardFont();
    Font.Color:=RGB(255,255,255);
    Color:=RGB(50,50,50);
-   Width:=Trunc(Playergroupbox[i].Panel.Width/2)-10;
+   Width:=Trunc(Playergroupbox[i].Panel.Width/2)-10; //trunc schneidet Nachkommastellen ab (es sollten keine auftreten, Compiler gibt dennoch Fehler)
    Height:=20;
    Left:=Trunc(Playergroupbox[i].Panel.Width/2);
    Top:=15+PlayerGroupbox[i].ControlButton.Height+PlayerGroupbox[i].ControlButton.Top+(j-1)*(15+Height);
@@ -197,7 +195,7 @@ begin
    Left:=10;
    Top:=PlayerGroupbox[i].NameEdit.Top+Playergroupbox[i].NameLabel.Height+25;
    Caption:='Steuerung ändern';
-   OnMouseUp:=FormMenu.ButtonMouseUp;
+   OnMouseUp:=FormMenu.ButtonMouseUp;         //Prozeduren werden "verknüpft"
    OnKeyPress:=FormMenu.ControlButtonKeyPress;
    Visible:=true;
   end;
@@ -209,10 +207,10 @@ begin
   begin
    Parent:=PlayerGroupbox[i].Panel;
    Name:='NameEdit'+IntToStr(i);
-   Font:=StandardFont;
+   Font:=StandardFont();
    Left:=10+Playergroupbox[i].NameLabel.Width+5;
    Top:=PlayerGroupbox[i].Header.Top+PlayerGroupbox[i].Header.Height+15-4;
-   Height:=12; //"Height" ändern hat keine Auswirkung?!
+   Height:=12; //"Height" ändern hat bei Edit keine Auswirkung?! XP-Man ??
    Width:=PlayerGroupbox[i].Panel.Width-Left-10;
    Text:='Spieler '+IntToStr(i);
    Visible:=true;
@@ -229,7 +227,7 @@ begin
    Font:=StandardFont();
    Font.Color:=clWhite;
    Left:=10;
-   Top:=PlayerGroupbox[i].Header.Top+PlayerGroupbox[i].Header.Height+15;
+   Top:=PlayerGroupbox[i].Header.Top+PlayerGroupbox[i].Header.Height+15; //Abstand von 15
    Caption:='Name';
    Visible:=true;
   end;
@@ -242,7 +240,7 @@ begin
      Name:='Header'+IntToStr(i);
      ParentBackground:=false;
      ParentColor:=false;
-     Parent:=PlayerGroupbox[i].Panel;
+     Parent:=PlayerGroupbox[i].Panel; //Header befindet sich auf Panel
      BevelInner:=bvNone;
      BevelOuter:=bvNone;
      Left:=10;
@@ -251,12 +249,12 @@ begin
     {Schrift}
      Font:=StandardFont();
      Font.Color:=RGB(31,31,31);
-     Font.Style:=[fsBold];
+     Font.Style:=[fsBold]; //Fett
     {}
-     Alignment:=taCenter;
+     Alignment:=taCenter; //Schrift-Ausrichtung in der Mitte
      Caption:='Spieler '+IntToStr(i);
-     width:=TPanel(FormMenu.FindComponent('Panel'+IntToStr(i))).Width-20;
-     Height:=FormMenu.Canvas.TextHeight('Spieler '+IntToStr(i))+10;
+     width:=TPanel(FormMenu.FindComponent('Panel'+IntToStr(i))).Width-20; //Rand von 10 px
+     Height:=FormMenu.Canvas.TextHeight('Spieler '+IntToStr(i))+10;       //Höhe von 10 px + Texthöhe(Arial 12)
      Visible:=true;
     end;
 end;
@@ -265,22 +263,22 @@ procedure SetPanels(i:Byte);
 begin
  with PlayerGroupbox[i].Panel do
     begin
-     Parent:=FormMenu;
+     Parent:=FormMenu; //sind auf der Form
      Name:='Panel'+IntToStr(i);
-     ParentBackground:=false;
-     BevelInner:=bvNone;
+     ParentBackground:=false; //XP-Manifest verursacht sonst gleichfarbigen Hintergrund
+     BevelInner:=bvNone;      //kein Rand
      BevelOuter:=bvNone;
      Caption:='';
-     width:=200;
+     width:=200;              //Größe
      Height:=400;
-     Left:=20+(20+width)*(i-1);
+     Left:=20+(20+width)*(i-1);//Panels werden versetzt nebeneinander platziert
      Top:=175;
      Color:=RGB(31,31,31);
      Visible:=true;
     end;
 end;
 
-procedure CreatePlayerGroupbox(i:Byte);
+procedure CreatePlayerGroupbox(i:Byte);//erstellen der Objekte für Spieler I
  var j : Byte;
 begin
  PlayerGroupbox[i].Panel:=TPanel.Create(FormMenu);
