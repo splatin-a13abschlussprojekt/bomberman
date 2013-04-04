@@ -69,6 +69,9 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure SettingSuddendeathDownImageMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure SettingSuddendeathEditKeyPress(Sender: TObject;
+      var Key: Char);
+    procedure SettingSuddendeathEditExit(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -305,13 +308,30 @@ end;
 procedure TFormMenu.SettingSuddendeathUpImageMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-if StrToInt(NumberOfPlayersEdit.Text)<999 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)+1);
+if StrToInt(SettingSuddendeathEdit.Text)<999 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)+1);
 end;
 
 procedure TFormMenu.SettingSuddendeathDownImageMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-if StrToInt(SettingSuddendeathEdit.Text)>1 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)-1);
+if StrToInt(SettingSuddendeathEdit.Text)>=1 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)-1);
+end;
+
+procedure TFormMenu.SettingSuddendeathEditKeyPress(Sender: TObject;
+  var Key: Char);
+  var CPos: Byte;
+begin
+ CPos:=SettingSuddendeathEdit.SelStart+SettingSuddendeathEdit.SelLength;
+ if Key=#8 then (SettingSuddendeathEdit.Text:='');
+ if (StrToIntDef(Key,-1)>-1) and (length(SettingSuddendeathEdit.Text)<3) then
+  begin
+   SettingSuddendeathEdit.SelText:=Key;
+  end;
+end;
+
+procedure TFormMenu.SettingSuddendeathEditExit(Sender: TObject);
+begin
+ if SettingSuddendeathEdit.Text='' then SettingSuddendeathEdit.Text:='180';
 end;
 
 end.

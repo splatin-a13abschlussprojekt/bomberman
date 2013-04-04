@@ -12458,11 +12458,14 @@ object FormMenu: TFormMenu
       Font.Height = -16
       Font.Name = 'Arial'
       Font.Style = []
+      MaxLength = 3
       ParentFont = False
       ReadOnly = True
       TabOrder = 2
       Text = '180'
       Visible = False
+      OnExit = SettingSuddendeathEditExit
+      OnKeyPress = SettingSuddendeathEditKeyPress
     end
   end
 end

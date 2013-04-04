@@ -308,13 +308,13 @@ end;
 procedure TFormMenu.SettingSuddendeathUpImageMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-if StrToInt(NumberOfPlayersEdit.Text)<999 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)+1);
+if StrToInt(SettingSuddendeathEdit.Text)<999 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)+1);
 end;
 
 procedure TFormMenu.SettingSuddendeathDownImageMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-if StrToInt(SettingSuddendeathEdit.Text)>1 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)-1);
+if StrToInt(SettingSuddendeathEdit.Text)>=1 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)-1);
 end;
 
 procedure TFormMenu.SettingSuddendeathEditKeyPress(Sender: TObject;
