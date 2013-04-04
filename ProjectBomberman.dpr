@@ -11,8 +11,7 @@ uses
   UnitField in 'UnitField.pas',
   UnitContent in 'UnitContent.pas',
   UnitMenu in 'UnitMenu.pas' {FormMenu},
-  UnitCreateMenuObjects in 'UnitCreateMenuObjects.pas',
-  UnitHiddenForm in 'UnitHiddenForm.pas' {Form3};
+  UnitCreateMenuObjects in 'UnitCreateMenuObjects.pas';
 
 {$R *.res}
 
@@ -21,6 +20,5 @@ begin
   Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TFormMenu, FormMenu);
-  Application.CreateForm(TForm3, Form3);
   Application.Run;
 end.
