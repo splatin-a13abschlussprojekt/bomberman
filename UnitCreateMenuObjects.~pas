@@ -1,4 +1,4 @@
-unit UnitCreatePlayerGroupbox;   //BB - Die Groupboxen für die Spieler Einstellungen werden erstellt, sowie
+unit UnitCreateMenuObjects;   //BB - Die Groupboxen für die Spieler Einstellungen werden erstellt, sowie
                                       // die Images zum auswählen der UFOs (außerhalb der Groupbox)
 interface
 
@@ -6,6 +6,7 @@ uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
      Dialogs, StdCtrls, ExtCtrls;
 
  {Prozeduren zum Erstellen und setzten der Eigenschaften (Groupbox)}
+    function StandardFont():TFont;
     procedure SetDragDropImageforGroupbox(i:Byte);
     procedure SetControlLabel(i,j:Byte);
     procedure SetControlPanel(i,j:Byte);
@@ -15,6 +16,9 @@ uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     procedure SetHeader(i:Byte);
     procedure SetPanels(i:Byte);
     procedure CreatePlayerGroupbox(i:Byte);
+ {Settings}
+    procedure CreateSettingObjects();
+    procedure SetSettingObjects();
 
 implementation
 
@@ -172,8 +176,8 @@ begin
    BevelInner:=bvNone;
    BevelOuter:=bvNone;
    Font:=StandardFont();
-   Font.Color:=clWhite;
-   Color:=RGB(100,100,100);
+   Font.Color:=RGB(255,255,255);
+   Color:=RGB(50,50,50);
    Width:=Trunc(Playergroupbox[i].Panel.Width/2)-10;
    Height:=20;
    Left:=Trunc(Playergroupbox[i].Panel.Width/2);
@@ -193,7 +197,7 @@ begin
    Left:=10;
    Top:=PlayerGroupbox[i].NameEdit.Top+Playergroupbox[i].NameLabel.Height+25;
    Caption:='Steuerung ändern';
-   OnClick:=FormMenu.ControlButtonClick;
+   OnMouseUp:=FormMenu.ButtonMouseUp;
    OnKeyPress:=FormMenu.ControlButtonKeyPress;
    Visible:=true;
   end;
@@ -247,6 +251,7 @@ begin
     {Schrift}
      Font:=StandardFont();
      Font.Color:=RGB(31,31,31);
+     Font.Style:=[fsBold];
     {}
      Alignment:=taCenter;
      Caption:='Spieler '+IntToStr(i);
@@ -291,6 +296,30 @@ begin
  PlayerGroupbox[i].DragDropImage.Ground:=TPanel.Create(PlayergroupBox[i].Panel);
  PlayerGroupbox[i].DragDropImage.Panel:=TPanel.Create(FormMenu);
  PlayerGroupbox[i].DragDropImage.Image:=TImage.Create(PlayergroupBox[i].DragDropImage.Panel);
+end;
+
+procedure CreateSettingObjects();
+begin
+ SettingSuddendeathImage.CheckImage:=TImage.Create(FormMenu.SettingsPanel);
+ SettingSuddendeathImage.Checked:=false;
+ SetsettingObjects();
+end;
+
+procedure SetSettingObjects();
+begin
+ with SettingSuddendeathImage.CheckImage do
+  begin
+   Parent:=FormMenu.SettingsPanel;
+   Name := 'SettingSuddendeathImage';
+   AutoSize:=false;
+   Proportional:=true;
+   width:=25;
+   Height:=25;
+   Top:=FormMenu.NumberOfPlayersLabel.Top+FormMenu.NumberOfPlayersLabel.Height+10;
+   Left:=10;
+   Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp');
+   Visible:=true;
+  end;
 end;
 
 end.

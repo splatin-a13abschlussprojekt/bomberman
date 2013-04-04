@@ -9,7 +9,7 @@ uses
 type
  TCheckImage = record
   CheckImage : TImage;
-  Checked    : Boolean;
+  Checked: Boolean;
  end;
 
 type  
@@ -36,6 +36,16 @@ type
   TFormMenu = class(TForm)
     NumberOfPlayersEdit: TEdit;
     NumberOfPlayersLabel: TLabel;
+    SettingsPanel: TPanel;
+    SettingsHeader: TPanel;
+    NumberOfPlayersUpImage: TImage;
+    NumberOfPlayersDownImage: TImage;
+    SettingSuddenDeathLabel1: TLabel;
+    SettingSuddenDeathLabel2: TLabel;
+    SettingSuddendeathEdit: TEdit;
+    SettingSuddendeathUpImage: TImage;
+    SettingSuddendeathDownImage: TImage;
+    SettingSuddenDeathLabel3: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure ControlButtonKeyPress(Sender: TObject; var Key: Char);
     procedure PanelExpectKey();
@@ -49,6 +59,19 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure NumberOfPlayersUpImageMouseUp(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure NumberOfPlayersDownImageMouseUp(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure SettingSuddendeathMouseUp(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure SettingSuddendeathUpImageMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure SettingSuddendeathDownImageMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure SettingSuddendeathEditKeyPress(Sender: TObject;
+      var Key: Char);
+    procedure SettingSuddendeathEditExit(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -58,6 +81,7 @@ type
 var
   FormMenu: TFormMenu;
   PlayerGroupbox : Array[1..4] of TPlayerGroupbox;
+  SettingSuddendeathImage : TCheckImage;
   NumberKeys : Byte;
   GroupNumber: Byte;
   PanelNumber:Byte;
@@ -66,7 +90,7 @@ var
 
 implementation
 
-uses UnitInterface, UnitCreatePlayerGroupbox, Math;
+uses UnitInterface, UnitCreateMenuObjects, Math;
 
 {$R *.dfm}
 
@@ -90,6 +114,13 @@ begin
     end;
    SetDragDropImageforGroupbox(i);
   end;
+
+ {Settings - Panel}
+ SettingsPanel.Color:=RGB(31,31,31);
+ SettingsHeader.Font:=StandardFont();
+ SettingsHeader.Font.Style:=[fsBold];
+ SettingsHeader.Font.Color:=RGB(31,31,31);
+ CreateSettingObjects();
 end;
 
 procedure TFormMenu.ControlButtonKeyPress(Sender: TObject; var Key: Char);
@@ -123,7 +154,7 @@ begin
 
  with PlayerGroupbox[GroupNumber].ControlPanel[PanelNumber] do
   begin
-   Color:=RGB(100,100,100);
+   Color:=RGB(50,50,50);
    Font.Color:=clWhite;
   end;
 end;
@@ -182,11 +213,13 @@ begin
    distances[i]:=sqrt((PositionOfGroundPanel[i].X-Pos.X)*(PositionOfGroundPanel[i].X-Pos.X)+(PositionOfGroundPanel[i].Y-Pos.Y)*(PositionOfGroundPanel[i].Y-Pos.Y));
   end;
  MinDistance:=MaxExtended;
- for I:=1 to 4 do if distances[i]<MinDistance then
-  begin
-   MinDistance:=distances[i];
-   NoticeI:=I;
-  end;
+ Noticei:=0;;
+ for I:=1 to 4 do
+  if distances[i]<MinDistance then
+   begin
+    MinDistance:=distances[i];
+    NoticeI:=I;
+   end;
  //ShowMessage(FloatToStr(distances[1])+'|'+Floattostr(distances[2])+'|'+Floattostr(distances[3])+'|'+Floattostr(distances[4])+'|');
  GroundPanelNumber:=Noticei;
 end;
@@ -227,6 +260,78 @@ begin
  until Sender = PlayerGroupbox[GroupNumber].ControlButton;
  PanelNumber:=1;
  PanelExpectKey();
+end;
+
+procedure TFormMenu.NumberOfPlayersUpImageMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+ if StrToInt(NumberOfPlayersEdit.Text)<4 then NumberOfPlayersEdit.Text:=IntToStr(StrToInt(NumberOfPlayersEdit.Text)+1);
+end;
+
+procedure TFormMenu.NumberOfPlayersDownImageMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+ if StrToInt(NumberOfPlayersEdit.Text)>2 then NumberOfPlayersEdit.Text:=IntToStr(StrToInt(NumberOfPlayersEdit.Text)-1);
+end;
+
+procedure TFormMenu.SettingSuddendeathMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+ if SettingSuddendeathImage.Checked=false then
+  begin
+   with SettingSuddendeathImage do
+    begin
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-checked.bmp');
+     SettingSuddenDeathLabel2.Visible:=true;
+     SettingSuddenDeathLabel3.Visible:=true;
+     SettingSuddendeathEdit.Visible:=true;
+     SettingSuddendeathUpImage.Visible:=true;
+     SettingSuddendeathDownImage.Visible:=true;
+     Checked:=true;
+    end;
+  end
+ else
+  begin
+   with SettingSuddendeathImage do
+    begin
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp');
+     SettingSuddenDeathLabel2.Visible:=false;
+     SettingSuddenDeathLabel3.Visible:=false;
+     SettingSuddendeathEdit.Visible:=false;
+     SettingSuddendeathUpImage.Visible:=false;
+     SettingSuddendeathDownImage.Visible:=false;
+     Checked:=false;
+    end;
+  end;
+end;
+
+procedure TFormMenu.SettingSuddendeathUpImageMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+if StrToInt(NumberOfPlayersEdit.Text)<999 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)+1);
+end;
+
+procedure TFormMenu.SettingSuddendeathDownImageMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+if StrToInt(SettingSuddendeathEdit.Text)>1 then SettingSuddendeathEdit.Text:=IntToStr(StrToInt(SettingSuddendeathEdit.Text)-1);
+end;
+
+procedure TFormMenu.SettingSuddendeathEditKeyPress(Sender: TObject;
+  var Key: Char);
+  var CPos: Byte;
+begin
+ CPos:=SettingSuddendeathEdit.SelStart+SettingSuddendeathEdit.SelLength;
+ if Key=#8 then (SettingSuddendeathEdit.Text:='');
+ if (StrToIntDef(Key,-1)>-1) and (length(SettingSuddendeathEdit.Text)<3) then
+  begin
+   SettingSuddendeathEdit.SelText:=Key;
+  end;
+end;
+
+procedure TFormMenu.SettingSuddendeathEditExit(Sender: TObject);
+begin
+ if SettingSuddendeathEdit.Text='' then SettingSuddendeathEdit.Text:='180';
 end;
 
 end.

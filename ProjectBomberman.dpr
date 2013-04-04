@@ -11,7 +11,7 @@ uses
   UnitField in 'UnitField.pas',
   UnitContent in 'UnitContent.pas',
   UnitMenu in 'UnitMenu.pas' {FormMenu},
-  UnitCreatePlayerGroupbox in 'UnitCreatePlayerGroupbox.pas';
+  UnitCreateMenuObjects in 'UnitCreateMenuObjects.pas';
 
 {$R *.res}
 
