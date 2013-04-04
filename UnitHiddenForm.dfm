@@ -1,6 +1,6 @@
 object Form3: TForm3
-  Left = -1000
-  Top = -1000
+  Left = 10
+  Top = 10
   Width = 457
   Height = 480
   Caption = 'Form3'
@@ -11,7 +11,6 @@ object Form3: TForm3
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Visible = True
   PixelsPerInch = 96
   TextHeight = 13
   object StringGrid2: TStringGrid

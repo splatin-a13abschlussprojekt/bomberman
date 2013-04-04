@@ -1,5 +1,5 @@
 object Form3: TForm3
-  Left = 575
+  Left = -1000
   Top = -1000
   Width = 457
   Height = 480

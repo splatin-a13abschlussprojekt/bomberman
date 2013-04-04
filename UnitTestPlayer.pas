@@ -142,10 +142,12 @@ begin
 end;
 
 procedure TForm2.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
+var pict: TBitmap;
 begin
+  pict:= TBitmap.Create;
+  ImageListBackground.Getbitmap(0, pict);    //RV: pict wird Hintergrundbild
   Case Field[Pos.X,Pos.Y].Content of
-    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),Form3.StringGrid2.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus unsichtbarem Spielfeld über Player kopieren
-    bomb: StringGrid1.Cells[Pos.X,Pos.Y]:='B';
+    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),pict.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden 
     player: ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,0);
   end;
 end;
@@ -169,22 +171,6 @@ for bgload := 0 to 8 do             //RV: Hintergrund laden
     end;
   end;
 
-  for bgload := 0 to 8 do             //PR: Hintergrund laden für unsichtbares Spielfeld
-  with ImageListBackground do
-  begin
-  case bgload of
-    0: Draw(Form3.StringGrid2.Canvas, 0, 0, bgload);
-    1: Draw(Form3.StringGrid2.Canvas, 149, 0, bgload);
-    2: Draw(Form3.StringGrid2.Canvas, 298, 0, bgload);
-    3: Draw(Form3.StringGrid2.Canvas, 0, 149, bgload);
-    4: Draw(Form3.StringGrid2.Canvas, 149, 149, bgload);
-    5: Draw(Form3.StringGrid2.Canvas, 298, 149, bgload);
-    6: Draw(Form3.StringGrid2.Canvas, 0, 298, bgload);
-    7: Draw(Form3.StringGrid2.Canvas, 149, 298, bgload);
-    8: Draw(Form3.StringGrid2.Canvas, 298, 298, bgload);
-    end;
-  end;
-
 
 //RV: Content der Felder anzeigen
 for i:=0 to 15 do for j:=0 to 15 do
@@ -192,11 +178,11 @@ for i:=0 to 15 do for j:=0 to 15 do
     Randomize;
     Case Field[i,j].Content of
       empty: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, 5);
-      meteorit: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, 1);
-                {begin
+      meteorit: //ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, 1);
+                begin
                   meteoritenauswahl:=Random(4)+1;
                   ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, meteoritenauswahl);
-                end;}
+                end;
       earth: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26,0); {StringGrid1.Cells[i,j]:='E';}
       item: StringGrid1.Cells[i,j]:='I';
       player: ImageListUfos.Draw(StringGrid1.Canvas, i*26,j*26,0);
