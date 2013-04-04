@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids, {Vcl.ImgList,} ImgList;
+  UnitPosition, Grids, {Vcl.ImgList,} ImgList, UnitHiddenForm;
 
 type
   TForm2 = class(TForm)
@@ -15,11 +15,13 @@ type
     ImageListObjects: TImageList;
     ImageListBackground: TImageList;
     Button1: TButton;
+    RefreshTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
     procedure Refresh(Sender: TObject; var Pos: TPosition);
     procedure Button1Click(Sender: TObject);
+    procedure RefreshTimerTimer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -30,6 +32,7 @@ var
   Form2: TForm2;
   Player1,Player2,Player3,Player4: TPlayer;
   Field: Array [0..15, 0..15] of TField;  // PR: Array für die Felder
+  FieldMem: Array [0..15, 0..15] of TField; // PR: zwischengespeichertes Feld zur Änderungsüberprüfung
 
 implementation
 
@@ -52,6 +55,7 @@ for i:=0 to 15 do for j:=0 to 15 do
       9..10: Cont:=empty;
     end;
   Field[i,j]:=TField.Create(Pos,Cont);
+  FieldMem[i,j]:=TField.Create(Pos,Cont);
   end;
 end;
 
@@ -103,14 +107,17 @@ for i:=1 to NumOfPlayers do
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
+var i,j: Integer;
 begin
   CreateFields;
   CreatePlayers(1);
+  for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
+  RefreshTimer.Enabled:=true;
   KeyPreview:=true;
 end;
 
 procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
-var PosMem, Pos: TPosition;
+var PosMem: TPosition;
 begin
   PosMem:=Player1.Position;
   Case Key of
@@ -126,10 +133,7 @@ begin
         empty,item,player:
           begin
           Field[PosMem.X,PosMem.Y].Content:=empty;
-          Refresh(Form2, PosMem);
           Field[Player1.Position.X,Player1.Position.Y].Content:=player;
-          Pos:=Player1.Position;
-          Refresh(Form2, Pos);
           end;
         meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
@@ -140,7 +144,7 @@ end;
 procedure TForm2.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
 begin
   Case Field[Pos.X,Pos.Y].Content of
-    empty: LoadInterface(Form2);  //RV: hab leider keinen anderen Weg gefunden, weil man kein Bild aus dem Canvas löschen kann...
+    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),Form3.StringGrid2.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus unsichtbarem Spielfeld über Player kopieren
     bomb: StringGrid1.Cells[Pos.X,Pos.Y]:='B';
     player: ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,0);
   end;
@@ -165,6 +169,23 @@ for bgload := 0 to 8 do             //RV: Hintergrund laden
     end;
   end;
 
+  for bgload := 0 to 8 do             //PR: Hintergrund laden für unsichtbares Spielfeld
+  with ImageListBackground do
+  begin
+  case bgload of
+    0: Draw(Form3.StringGrid2.Canvas, 0, 0, bgload);
+    1: Draw(Form3.StringGrid2.Canvas, 149, 0, bgload);
+    2: Draw(Form3.StringGrid2.Canvas, 298, 0, bgload);
+    3: Draw(Form3.StringGrid2.Canvas, 0, 149, bgload);
+    4: Draw(Form3.StringGrid2.Canvas, 149, 149, bgload);
+    5: Draw(Form3.StringGrid2.Canvas, 298, 149, bgload);
+    6: Draw(Form3.StringGrid2.Canvas, 0, 298, bgload);
+    7: Draw(Form3.StringGrid2.Canvas, 149, 298, bgload);
+    8: Draw(Form3.StringGrid2.Canvas, 298, 298, bgload);
+    end;
+  end;
+
+
 //RV: Content der Felder anzeigen
 for i:=0 to 15 do for j:=0 to 15 do
   begin
@@ -187,6 +208,18 @@ end;
 procedure TForm2.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
 begin
 LoadInterface(Form2);
+end;
+
+procedure TForm2.RefreshTimerTimer(Sender: TObject);
+var i,j: Integer;
+    Pos: TPosition;
+begin
+for i:=0 to 15 do for j:=0 to 15 do
+  begin
+  Pos:=Field[i,j].Position;
+  If Field[i,j].Content <> FieldMem[i,j].Content then Refresh(Form2,Pos);
+  end;
+for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
 end;
 
 end.

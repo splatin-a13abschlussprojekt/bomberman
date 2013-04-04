@@ -6207,9 +6207,9 @@ object FormMenu: TFormMenu
     object SettingSuddenDeathLabel1: TLabel
       Left = 40
       Top = 82
-      Width = 97
+      Width = 100
       Height = 18
-      Caption = 'Sudden death'
+      Caption = 'Sudden Death'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWhite
       Font.Height = -16
@@ -6218,7 +6218,7 @@ object FormMenu: TFormMenu
       ParentFont = False
     end
     object SettingSuddenDeathLabel2: TLabel
-      Left = 141
+      Left = 143
       Top = 82
       Width = 33
       Height = 18

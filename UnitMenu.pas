@@ -319,9 +319,7 @@ end;
 
 procedure TFormMenu.SettingSuddendeathEditKeyPress(Sender: TObject;
   var Key: Char);
-  var CPos: Byte;
 begin
- CPos:=SettingSuddendeathEdit.SelStart+SettingSuddendeathEdit.SelLength;
  if Key=#8 then (SettingSuddendeathEdit.Text:='');
  if (StrToIntDef(Key,-1)>-1) and (length(SettingSuddendeathEdit.Text)<3) then
   begin

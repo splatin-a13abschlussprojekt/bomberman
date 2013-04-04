@@ -34,7 +34,7 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
- FormMenu.SHowmodal;
+ FormMenu.Showmodal;
 end;
 
 end.
