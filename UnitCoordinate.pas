@@ -3,7 +3,7 @@ unit UnitCoordinate;
 interface
 
 type
-  TCoordinate = 0..15;          // subset für Coordinaten
+  TCoordinate = 0..15;          // subset für Koordinaten
 
 implementation
 

@@ -7,7 +7,7 @@ uses
   Dialogs, UnitDirection, StdCtrls, UnitPosition, UnitCoordinate, ExtCtrls, UnitContent;
 
 type
-  TField =class // PR: Felder mit Eigenschaften Position und Content
+  TField = class // PR: Felder mit Eigenschaften Position und Content
   private
     FPosition: TPosition;
     FContent: TContent;
@@ -17,14 +17,24 @@ type
     constructor Create(Position:TPosition;Content:TContent);
     property Position: TPosition read FPosition write SetPosition;
     property Content: TContent read FContent write SetContent;
+    procedure Explode;
   end;
 
 implementation
 
 constructor TField.Create(Position:TPosition;Content:TContent);
 begin
-self.SetPosition(Position);
-self.SetContent(Content);
+  self.SetPosition(Position);
+  self.SetContent(Content);
+end;
+
+procedure TField.Explode;
+begin
+  case FContent of
+    meteorit: self.SetContent(empty);
+    item: self.SetContent(empty);
+    player: self.SetContent(empty); //Dinge, die passieren, wenn ein Spieler explodiert, quasi sterben und so
+  end;
 end;
 
 procedure TField.SetPosition(Position: TPosition);
