@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids, {Vcl.ImgList,} ImgList, UnitHiddenForm;
+  UnitPosition, Grids, ImgList;
 
 type
   TForm2 = class(TForm)
@@ -147,7 +147,8 @@ begin
   pict:= TBitmap.Create;
   ImageListBackground.Getbitmap(0, pict);    //RV: pict wird Hintergrundbild
   Case Field[Pos.X,Pos.Y].Content of
-    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),pict.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden 
+    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),pict.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden
+    bomb: StringGrid1.Cells[pos.X,pos.Y]:='B'; 
     player: ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,0);
   end;
 end;
