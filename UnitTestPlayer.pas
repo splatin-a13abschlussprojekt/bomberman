@@ -13,9 +13,10 @@ type
     StringGrid1: TStringGrid;
     ImageListUfos: TImageList;
     ImageListObjects: TImageList;
-    ImageListBackground: TImageList;
+    ImageListBombs: TImageList;
     Button1: TButton;
     RefreshTimer: TTimer;
+    ImageBackground: TImage;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
@@ -81,34 +82,20 @@ end;
 procedure TForm2.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
 var pict: TBitmap;
 begin
-  pict:= TBitmap.Create;
-  ImageListBackground.Getbitmap(0, pict);    //RV: pict wird Hintergrundbild
   Case Field[Pos.X,Pos.Y].Content of
-    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),pict.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden
-    bomb: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit Else StringGrid1.Cells[pos.X,pos.Y]:='B';
+    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),ImageBackground.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden
+    bomb: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit Else ImageListBombs.Draw(StringGrid1.Canvas,Pos.X*26,Pos.Y
+    *26,0);
     player01: ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,0);
   end;
 end;
 
 procedure TForm2.LoadInterface(Sender: TObject); // PR: Testvisualisierung des Spielfeldes
-var i,j,meteoritenauswahl, bgload: Integer;   //RV: bgload=backgroundload
+var i,j,meteoritenauswahl: Integer;
 begin
-for bgload := 0 to 8 do             //RV: Hintergrund laden
-  with ImageListBackground do
-  begin
-  case bgload of
-    0: Draw(StringGrid1.Canvas, 0, 0, bgload);
-    1: Draw(StringGrid1.Canvas, 149, 0, bgload);
-    2: Draw(StringGrid1.Canvas, 298, 0, bgload);
-    3: Draw(StringGrid1.Canvas, 0, 149, bgload);
-    4: Draw(StringGrid1.Canvas, 149, 149, bgload);
-    5: Draw(StringGrid1.Canvas, 298, 149, bgload);
-    6: Draw(StringGrid1.Canvas, 0, 298, bgload);
-    7: Draw(StringGrid1.Canvas, 149, 298, bgload);
-    8: Draw(StringGrid1.Canvas, 298, 298, bgload);
-    end;
-  end;
-
+//RV: Hintergrund laden
+StringGrid1.Canvas.CopyRect(Rect(0,0,425,425),ImageBackground.Canvas,Rect(0,0,425,425));
+//RV: Delphi hat extrem lange geladen, als es versucht hat ein 425x425 Bild aus einer Image-List zu laden... 
 
 //RV: Content der Felder anzeigen
 for i:=0 to 15 do for j:=0 to 15 do
@@ -116,12 +103,11 @@ for i:=0 to 15 do for j:=0 to 15 do
     Randomize;
     Case Field[i,j].Content of
       empty: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, 5);
-      meteorit: //ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, 1);
-                begin
+      meteorit: begin
                   meteoritenauswahl:=Random(4)+1;
                   ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26, meteoritenauswahl);
                 end;
-      earth: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26,0); {StringGrid1.Cells[i,j]:='E';}
+      earth: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26,0);
       item: StringGrid1.Cells[i,j]:='I';
       player01: ImageListUfos.Draw(StringGrid1.Canvas, i*26,j*26,0);
       bomb: StringGrid1.Cells[i,j]:='B';
@@ -146,5 +132,7 @@ for i:=0 to 15 do for j:=0 to 15 do
   end;
 for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
 end;
+
+
 
 end.
