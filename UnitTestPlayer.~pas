@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids, {Vcl.ImgList,} ImgList;
+  UnitPosition, Grids, ImgList, UnitBomb;
 
 type
   TForm2 = class(TForm)
@@ -30,81 +30,10 @@ type
 
 var
   Form2: TForm2;
-  Player1,Player2,Player3,Player4: TPlayer;
-  Field: Array [0..15, 0..15] of TField;  // PR: Array für die Felder
-  FieldMem: Array [0..15, 0..15] of TField; // PR: zwischengespeichertes Feld zur Änderungsüberprüfung
 
 implementation
 
 {$R *.dfm}
-
-procedure CreateFields; // PR: erzeugt Spielfeld
-var i,j,k: Integer;
-    Pos: TPosition;
-    Cont: TContent;
-begin
-Randomize;
-for i:=0 to 15 do for j:=0 to 15 do
-  begin
-  Pos.X:=i;
-  Pos.Y:=j;
-  k:=Random(10)+1; // PR: zufälliges Füllen
-    Case k of
-      1..7: Cont:=meteorit;
-      8: Cont:=earth;
-      9..10: Cont:=empty;
-    end;
-  Field[i,j]:=TField.Create(Pos,Cont);
-  FieldMem[i,j]:=TField.Create(Pos,Cont);
-  end;
-end;
-
-procedure CreatePlayers(NumOfPlayers:Integer);  // PR: erzeugt Spieler
-var i: Integer;
-    StartPos: TPosition;
-begin
-for i:=1 to NumOfPlayers do
-  begin
-    Case i of
-      1:
-      begin
-      StartPos.X:=0;
-      StartPos.Y:=0;
-      Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
-      Field[StartPos.X,StartPos.Y].Content:=player;
-      Field[StartPos.X+1,StartPos.Y].Content:=empty; // PR: hier wird sichergestellt, dass der Spieler Platz hat
-      Field[StartPos.X,StartPos.Y+1].Content:=empty;
-      end;
-      2:
-      begin
-      StartPos.X:=15;
-      StartPos.Y:=0;
-      Player2:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
-      Field[StartPos.X,StartPos.Y].Content:=player;
-      Field[StartPos.X-1,StartPos.Y].Content:=empty;
-      Field[StartPos.X,StartPos.Y+1].Content:=empty;
-      end;
-      3:
-      begin
-      StartPos.X:=0;
-      StartPos.Y:=15;
-      Player3:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
-      Field[StartPos.X,StartPos.Y].Content:=player;
-      Field[StartPos.X+1,StartPos.Y].Content:=empty;
-      Field[StartPos.X,StartPos.Y-1].Content:=empty;
-      end;
-      4:
-      begin
-      StartPos.X:=15;
-      StartPos.Y:=15;
-      Player4:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
-      Field[StartPos.X,StartPos.Y].Content:=player;
-      Field[StartPos.X-1,StartPos.Y].Content:=empty;
-      Field[StartPos.X,StartPos.Y-1].Content:=empty;
-      end;
-    end;
-  end;
-end;
 
 procedure TForm2.FormCreate(Sender: TObject);
 var i,j: Integer;
@@ -118,7 +47,9 @@ end;
 
 procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
 var PosMem: TPosition;
+    TestBomb: TBomb;
 begin
+If Player1.Alive=false then exit;
   PosMem:=Player1.Position;
   Case Key of
     'w': Player1.Move(U);
@@ -126,19 +57,25 @@ begin
     's': Player1.Move(D);
     'd': Player1.Move(R);
   end;
-  Case Key of
+  case Key of
     'w','a','s','d':
     begin
       Case Field[Player1.Position.X,Player1.Position.Y].Content of
-        empty,item,player:
+        empty,item,player01:
           begin
-          Field[PosMem.X,PosMem.Y].Content:=empty;
-          Field[Player1.Position.X,Player1.Position.Y].Content:=player;
+          If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty
+          Field[Player1.Position.X,Player1.Position.Y].Content:=player01;
           end;
         meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
     end;
+    'q':
+    begin
+      TestBomb:=TBomb.Create(Player1.Position,1,1000);
+      Field[Player1.Position.X,Player1.Position.Y].Content:=bomb;
+    end;
   end;
+
 end;
 
 procedure TForm2.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
@@ -147,8 +84,9 @@ begin
   pict:= TBitmap.Create;
   ImageListBackground.Getbitmap(0, pict);    //RV: pict wird Hintergrundbild
   Case Field[Pos.X,Pos.Y].Content of
-    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),pict.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden 
-    player: ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,0);
+    empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),pict.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden
+    bomb: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit Else StringGrid1.Cells[pos.X,pos.Y]:='B';
+    player01: ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,0);
   end;
 end;
 
@@ -185,7 +123,7 @@ for i:=0 to 15 do for j:=0 to 15 do
                 end;
       earth: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26,0); {StringGrid1.Cells[i,j]:='E';}
       item: StringGrid1.Cells[i,j]:='I';
-      player: ImageListUfos.Draw(StringGrid1.Canvas, i*26,j*26,0);
+      player01: ImageListUfos.Draw(StringGrid1.Canvas, i*26,j*26,0);
       bomb: StringGrid1.Cells[i,j]:='B';
     end;
   end;
@@ -204,6 +142,7 @@ for i:=0 to 15 do for j:=0 to 15 do
   begin
   Pos:=Field[i,j].Position;
   If Field[i,j].Content <> FieldMem[i,j].Content then Refresh(Form2,Pos);
+  If Field[i,j].Content = bomb then Refresh(Form2,Pos);
   end;
 for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
 end;

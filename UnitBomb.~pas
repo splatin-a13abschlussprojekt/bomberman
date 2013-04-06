@@ -82,7 +82,7 @@ begin
       end;
   end;
   If Field[FPosition.X,FPosition.Y].Content=player01 then Player1.Alive:=false;
-  Field[FPosition.X,FPosition.Y].Explode;
+  Field[FPosition.X,FPosition.Y].Content:=empty;
   self.Destroy;
 end;
 
