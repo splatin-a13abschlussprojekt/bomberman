@@ -56,8 +56,18 @@ begin                          //Timer starten
 end;
 
 procedure TBomb.Detonate(Sender:TObject);
+var i:Integer;
 begin
-  {Hier Dinge, die die Bombe beim detonieren tun soll}
+  for i := 1 to FRange do
+  begin
+    {
+    Field[FPosition.X+i,FPosition.Y].Explode
+    Field[FPosition.X-i,FPosition.Y].Explode
+    Field[FPosition.X,FPosition.Y+i].Explode
+    Field[FPosition.X,FPosition.Y-i].Explode
+    }
+  end;
+  {Field.[FPosition.X,FPosition.Y].Content:=empty;}
   self.Destroy;
 end;
 

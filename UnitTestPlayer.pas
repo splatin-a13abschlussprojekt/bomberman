@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids, ImgList;
+  UnitPosition, Grids, ImgList, UnitBomb;
 
 type
   TForm2 = class(TForm)
@@ -118,6 +118,7 @@ end;
 
 procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
 var PosMem: TPosition;
+    TestBomb: TBomb;
 begin
   PosMem:=Player1.Position;
   Case Key of
@@ -126,7 +127,7 @@ begin
     's': Player1.Move(D);
     'd': Player1.Move(R);
   end;
-  Case Key of
+  case Key of
     'w','a','s','d':
     begin
       Case Field[Player1.Position.X,Player1.Position.Y].Content of
@@ -138,7 +139,13 @@ begin
         meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
     end;
+    'q':
+    begin
+      TestBomb:=TBomb.Create(Player1.Position,1,5);
+      Field[Player1.Position.X,Player1.Position.Y].Content:=bomb;
+    end;
   end;
+
 end;
 
 procedure TForm2.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
