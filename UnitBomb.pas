@@ -9,16 +9,19 @@ type TBomb = class
     FPosition: TPosition;
     FRange: Integer;
     FTimer: TTimer;
+    FOwner: TPlayer;
     procedure SetPosition(Position: TPosition);
     procedure SetRange(Range: Integer);
     procedure StartTimer(Time:Integer);
     procedure Detonate(Sender: TObject);
+    procedure SetOwner(Owner: TPlayer);
   public
     constructor Create; overload;
-    constructor Create(Position:TPosition;Range:Integer;Time:Integer); overload;
+    constructor Create(Owner:TPlayer;Time:Integer); overload;
     destructor Destroy; override;
     property Position: TPosition read FPosition write SetPosition;
     property Range: Integer read FRange write SetRange;
+    property Owner: TPlayer read FOwner write SetOwner;
   end;
 
 implementation
@@ -34,10 +37,11 @@ begin
 end;
 
                                  //normaler Konstruktor
-constructor TBomb.Create(Position:TPosition;Range:Integer;Time:Integer);
+constructor TBomb.Create(Owner:TPlayer;Time:Integer);
 begin
-  self.SetPosition(Position);
-  self.SetRange(Range);
+  self.SetOwner(Owner);
+  self.SetPosition(Owner.Position);
+  self.SetRange(Owner.BombRange);
   self.StartTimer(Time);
 end;
 
@@ -81,7 +85,7 @@ begin
       Field[FPosition.X,FPosition.Y-i].Explode;
       end;
   end;
-  If Field[FPosition.X,FPosition.Y].Content=player01 then Player1.Alive:=false;
+  If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false;
   Field[FPosition.X,FPosition.Y].Explode;
   self.Destroy;
 end;
@@ -96,7 +100,10 @@ begin
   FRange:=Range;
 end;
 
-
+procedure TBomb.SetOwner(Owner:TPlayer);
+begin
+  FOwner:=Owner;
+end;
 
 end.
  

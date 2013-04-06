@@ -72,7 +72,7 @@ If Player1.Alive=false then exit;
     end;
     'q':
     begin
-      TestBomb:=TBomb.Create(Player1.Position,1,1000);
+      TestBomb:=TBomb.Create(Player1,1000);
       Field[Player1.Position.X,Player1.Position.Y].Content:=bomb;
     end;
   end;

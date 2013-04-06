@@ -49,6 +49,7 @@ begin
   self.SetNumber(Number);
   self.SetName(Name);
   self.SetPosition(Position);
+  self.SetAlive(true);
 end;
 
 procedure TPlayer.SetNumber(Number:Integer);
