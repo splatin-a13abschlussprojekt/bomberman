@@ -110,6 +110,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure RoundsDownImageMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure NumberOfPlayersEditChange(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -415,6 +416,24 @@ procedure TFormMenu.RoundsDownImageMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
  if StrToInt(RoundsEdit.Text)>1 then RoundsEdit.Text:=IntToStr(StrToInt(RoundsEdit.Text)-1);
+end;
+
+procedure TFormMenu.NumberOfPlayersEditChange(Sender: TObject);
+ var i:Byte;
+begin
+ for i:=1 to StrToInt(NumberOfPlayersEdit.Text) do
+  begin
+   Playergroupbox[i].Header.Color:=clWhite;
+   PlayerGroupbox[i].Header.Font.Color:=RGB(31,31,31);
+  end;
+ if StrToInt(NumberOfPlayersEdit.Text)=4 then exit else
+  begin
+   for i:=StrToInt(NumberOfPlayersEdit.Text)+1 to 4 do
+    begin
+     Playergroupbox[i].Header.Color:=RGB(31,31,31);
+     PlayerGroupbox[i].Header.Font.Color:=clWhite;
+    end;
+  end;
 end;
 
 end.
