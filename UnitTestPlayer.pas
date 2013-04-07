@@ -27,6 +27,8 @@ type
     procedure RefreshTimerTimer(Sender: TObject);
     procedure BombPictures(Sender: TObject);
     procedure BomblessPictures(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -38,6 +40,8 @@ var
   BombPos: TPosition;
 
 implementation
+
+uses UnitMenu;
 
 {$R *.dfm}
 
@@ -124,7 +128,7 @@ end;
 
 procedure TFormGame.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
 begin
-LoadInterface(FormGame);
+ LoadInterface(FormGame);
 end;
 
 procedure TFormGame.RefreshTimerTimer(Sender: TObject);
@@ -174,6 +178,16 @@ begin
     If Y>0 then If Field[X,Y-1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y-1)*26,X*26+26,Y*26),ImageBackground.Canvas,Rect(X*26,(Y-1)*26,X*26+26,Y*26));
     If Y<16 then If Field[X,Y+1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26),ImageBackground.Canvas,Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26));
   end;
+end;
+
+procedure TFormGame.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+ FormMenu.WindowState:=WsNormal;
+end;
+
+procedure TFormGame.FormActivate(Sender: TObject);
+begin
+ Button1.Click;
 end;
 
 end.

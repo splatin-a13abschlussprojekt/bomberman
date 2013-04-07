@@ -111,6 +111,7 @@ type
     procedure RoundsDownImageMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure NumberOfPlayersEditChange(Sender: TObject);
+    procedure RoundsEditKeyPress(Sender: TObject; var Key: Char);
   private
     { Private-Deklarationen }
   public
@@ -397,8 +398,10 @@ begin
  FormMenu.WindowState:=wsMinimized; //minimieren
  {}
  FormGame.FormCreate(FormMenu);
+ //FormGame.LoadInterface(FormGame);   // GEHT NICHT???!!!
  {}
  FormGame.ShowModal; //auf FormMenu kann nicht mehr zugegriffen werden
+ 
 end;
 
 procedure TFormMenu.CloseButtonClick(Sender: TObject);
@@ -434,6 +437,12 @@ begin
      PlayerGroupbox[i].Header.Font.Color:=clWhite;
     end;
   end;
+end;
+
+procedure TFormMenu.RoundsEditKeyPress(Sender: TObject; var Key: Char);
+begin
+if Key=#8 then (RoundsEdit.Text:='');  //#8 = [DEL]
+ if (StrToIntDef(Key,-1)>-1) and (length(RoundsEdit.Text)<2) then RoundsEdit.SelText:=Key;
 end;
 
 end.

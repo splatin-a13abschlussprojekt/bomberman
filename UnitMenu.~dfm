@@ -1,6 +1,6 @@
 object FormMenu: TFormMenu
-  Left = 224
-  Top = 25
+  Left = 349
+  Top = 20
   Width = 915
   Height = 694
   Caption = 'FormMenu'
@@ -18614,7 +18614,8 @@ object FormMenu: TFormMenu
       ParentFont = False
       ReadOnly = True
       TabOrder = 0
-      Text = '2'
+      Text = '4'
+      OnChange = NumberOfPlayersEditChange
     end
     object SettingsHeader: TPanel
       Left = 10
@@ -18667,6 +18668,7 @@ object FormMenu: TFormMenu
       ReadOnly = True
       TabOrder = 3
       Text = '3'
+      OnKeyPress = RoundsEditKeyPress
     end
   end
   object StartButton: TButton

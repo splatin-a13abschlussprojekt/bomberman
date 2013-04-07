@@ -110,6 +110,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure RoundsDownImageMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure NumberOfPlayersEditChange(Sender: TObject);
+    procedure RoundsEditKeyPress(Sender: TObject; var Key: Char);
   private
     { Private-Deklarationen }
   public
@@ -396,8 +398,10 @@ begin
  FormMenu.WindowState:=wsMinimized; //minimieren
  {}
  FormGame.FormCreate(FormMenu);
+ //FormGame.LoadInterface(FormGame);   // GEHT NICHT???!!!
  {}
  FormGame.ShowModal; //auf FormMenu kann nicht mehr zugegriffen werden
+ 
 end;
 
 procedure TFormMenu.CloseButtonClick(Sender: TObject);
@@ -415,6 +419,30 @@ procedure TFormMenu.RoundsDownImageMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
  if StrToInt(RoundsEdit.Text)>1 then RoundsEdit.Text:=IntToStr(StrToInt(RoundsEdit.Text)-1);
+end;
+
+procedure TFormMenu.NumberOfPlayersEditChange(Sender: TObject);
+ var i:Byte;
+begin
+ for i:=1 to StrToInt(NumberOfPlayersEdit.Text) do
+  begin
+   Playergroupbox[i].Header.Color:=clWhite;
+   PlayerGroupbox[i].Header.Font.Color:=RGB(31,31,31);
+  end;
+ if StrToInt(NumberOfPlayersEdit.Text)=4 then exit else
+  begin
+   for i:=StrToInt(NumberOfPlayersEdit.Text)+1 to 4 do
+    begin
+     Playergroupbox[i].Header.Color:=RGB(31,31,31);
+     PlayerGroupbox[i].Header.Font.Color:=clWhite;
+    end;
+  end;
+end;
+
+procedure TFormMenu.RoundsEditKeyPress(Sender: TObject; var Key: Char);
+begin
+if Key=#8 then (RoundsEdit.Text:='');  //#8 = [DEL]
+ if (StrToIntDef(Key,-1)>-1) and (length(RoundsEdit.Text)<3) then RoundsEdit.SelText:=Key;
 end;
 
 end.

@@ -18668,6 +18668,7 @@ object FormMenu: TFormMenu
       ReadOnly = True
       TabOrder = 3
       Text = '3'
+      OnKeyPress = RoundsEditKeyPress
     end
   end
   object StartButton: TButton
