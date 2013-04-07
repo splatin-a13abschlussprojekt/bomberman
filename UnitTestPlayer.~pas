@@ -17,12 +17,16 @@ type
     Button1: TButton;
     RefreshTimer: TTimer;
     ImageBackground: TImage;
+    BombTimer: TTimer;
+    BomblessTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
     procedure Refresh(Sender: TObject; var Pos: TPosition);
     procedure Button1Click(Sender: TObject);
     procedure RefreshTimerTimer(Sender: TObject);
+    procedure BombPictures(Sender: TObject);
+    procedure BomblessPictures(Sender: TObject);
   private
     { Private declarations }
   public
@@ -31,6 +35,7 @@ type
 
 var
   Form2: TForm2;
+  BombPos: TPosition;
 
 implementation
 
@@ -69,10 +74,11 @@ If Player1.Alive=false then exit;
           end;
         meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
+      BomblessPictures(Form2);
     end;
     'q':
     begin
-      TestBomb:=TBomb.Create(Player1.Position,1,1000);
+      TestBomb:=TBomb.Create(Player1,1000);
       Field[Player1.Position.X,Player1.Position.Y].Content:=bomb;
     end;
   end;
@@ -80,8 +86,9 @@ If Player1.Alive=false then exit;
 end;
 
 procedure TForm2.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
-var pict: TBitmap;
 begin
+  BomblessTimer.Enabled:=false;
+
   Case Field[Pos.X,Pos.Y].Content of
     empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),ImageBackground.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden
     bomb: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit Else ImageListBombs.Draw(StringGrid1.Canvas,Pos.X*26,Pos.Y
@@ -128,11 +135,45 @@ for i:=0 to 15 do for j:=0 to 15 do
   begin
   Pos:=Field[i,j].Position;
   If Field[i,j].Content <> FieldMem[i,j].Content then Refresh(Form2,Pos);
-  If Field[i,j].Content = bomb then Refresh(Form2,Pos);
+  If Field[i,j].Content = bomb then
+    begin
+      BombPos.X:=i;
+      BombPos.Y:=j;
+      BombTimer.Enabled:=true;
+      BombTimer.OnTimer:=BombPictures;
+      Refresh(Form2,Pos);
+    end;
   end;
 for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
 end;
 
 
+procedure TForm2.BombPictures(Sender: TObject);
+//RV: Bombenbilder malen
+begin
+  ImageListBombs.Draw(StringGrid1.Canvas, BombPos.X*26, BombPos.Y*26, 2);
+  If BombPos.X>0 then If Field[BombPos.X-1, BombPos.Y].Content <> earth then ImageListBombs.Draw(StringGrid1.Canvas, (BombPos.X-1)*26, BombPos.Y*26, 5);
+  If BombPos.X<16 then If Field[BombPos.X+1, BombPos.Y].Content <> earth then ImageListBombs.Draw(StringGrid1.Canvas, (BombPos.X+1)*26, BombPos.Y*26, 6);
+  If BombPos.Y>0 then If Field[BombPos.X, BombPos.Y-1].Content <> earth then ImageListBombs.Draw(StringGrid1.Canvas, BombPos.X*26, (BombPos.Y-1)*26, 7);
+  If BombPos.Y<16 then If Field[BombPos.X, BombPos.Y+1].Content <> earth then ImageListBombs.Draw(StringGrid1.Canvas, BombPos.X*26, (BombPos.Y+1)*26, 4);
+
+  BombTimer.Enabled:=false;
+
+  BomblessTimer.Enabled:=true;
+  BomblessTimer.OnTimer:=BomblessPictures;
+end;
+
+procedure TForm2.BomblessPictures(Sender: TObject);
+//RV: Bombenbilder löschen
+begin
+  With BombPos do
+  begin
+    If Field[X,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,Y*26,X*26+26,Y*26+26),ImageBackground.Canvas,Rect(X*26,Y*26,X*26+26,Y*26+26));
+    If X>0 then If Field[X-1,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect((X-1)*26,Y*26,X*26,Y*26+26),ImageBackground.Canvas,Rect((X-1)*26,Y*26,X*26,Y*26+26));
+    If X<16 then If Field[X+1,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect((X+1)*26,Y*26,(X+2)*26,Y*26+26),ImageBackground.Canvas,Rect((X+1)*26,Y*26,(X+2)*26,Y*26+26));
+    If Y>0 then If Field[X,Y-1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y-1)*26,X*26+26,Y*26),ImageBackground.Canvas,Rect(X*26,(Y-1)*26,X*26+26,Y*26));
+    If Y<16 then If Field[X,Y+1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26),ImageBackground.Canvas,Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26);
+  end;
+end;
 
 end.

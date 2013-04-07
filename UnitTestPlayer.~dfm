@@ -11749,4 +11749,14 @@ object Form2: TForm2
     Left = 104
     Top = 8
   end
+  object BombTimer: TTimer
+    Interval = 50
+    Left = 360
+    Top = 16
+  end
+  object BomblessTimer: TTimer
+    Interval = 600
+    Left = 416
+    Top = 16
+  end
 end

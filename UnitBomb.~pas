@@ -85,7 +85,7 @@ begin
       Field[FPosition.X,FPosition.Y-i].Explode;
       end;
   end;
-  If Field[FPosition.X,FPosition.Y].Position=Owner.Position then Owner.Alive:=false;
+  If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false;
   Field[FPosition.X,FPosition.Y].Explode;
   self.Destroy;
 end;
