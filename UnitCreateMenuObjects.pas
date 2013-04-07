@@ -81,10 +81,22 @@ begin
    Top:=0;
    Left:=0;
    case i of
-    1: Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\blue-ufo.bmp');
-    2: Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\green-ufo.bmp');
-    3: Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\red-ufo.bmp');
-    4: Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\yellow-ufo.bmp');
+    1: begin
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\blue-ufo.bmp');
+        PlayerGroupbox[i].DragDropImage.Color:='blue';
+       end;
+    2: begin
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\green-ufo.bmp');
+        PlayerGroupbox[i].DragDropImage.Color:='green';
+       end;
+    3: begin
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\red-ufo.bmp');
+        PlayerGroupbox[i].DragDropImage.Color:='red';
+       end;
+    4: begin
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\yellow-ufo.bmp');
+        PlayerGroupbox[i].DragDropImage.Color:='yellow';
+       end;
    end;
    OnMouseDown:=FormMenu.ImageMouseDown;
    OnMouseUp:=FormMenu.ImageMouseUp;

@@ -29,7 +29,7 @@ uses UnitMenu;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  Form2.ShowModal;
+  FormGame.ShowModal;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);

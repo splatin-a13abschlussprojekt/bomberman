@@ -172,7 +172,7 @@ begin
     If X>0 then If Field[X-1,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect((X-1)*26,Y*26,X*26,Y*26+26),ImageBackground.Canvas,Rect((X-1)*26,Y*26,X*26,Y*26+26));
     If X<16 then If Field[X+1,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect((X+1)*26,Y*26,(X+2)*26,Y*26+26),ImageBackground.Canvas,Rect((X+1)*26,Y*26,(X+2)*26,Y*26+26));
     If Y>0 then If Field[X,Y-1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y-1)*26,X*26+26,Y*26),ImageBackground.Canvas,Rect(X*26,(Y-1)*26,X*26+26,Y*26));
-    If Y<16 then If Field[X,Y+1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26),ImageBackground.Canvas,Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26);
+    If Y<16 then If Field[X,Y+1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26),ImageBackground.Canvas,Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26));
   end;
 end;
 

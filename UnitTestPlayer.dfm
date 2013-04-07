@@ -1,9 +1,9 @@
-object Form2: TForm2
-  Left = 442
-  Top = 125
+object FormGame: TFormGame
+  Left = 467
+  Top = 130
   Width = 472
   Height = 544
-  Caption = 'Form2'
+  Caption = 'FormGame'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

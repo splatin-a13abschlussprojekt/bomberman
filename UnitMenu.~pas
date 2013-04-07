@@ -7,6 +7,31 @@ uses
   Dialogs, StdCtrls, ExtCtrls;
 
 type
+ TPlayerSettings = record
+  Name    : String;
+  KeyUp   : String[1];
+  KeyDown :String[1];
+  KeyLeft :String[1];
+  KeyRight:String[1];
+  KeyBomb :String[1];
+  UfoColor:String;
+ end;
+
+type
+ TSuddenDeathSettings = record
+  activated : Boolean;
+  time : Word;
+ end;
+
+type
+ TSettings = record
+  SuddenDeathSettings : TSuddenDeathSettings;
+  NumOfRounds : Word; //Rundenanzahl
+  NumOfPlayers : Word;
+  PlayerSettings : Array[1..4] of TPlayerSettings;
+ end;
+
+type
  TCheckImage = record
   CheckImage : TImage;
   Checked: Boolean;
@@ -15,6 +40,7 @@ type
 type  
  TDragDropImage = record
   Panel : TPanel;
+  Color : String;
   Image : TImage;//Image befindet sich auf Panel --> kann dann über alles bewegt werden
   Ground: TPanel;//Ground hält Standardposition --> ist dann ein weißes Feld
  end;
@@ -45,6 +71,12 @@ type
     SettingSuddendeathUpImage: TImage;
     SettingSuddendeathDownImage: TImage;
     SettingSuddenDeathLabel3: TLabel;
+    StartButton: TButton;
+    CloseButton: TButton;
+    Label1: TLabel;
+    RoundsEdit: TEdit;
+    RoundsUpImage: TImage;
+    RoundsDownImage: TImage;
     procedure FormCreate(Sender: TObject);
     procedure ControlButtonKeyPress(Sender: TObject; var Key: Char);
     procedure PanelExpectKey();
@@ -71,6 +103,13 @@ type
     procedure SettingSuddendeathEditKeyPress(Sender: TObject;
       var Key: Char);
     procedure SettingSuddendeathEditExit(Sender: TObject);
+    procedure UpdateSettings();
+    procedure StartButtonClick(Sender: TObject);
+    procedure CloseButtonClick(Sender: TObject);
+    procedure RoundsUpImageMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure RoundsDownImageMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { Private-Deklarationen }
   public
@@ -81,7 +120,7 @@ var
   FormMenu: TFormMenu;
   PlayerGroupbox : Array[1..4] of TPlayerGroupbox; {Für die Spielereinstellungen}
   SettingSuddendeathImage : TCheckImage; {CheckImage wird als Objekt erstellt}
-  NumberKeys : Byte;
+  Settings : TSettings;
   GroupNumber: Byte; {Nummer der Gruppe, in dem die Steuerung geändert wird}
   PanelNumber:Byte; {Nummer des Panels, in dem die Steuerung geändert wird}
   MousePos :TPoint; {Zum Drag&Drop für die Ufos}
@@ -89,7 +128,7 @@ var
 
 implementation
 
-uses UnitInterface, UnitCreateMenuObjects, Math;
+uses UnitInterface, UnitCreateMenuObjects, Math, UnitTestPlayer;
 
 {$R *.dfm}
 
@@ -311,11 +350,71 @@ procedure TFormMenu.SettingSuddendeathEditKeyPress(Sender: TObject;
 begin
  if Key=#8 then (SettingSuddendeathEdit.Text:='');  //#8 = [DEL]
  if (StrToIntDef(Key,-1)>-1) and (length(SettingSuddendeathEdit.Text)<3) then SettingSuddendeathEdit.SelText:=Key; //SelText ist Stelle des Cursors --> dort wird "Key" eingefügt
-end;//StrToIntDef: Überprüft auf güligen Integer Wert, ist das nicht der Fall, wird -1 ausgegeben --> es passiert nichts
+end;//StrToIntDef: Überprüft auf güligen Integer Wert, ist das nicht der Fall, wird -1 ausgegeben --> es passiert nichts (jegliche anderen Zeichen werden abgefangen)
 
 procedure TFormMenu.SettingSuddendeathEditExit(Sender: TObject);
 begin
  if SettingSuddendeathEdit.Text='' then SettingSuddendeathEdit.Text:='180';//damit Editfeld nicht leer ist
+end;
+
+procedure TFormMenu.UpdateSettings();
+ var i,j : Byte;
+begin
+ With Settings do
+  begin
+   NumOfRounds:=StrToInt(RoundsEdit.text);
+   NumOfPlayers:=StrToInt(NumberOfPlayersEdit.Text);
+   if SettingSuddenDeathImage.Checked=true then
+    begin
+     SuddenDeathSettings.activated:=true;
+     SuddenDeathSettings.time:=StrToInt(SettingSuddendeathEdit.Text);
+    end
+   else
+    begin
+     SuddenDeathSettings.activated:=false;
+     SuddenDeathSettings.time:=180;
+    end;
+   for i:=1 to 4 do
+    begin
+     With PlayerSettings[i] do
+      begin
+       Name:=    Playergroupbox[i].NameEdit.Text;
+       KeyUp:=   Playergroupbox[i].ControlPanel[1].Caption;
+       KeyDown:= Playergroupbox[i].ControlPanel[2].Caption;
+       KeyLeft:= Playergroupbox[i].ControlPanel[3].Caption;
+       KeyRight:=Playergroupbox[i].ControlPanel[4].Caption;
+       KeyBomb:= Playergroupbox[i].ControlPanel[5].Caption;
+       UfoColor:=Playergroupbox[i].DragDropImage.Color;
+      end;
+    end;
+  end;
+end;
+
+procedure TFormMenu.StartButtonClick(Sender: TObject);
+begin
+ UpdateSettings();
+ FormMenu.WindowState:=wsMinimized; //minimieren
+ {}
+ FormGame.FormCreate(FormMenu);
+ {}
+ FormGame.ShowModal; //auf FormMenu kann nicht mehr zugegriffen werden
+end;
+
+procedure TFormMenu.CloseButtonClick(Sender: TObject);
+begin
+ close;
+end;
+
+procedure TFormMenu.RoundsUpImageMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+ if StrToInt(RoundsEdit.Text)<99 then RoundsEdit.Text:=IntToStr(StrToInt(RoundsEdit.Text)+1);
+end;
+
+procedure TFormMenu.RoundsDownImageMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+ if StrToInt(RoundsEdit.Text)>1 then RoundsEdit.Text:=IntToStr(StrToInt(RoundsEdit.Text)-1);
 end;
 
 end.

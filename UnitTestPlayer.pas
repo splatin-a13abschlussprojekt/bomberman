@@ -8,7 +8,7 @@ uses
   UnitPosition, Grids, ImgList, UnitBomb;
 
 type
-  TForm2 = class(TForm)
+  TFormGame = class(TForm)
     Image1: TImage;
     StringGrid1: TStringGrid;
     ImageListUfos: TImageList;
@@ -34,14 +34,14 @@ type
   end;
 
 var
-  Form2: TForm2;
+  FormGame: TFormGame;
   BombPos: TPosition;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm2.FormCreate(Sender: TObject);
+procedure TFormGame.FormCreate(Sender: TObject);
 var i,j: Integer;
 begin
   CreateFields;
@@ -51,7 +51,7 @@ begin
   KeyPreview:=true;
 end;
 
-procedure TForm2.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
+procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
 var PosMem: TPosition;
     TestBomb: TBomb;
 begin
@@ -74,7 +74,7 @@ If Player1.Alive=false then exit;
           end;
         meteorit,earth,bomb: Player1.Position:=PosMem;
       end;
-      BomblessPictures(Form2);
+      BomblessPictures(FormGame);
     end;
     'q':
     begin
@@ -85,7 +85,7 @@ If Player1.Alive=false then exit;
 
 end;
 
-procedure TForm2.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
+procedure TFormGame.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
 begin
   BomblessTimer.Enabled:=false;
 
@@ -97,7 +97,7 @@ begin
   end;
 end;
 
-procedure TForm2.LoadInterface(Sender: TObject); // PR: Testvisualisierung des Spielfeldes
+procedure TFormGame.LoadInterface(Sender: TObject); // PR: Testvisualisierung des Spielfeldes
 var i,j,meteoritenauswahl: Integer;
 begin
 //RV: Hintergrund laden
@@ -122,33 +122,33 @@ for i:=0 to 15 do for j:=0 to 15 do
   end;
 end;
 
-procedure TForm2.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
+procedure TFormGame.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
 begin
-LoadInterface(Form2);
+LoadInterface(FormGame);
 end;
 
-procedure TForm2.RefreshTimerTimer(Sender: TObject);
+procedure TFormGame.RefreshTimerTimer(Sender: TObject);
 var i,j: Integer;
     Pos: TPosition;
 begin
 for i:=0 to 15 do for j:=0 to 15 do
   begin
   Pos:=Field[i,j].Position;
-  If Field[i,j].Content <> FieldMem[i,j].Content then Refresh(Form2,Pos);
+  If Field[i,j].Content <> FieldMem[i,j].Content then Refresh(FormGame,Pos);
   If Field[i,j].Content = bomb then
     begin
       BombPos.X:=i;
       BombPos.Y:=j;
       BombTimer.Enabled:=true;
       BombTimer.OnTimer:=BombPictures;
-      Refresh(Form2,Pos);
+      Refresh(FormGame,Pos);
     end;
   end;
 for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
 end;
 
 
-procedure TForm2.BombPictures(Sender: TObject);
+procedure TFormGame.BombPictures(Sender: TObject);
 //RV: Bombenbilder malen
 begin
   ImageListBombs.Draw(StringGrid1.Canvas, BombPos.X*26, BombPos.Y*26, 2);
@@ -163,7 +163,7 @@ begin
   BomblessTimer.OnTimer:=BomblessPictures;
 end;
 
-procedure TForm2.BomblessPictures(Sender: TObject);
+procedure TFormGame.BomblessPictures(Sender: TObject);
 //RV: Bombenbilder löschen
 begin
   With BombPos do

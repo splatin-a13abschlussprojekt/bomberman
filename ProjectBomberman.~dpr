@@ -12,8 +12,7 @@ uses
   UnitContent in 'UnitContent.pas',
   UnitMenu in 'UnitMenu.pas' {FormMenu},
   UnitCreateMenuObjects in 'UnitCreateMenuObjects.pas',
-  UnitBomb in 'UnitBomb.pas',
-  UnitCreatePlayers in 'UnitCreatePlayers.pas';
+  UnitBomb in 'UnitBomb.pas';
 
 {$R *.res}
 

@@ -278,7 +278,7 @@ begin
     end;
 end;
 
-procedure CreatePlayerGroupbox(i:Byte);
+procedure CreatePlayerGroupbox(i:Byte);//erstellen der Objekte für Spieler I
  var j : Byte;
 begin
  PlayerGroupbox[i].Panel:=TPanel.Create(FormMenu);
