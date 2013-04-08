@@ -28,6 +28,7 @@ type
     procedure BombPictures(Sender: TObject);
     procedure BomblessPictures(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormActivate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -40,7 +41,8 @@ var
 
 implementation
 
-uses UnitMenu;
+uses
+  UnitMenu, StrUtils;
 
 {$R *.dfm}
 
@@ -56,18 +58,21 @@ end;
 
 procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
 var PosMem: TPosition;
-    TestBomb: TBomb;
+    Player1Bomb: Array [0..20] of TBomb;
+    Player2Bomb: Array [0..20] of TBomb;
+    Player3Bomb: Array [0..20] of TBomb;
+    Player4Bomb: Array [0..20] of TBomb;
 begin
 If Player1.Alive=false then exit;
   PosMem:=Player1.Position;
-  Case Key of
-    'w': Player1.Move(U);
-    'a': Player1.Move(L);
-    's': Player1.Move(D);
-    'd': Player1.Move(R);
+  Case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight]) of
+    0: Player1.Move(U);
+    1: Player1.Move(L);
+    2: Player1.Move(D);
+    3: Player1.Move(R);
   end;
-  case Key of
-    'w','a','s','d':
+  case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight]) of
+    1,2,3,4:
     begin
       Case Field[Player1.Position.X,Player1.Position.Y].Content of
         empty,item,player01:
@@ -81,8 +86,12 @@ If Player1.Alive=false then exit;
     end;
     'q':
     begin
-      TestBomb:=TBomb.Create(Player1,1000);
+    If Player1.NumOfBombsPlanted<Player1.NumOfBombs then
+      begin
+      Player1Bomb[Player1.NumOfBombsPlanted]:=TBomb.Create(Player1,2000);
       Field[Player1.Position.X,Player1.Position.Y].Content:=bomb;
+      Player1.NumOfBombsPlanted:=Player1.NumOfBombsPlanted+1;
+      end;
     end;
   end;
 
@@ -127,7 +136,7 @@ end;
 
 procedure TFormGame.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
 begin
-LoadInterface(FormGame);
+ LoadInterface(FormGame);
 end;
 
 procedure TFormGame.RefreshTimerTimer(Sender: TObject);
@@ -182,6 +191,11 @@ end;
 procedure TFormGame.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
  FormMenu.WindowState:=WsNormal;
+end;
+
+procedure TFormGame.FormActivate(Sender: TObject);
+begin
+ Button1.Click;
 end;
 
 end.

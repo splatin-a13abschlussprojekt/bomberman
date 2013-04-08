@@ -136,7 +136,7 @@ var
 
 implementation
 
-uses UnitInterface, UnitCreateMenuObjects, Math, UnitTestPlayer;
+uses UnitInterface, UnitCreateMenuObjects, UnitTestPlayer, Math;
 
 {$R *.dfm}
 

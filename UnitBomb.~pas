@@ -62,32 +62,78 @@ end;
 procedure TBomb.Detonate(Sender:TObject);
 var i:Integer;
 begin
-  for i := 1 to FRange do
+i:=1;
+while (i<=FRange) and (FPosition.X+i <= 15) do
   begin
-    If FPosition.X+i <= 15 then
-      begin
-      If Field[FPosition.X+i,FPosition.Y].Content=player01 then Player1.Alive:=false;
-      Field[FPosition.X+i,FPosition.Y].Explode;
-      end;
-    If FPosition.X-i >=0 then
-      begin
-      If Field[FPosition.X-i,FPosition.Y].Content=player01 then Player1.Alive:=false;
-      Field[FPosition.X-i,FPosition.Y].Explode;
-      end;
-    If FPosition.Y+i <= 15 then
-      begin
-      If Field[FPosition.X,FPosition.Y+i].Content=player01 then Player1.Alive:=false;
-      Field[FPosition.X,FPosition.Y+i].Explode;
-      end;
-    If FPosition.Y-i >=0 then
-      begin
-      If  Field[FPosition.X,FPosition.Y-i].Content=player01 then Player1.Alive:=false;
-      Field[FPosition.X,FPosition.Y-i].Explode;
-      end;
+  Case Field[FPosition.X+i,FPosition.Y].Content of
+    player01: Player1.Alive:=false;
+    player02: Player2.Alive:=false;
+    player03: Player3.Alive:=false;
+    player04: Player4.Alive:=false;
   end;
-  If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false;
-  Field[FPosition.X,FPosition.Y].Explode;
-  self.Destroy;
+  If (Field[FPosition.X+i,FPosition.Y].Content=meteorit) or (Field[FPosition.X+i,FPosition.Y].Content=earth) then
+    begin
+    Field[FPosition.X+i,FPosition.Y].Explode;
+    break;
+    end;
+  Field[FPosition.X+i,FPosition.Y].Explode;
+  Inc(i)
+  end;
+i:=1;
+while (i<=FRange) and (FPosition.X-i >=0) do
+  begin
+  Case Field[FPosition.X-i,FPosition.Y].Content of
+    player01: Player1.Alive:=false;
+    player02: Player2.Alive:=false;
+    player03: Player3.Alive:=false;
+    player04: Player4.Alive:=false;
+  end;
+  If (Field[FPosition.X-i,FPosition.Y].Content=meteorit) or (Field[FPosition.X-i,FPosition.Y].Content=earth) then
+    begin
+    Field[FPosition.X-i,FPosition.Y].Explode;
+    break;
+    end;
+  Field[FPosition.X-i,FPosition.Y].Explode;
+  Inc(i)
+  end;
+i:=1;
+while (i<=FRange) and (FPosition.Y+i <= 15) do
+  begin
+  Case Field[FPosition.X,FPosition.Y+i].Content of
+    player01: Player1.Alive:=false;
+    player02: Player2.Alive:=false;
+    player03: Player3.Alive:=false;
+    player04: Player4.Alive:=false;
+  end;
+  If (Field[FPosition.X,FPosition.Y+i].Content=meteorit) or (Field[FPosition.X,FPosition.Y+i].Content=earth) then
+    begin
+    Field[FPosition.X,FPosition.Y+i].Explode;
+    break;
+    end;
+  Field[FPosition.X,FPosition.Y+i].Explode;
+  Inc(i)
+  end;
+i:=1;
+while (i<=FRange) and (FPosition.Y-i >=0) do
+  begin
+  Case Field[FPosition.X,FPosition.Y-i].Content of
+    player01: Player1.Alive:=false;
+    player02: Player2.Alive:=false;
+    player03: Player3.Alive:=false;
+    player04: Player4.Alive:=false;
+  end;
+  If (Field[FPosition.X,FPosition.Y-i].Content=meteorit) or (Field[FPosition.X,FPosition.Y-i].Content=earth) then
+    begin
+    Field[FPosition.X,FPosition.Y-i].Explode;
+    break;
+    end;
+  Field[FPosition.X,FPosition.Y-i].Explode;
+  Inc(i)
+  end;
+If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false;
+Field[FPosition.X,FPosition.Y].Explode;
+self.Destroy;
+Owner.NumOfBombsPlanted:=Owner.NumOfBombsPlanted-1;
 end;
 
 procedure TBomb.SetPosition(Position:TPosition);

@@ -41,7 +41,8 @@ var
 
 implementation
 
-uses UnitMenu;
+uses
+  UnitMenu, StrUtils;
 
 {$R *.dfm}
 
@@ -57,18 +58,22 @@ end;
 
 procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
 var PosMem: TPosition;
-    TestBomb: TBomb;
+    Player1Bomb: Array [0..20] of TBomb;
+    Player2Bomb: Array [0..20] of TBomb;
+    Player3Bomb: Array [0..20] of TBomb;
+    Player4Bomb: Array [0..20] of TBomb;
 begin
-If Player1.Alive=false then exit;
+If Player1.Alive<>false then
+  begin
   PosMem:=Player1.Position;
-  Case Key of
-    'w': Player1.Move(U);
-    'a': Player1.Move(L);
-    's': Player1.Move(D);
-    'd': Player1.Move(R);
+  Case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight]) of
+    0: Player1.Move(U);
+    1: Player1.Move(L);
+    2: Player1.Move(D);
+    3: Player1.Move(R);
   end;
-  case Key of
-    'w','a','s','d':
+  case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb]) of
+    0,1,2,3:
     begin
       Case Field[Player1.Position.X,Player1.Position.Y].Content of
         empty,item,player01:
@@ -80,13 +85,17 @@ If Player1.Alive=false then exit;
       end;
       BomblessPictures(FormGame);
     end;
-    'q':
+    4:
     begin
-      TestBomb:=TBomb.Create(Player1,1000);
+    If Player1.NumOfBombsPlanted<Player1.NumOfBombs then
+      begin
+      Player1Bomb[Player1.NumOfBombsPlanted]:=TBomb.Create(Player1,2000);
       Field[Player1.Position.X,Player1.Position.Y].Content:=bomb;
+      Player1.NumOfBombsPlanted:=Player1.NumOfBombsPlanted+1;
+      end;
     end;
   end;
-
+  end;
 end;
 
 procedure TFormGame.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig

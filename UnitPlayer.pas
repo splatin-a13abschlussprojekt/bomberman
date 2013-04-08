@@ -13,11 +13,15 @@ type
     FPosition: TPosition;
     FAlive: Boolean;
     FBombRange: Integer;
+    FNumOfBombs: Integer;
+    FNumOfBombsPlanted: Integer;
     procedure SetNumber(Number: Integer);
     procedure SetName(Name: String);
     procedure SetPosition(Position: TPosition);
     procedure SetAlive(Alive: Boolean);
     procedure SetBombRange(BombRange: Integer);
+    procedure SetNumOfBombs(NumOfBombs: Integer);
+    procedure SetNumOfBombsPlanted(NumOfBombsPlanted: Integer);
   public
     constructor Create; overload;
     constructor Create(Number:Integer;Name:String;Position:TPosition); overload;
@@ -27,6 +31,8 @@ type
     function GetPositionString:String;
     property Alive: Boolean read FAlive write SetAlive;
     property BombRange: Integer read FBombRange write SetBombRange;
+    property NumOfBombs: Integer read FNumOfBombs write SetNumOfBombs;
+    property NumOfBombsPlanted: Integer read FNumOfBombsPlanted write SetNumOfBombsPlanted;
   end;
 
 procedure CreatePlayers(NumOfPlayers:Integer);
@@ -53,6 +59,8 @@ begin
   self.SetName(Name);
   self.SetPosition(Position);
   self.SetBombRange(1);
+  self.SetNumOfBombs(1);
+  self.SetNumOfBombsPlanted(0);
   self.SetAlive(true);
 end;
 
@@ -79,6 +87,16 @@ end;
 procedure TPlayer.SetBombRange(BombRange: Integer);
 begin
   FBombRange:=BombRange;
+end;
+
+procedure TPlayer.SetNumOfBombs(NumOfBombs: Integer);
+begin
+  FNumOfBombs:=NumOfBombs;
+end;
+
+procedure TPlayer.SetNumOfBombsPlanted(NumOfBombsPlanted: Integer);
+begin
+  FNumOfBombsPlanted:=NumOfBombsPlanted;
 end;
 
 procedure TPlayer.Move(direction: TDirection);
