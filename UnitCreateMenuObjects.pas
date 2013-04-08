@@ -9,6 +9,7 @@ uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
     function StandardFont():TFont; //Arial 12
     procedure SetDragDropImageforGroupbox(i:Byte); //als 9.
     procedure SetControlLabel(i,j:Byte);     //als 8.
+    procedure StandardControl(i,j:Byte);
     procedure SetControlPanel(i,j:Byte);     //als 7.
     procedure SetControlButton(i:Byte);      //als 6.
     procedure SetNameEdit(i:Byte);           //als 5.
@@ -284,7 +285,7 @@ begin
      width:=200;              //Größe
      Height:=400;
      Left:=20+(20+width)*(i-1);//Panels werden versetzt nebeneinander platziert
-     Top:=175;
+     Top:=210;
      Color:=RGB(31,31,31);
      Visible:=true;
     end;
@@ -325,7 +326,7 @@ begin
    Proportional:=true;
    width:=25;
    Height:=25;
-   Top:=FormMenu.NumberOfPlayersLabel.Top+FormMenu.NumberOfPlayersLabel.Height+10;
+   Top:=FormMenu.NumberOfPlayersLabel.Top-5;
    Left:=10;
    Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp');
    OnMouseUp:=FormMenu.SettingSuddendeathMouseUp;

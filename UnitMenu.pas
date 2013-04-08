@@ -8,13 +8,13 @@ uses
 
 type
  TPlayerSettings = record
-  Name    : String;
+  Name    : String[15];
   KeyUp   : String[1];
   KeyDown :String[1];
   KeyLeft :String[1];
   KeyRight:String[1];
   KeyBomb :String[1];
-  UfoColor:String;
+  UfoColor:String[6];
  end;
 
 type
@@ -26,7 +26,7 @@ type
 type
  TSettings = record
   SuddenDeathSettings : TSuddenDeathSettings;
-  NumOfRounds : Word; //Rundenanzahl
+  NumOfWins : Word; //Sieglimit
   NumOfPlayers : Word;
   PlayerSettings : Array[1..4] of TPlayerSettings;
  end;
@@ -40,7 +40,7 @@ type
 type  
  TDragDropImage = record
   Panel : TPanel;
-  Color : String;
+  Color : String[6];
   Image : TImage;//Image befindet sich auf Panel --> kann dann über alles bewegt werden
   Ground: TPanel;//Ground hält Standardposition --> ist dann ein weißes Feld
  end;
@@ -77,6 +77,7 @@ type
     RoundsEdit: TEdit;
     RoundsUpImage: TImage;
     RoundsDownImage: TImage;
+    TitlePanel: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure ControlButtonKeyPress(Sender: TObject; var Key: Char);
     procedure PanelExpectKey();
@@ -112,6 +113,11 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure NumberOfPlayersEditChange(Sender: TObject);
     procedure RoundsEditKeyPress(Sender: TObject; var Key: Char);
+    procedure DeleteAllMenuObjects();
+    procedure SaveSettings();
+    procedure SetSettings();
+    procedure LoadSettings();
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private-Deklarationen }
   public
@@ -137,6 +143,8 @@ uses UnitInterface, UnitCreateMenuObjects, Math, UnitTestPlayer;
 procedure TFormMenu.FormCreate(Sender: TObject); //BB-Menü
  var i,j:Integer;
 begin
+ TitlePanel.Color:=RGB(0,0,25);
+ TitlePanel.Font.Color:=RGB(200,200,200);
  Canvas.Font.Size:=12;       //um Texthöhe später ermitteln zu können --> Objekthöhe richtet sich danach
  Canvas.Font.Name:='Arial';
  for i:=1 to 4 do
@@ -161,6 +169,8 @@ begin
  SettingsHeader.Font.Style:=[fsBold]; //Überschrift: Fett
  SettingsHeader.Font.Color:=RGB(31,31,31);
  CreateSettingObjects(); //CheckImage wird erstellt (für Suddendeath-Einstellung)
+
+ LoadSettings();
 end;
 
 procedure TFormMenu.ControlButtonKeyPress(Sender: TObject; var Key: Char); //
@@ -261,6 +271,7 @@ procedure TFormMenu.ImageMouseUp(Sender: TObject; Button: TMouseButton;
  var ParentPanel: TComponent;
      i,j : Byte;
      VImage:TIMage;
+     mColor : String[6];
 begin
  j:=0;
  drag:=false;
@@ -274,8 +285,11 @@ begin
  if i<>j then //Wenn das nächste "GroundPanel" nicht das eigene ist, dann:
   begin
    VImage:=TImage.Create(self); //Virtuelles Image erstelle (zum merken des Bildes)
+   mColor:=Playergroupbox[j].DragDropImage.Color;
    VImage.Picture:=Playergroupbox[j].DragDropImage.Image.Picture; //Bilder (von Panels I & J) werden getauscht
+   Playergroupbox[j].DragDropImage.Color:=Playergroupbox[i].DragDropImage.Color;
    Playergroupbox[j].DragDropImage.Image.Picture:=Playergroupbox[i].DragDropImage.Image.Picture;
+   Playergroupbox[i].DragDropImage.Color:=mColor;
    Playergroupbox[i].DragDropImage.Image.Picture:=VImage.Picture;
    VImage.Free; //
   end;
@@ -361,10 +375,11 @@ end;
 
 procedure TFormMenu.UpdateSettings();
  var i,j : Byte;
-begin
+begin                                         //damit '[taste]' nicht gespeichert wird
+ for i:=1 to 4 do for j:=1 to 5 do if length(PlayerGroupbox[i].COntrolPanel[j].Caption)>1 then UnitCreateMenuObjects.StandardControl(i,j);
  With Settings do
   begin
-   NumOfRounds:=StrToInt(RoundsEdit.text);
+   NumOfWins:=StrToInt(RoundsEdit.text);
    NumOfPlayers:=StrToInt(NumberOfPlayersEdit.Text);
    if SettingSuddenDeathImage.Checked=true then
     begin
@@ -443,6 +458,68 @@ procedure TFormMenu.RoundsEditKeyPress(Sender: TObject; var Key: Char);
 begin
 if Key=#8 then (RoundsEdit.Text:='');  //#8 = [DEL]
  if (StrToIntDef(Key,-1)>-1) and (length(RoundsEdit.Text)<2) then RoundsEdit.SelText:=Key;
+end;
+
+procedure TFormMenu.DeleteAllMenuObjects();
+ var i : Byte;
+begin
+ for i:=1 to 4 do
+  begin
+   with PlayerGroupbox[i] do Panel.Free;//Objekte, die auf dem Panel liegen, werden ebenfalls gelöscht
+  end;
+ SettingSuddendeathImage.CheckImage.Free;
+end;
+
+procedure TFormMenu.SaveSettings();
+ var Path : String; //Pfad zum Speichern
+     FPlayerSettings : File of TSettings; //typisierte Datei funktioniert nicht
+begin
+ Path:=ExtractFilePath(ParamStr(0))+'Files\'; //Ordner wird erstellt
+ if not DirectoryExists(Path) then ForceDirectories(Path);
+   AssignFile(FPlayerSettings,Path+'Settings.dat');
+   Rewrite(FPlayerSettings);
+   Write(FPlayerSettings,Settings);
+   CloseFile(FPlayerSettings);
+end;
+
+procedure TFOrmMenu.SetSettings();
+ var i: Byte;
+begin
+ if Settings.SuddenDeathSettings.activated = true then SettingSuddendeathMouseUp(FormMenu,mbLeft,[]{ShiftState = Leer (Ctrl/Shift/alt) nicht nötigt},10,10{Position});
+ SettingSuddendeathEdit.Text:=IntToStr(Settings.SuddenDeathSettings.time);
+ NumberOfPlayersEdit.Text:=IntToStr(Settings.NumOfPlayers);
+ RoundsEdit.Text:=IntToStr(Settings.NumOfPlayers);
+ for i:=1 to 4 do
+  begin
+   PlayerGroupbox[i].NameEdit.Text:=Settings.PlayerSettings[i].Name;
+   PlayerGroupbox[i].ControlPanel[1].Caption:=Settings.PlayerSettings[i].KeyUp;
+   PlayerGroupbox[i].ControlPanel[2].Caption:=Settings.PlayerSettings[i].KeyDown;
+   PlayerGroupbox[i].ControlPanel[3].Caption:=Settings.PlayerSettings[i].KeyLeft;
+   PlayerGroupbox[i].ControlPanel[4].Caption:=Settings.PlayerSettings[i].KeyRight;
+   PlayerGroupbox[i].ControlPanel[5].Caption:=Settings.PlayerSettings[i].KeyBomb;
+   PlayerGroupbox[i].DragDropImage.Image.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\'+Settings.PlayerSettings[i].UfoColor+'-ufo.bmp');
+   PlayerGroupbox[i].DragDropImage.Color:=Settings.PlayerSettings[i].UfoColor;
+  end;
+end;
+
+procedure TFOrmMenu.LoadSettings();
+ var Path : String; //Pfad zum Laden
+     FPlayerSettings : File of TSettings; //typisierte Datei funktioniert nicht
+begin
+   Path:=ExtractFilePath(ParamStr(0))+'Files\';
+   if not FileExists(Path+'Settings.dat') then exit; //sonst Fehler
+   AssignFile(FPlayerSettings,Path+'Settings.dat');
+   Reset(FPlayerSettings);
+   Read(FPlayerSettings,Settings);
+   CloseFile(FPlayerSettings);
+   SetSettings();
+end;
+
+procedure TFormMenu.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+ UpdateSettings();
+ SaveSettings();
+ DeleteAllMenuObjects();
 end;
 
 end.

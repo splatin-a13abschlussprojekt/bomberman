@@ -1,8 +1,8 @@
 object FormMenu: TFormMenu
-  Left = 349
-  Top = 20
+  Left = 254
+  Top = 5
   Width = 915
-  Height = 694
+  Height = 718
   Caption = 'FormMenu'
   Color = clHotLight
   Font.Charset = DEFAULT_CHARSET
@@ -12,21 +12,22 @@ object FormMenu: TFormMenu
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object SettingsPanel: TPanel
     Left = 20
-    Top = 20
+    Top = 100
     Width = 860
-    Height = 139
+    Height = 93
     BevelOuter = bvNone
     Color = clWindowFrame
     ParentBackground = False
     TabOrder = 0
     object NumberOfPlayersLabel: TLabel
-      Left = 40
-      Top = 50
+      Left = 368
+      Top = 58
       Width = 131
       Height = 18
       Caption = 'Anzahl der Spieler:'
@@ -38,8 +39,8 @@ object FormMenu: TFormMenu
       ParentFont = False
     end
     object NumberOfPlayersUpImage: TImage
-      Left = 206
-      Top = 50
+      Left = 534
+      Top = 58
       Width = 19
       Height = 9
       Picture.Data = {
@@ -3122,8 +3123,8 @@ object FormMenu: TFormMenu
       OnMouseUp = NumberOfPlayersUpImageMouseUp
     end
     object NumberOfPlayersDownImage: TImage
-      Left = 206
-      Top = 59
+      Left = 534
+      Top = 67
       Width = 19
       Height = 9
       Picture.Data = {
@@ -6207,7 +6208,7 @@ object FormMenu: TFormMenu
     end
     object SettingSuddenDeathLabel1: TLabel
       Left = 40
-      Top = 82
+      Top = 58
       Width = 100
       Height = 18
       Caption = 'Sudden Death'
@@ -6221,7 +6222,7 @@ object FormMenu: TFormMenu
     end
     object SettingSuddenDeathLabel2: TLabel
       Left = 143
-      Top = 82
+      Top = 58
       Width = 33
       Height = 18
       Caption = 'nach'
@@ -6235,7 +6236,7 @@ object FormMenu: TFormMenu
     end
     object SettingSuddendeathUpImage: TImage
       Left = 206
-      Top = 82
+      Top = 58
       Width = 19
       Height = 9
       Picture.Data = {
@@ -9320,7 +9321,7 @@ object FormMenu: TFormMenu
     end
     object SettingSuddendeathDownImage: TImage
       Left = 206
-      Top = 91
+      Top = 67
       Width = 19
       Height = 9
       Picture.Data = {
@@ -12405,7 +12406,7 @@ object FormMenu: TFormMenu
     end
     object SettingSuddenDeathLabel3: TLabel
       Left = 229
-      Top = 82
+      Top = 58
       Width = 70
       Height = 18
       Caption = 'Sekunden'
@@ -12418,11 +12419,11 @@ object FormMenu: TFormMenu
       Visible = False
     end
     object Label1: TLabel
-      Left = 336
-      Top = 50
-      Width = 134
+      Left = 726
+      Top = 58
+      Width = 65
       Height = 18
-      Caption = 'Anzahl der Runden:'
+      Caption = 'Sieglimit:'
       Font.Charset = ANSI_CHARSET
       Font.Color = clWhite
       Font.Height = -16
@@ -12431,8 +12432,8 @@ object FormMenu: TFormMenu
       ParentFont = False
     end
     object RoundsUpImage: TImage
-      Left = 502
-      Top = 50
+      Left = 828
+      Top = 58
       Width = 19
       Height = 9
       Picture.Data = {
@@ -15515,8 +15516,8 @@ object FormMenu: TFormMenu
       OnMouseUp = RoundsUpImageMouseUp
     end
     object RoundsDownImage: TImage
-      Left = 502
-      Top = 59
+      Left = 828
+      Top = 67
       Width = 19
       Height = 9
       Picture.Data = {
@@ -18599,8 +18600,8 @@ object FormMenu: TFormMenu
       OnMouseUp = RoundsDownImageMouseUp
     end
     object NumberOfPlayersEdit: TEdit
-      Left = 180
-      Top = 50
+      Left = 508
+      Top = 58
       Width = 26
       Height = 18
       BevelInner = bvNone
@@ -18631,7 +18632,7 @@ object FormMenu: TFormMenu
     end
     object SettingSuddendeathEdit: TEdit
       Left = 180
-      Top = 82
+      Top = 58
       Width = 26
       Height = 18
       BevelInner = bvNone
@@ -18652,8 +18653,8 @@ object FormMenu: TFormMenu
       OnKeyPress = SettingSuddendeathEditKeyPress
     end
     object RoundsEdit: TEdit
-      Left = 476
-      Top = 50
+      Left = 802
+      Top = 58
       Width = 26
       Height = 18
       BevelInner = bvNone
@@ -18673,7 +18674,7 @@ object FormMenu: TFormMenu
   end
   object StartButton: TButton
     Left = 810
-    Top = 590
+    Top = 622
     Width = 70
     Height = 50
     Caption = 'Start'
@@ -18688,7 +18689,7 @@ object FormMenu: TFormMenu
   end
   object CloseButton: TButton
     Left = 18
-    Top = 590
+    Top = 622
     Width = 100
     Height = 50
     Caption = 'Beenden'
@@ -18700,5 +18701,25 @@ object FormMenu: TFormMenu
     ParentFont = False
     TabOrder = 2
     OnClick = CloseButtonClick
+  end
+  object TitlePanel: TPanel
+    Left = 0
+    Top = 0
+    Width = 899
+    Height = 89
+    Align = alTop
+    BevelOuter = bvNone
+    Caption = 'Space-bomberman'
+    Color = clDefault
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -80
+    Font.Name = 'Lucida Console'
+    Font.Style = [fsBold]
+    ParentBackground = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
+    TabOrder = 3
   end
 end
