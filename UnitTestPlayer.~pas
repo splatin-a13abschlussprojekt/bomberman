@@ -40,6 +40,7 @@ type
 var
   FormGame: TFormGame;
   BombPos: TPosition;
+  Bombs: Array of TBomb;
 
 implementation
 
@@ -54,9 +55,9 @@ begin
 {Farbe des CountdownPanels}
   CountdownPanel.Color:=RGB(31,31,31);
  {}
-
   CreateFields;
   CreatePlayers(1);
+  SetLength(Bombs,0);
   for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
   RefreshTimer.Enabled:=true;
   KeyPreview:=true;
@@ -64,7 +65,6 @@ end;
 
 procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
 var PosMem: TPosition;
-    Bombs: Array of TBomb;
     i: Integer;
 begin
 i:=ceil((AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb,Settings.PlayerSettings[2].KeyUp,Settings.PlayerSettings[2].KeyLeft,Settings.PlayerSettings[2].KeyDown,Settings.PlayerSettings[2].KeyRight,Settings.PlayerSettings[2].KeyBomb,Settings.PlayerSettings[3].KeyUp,Settings.PlayerSettings[3].KeyLeft,Settings.PlayerSettings[3].KeyDown,Settings.PlayerSettings[3].KeyRight,Settings.PlayerSettings[3].KeyBomb,Settings.PlayerSettings[4].KeyUp,Settings.PlayerSettings[4].KeyLeft,Settings.PlayerSettings[4].KeyDown,Settings.PlayerSettings[4].KeyRight,Settings.PlayerSettings[4].KeyBomb])+1)/5); // PR: Ermitteln des Spielers
@@ -99,7 +99,8 @@ If Player[i].Alive<>false then
     begin
     If Player[i].NumOfBombsPlanted<Player[i].NumOfBombs then
       begin
-      SetLength(Bombs,high(Bombs)+1);
+      SetLength(Bombs,high(Bombs)+2);
+      Showmessage(IntToStr(high(Bombs)));
       Bombs[high(Bombs)]:=TBomb.Create(Player[i],2000);
       Field[Player[i].Position.X,Player[i].Position.Y].Content:=bomb;
       Player[i].NumOfBombsPlanted:=Player[i].NumOfBombsPlanted+1;
@@ -107,7 +108,6 @@ If Player[i].Alive<>false then
     end;
   end;
   end;
-Showmessage(Player[i].GetPositionString);
 end;
 
 procedure TFormGame.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
