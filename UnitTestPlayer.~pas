@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids, ImgList, UnitBomb;
+  UnitPosition, Grids, ImgList, UnitBomb, Math;
 
 type
   TFormGame = class(TForm)
@@ -64,44 +64,50 @@ end;
 
 procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
 var PosMem: TPosition;
-    Player1Bomb: Array [0..20] of TBomb;
-    Player2Bomb: Array [0..20] of TBomb;
-    Player3Bomb: Array [0..20] of TBomb;
-    Player4Bomb: Array [0..20] of TBomb;
+    Bombs: Array of TBomb;
+    i: Integer;
 begin
-If Player1.Alive<>false then
+i:=ceil((AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb,Settings.PlayerSettings[2].KeyUp,Settings.PlayerSettings[2].KeyLeft,Settings.PlayerSettings[2].KeyDown,Settings.PlayerSettings[2].KeyRight,Settings.PlayerSettings[2].KeyBomb,Settings.PlayerSettings[3].KeyUp,Settings.PlayerSettings[3].KeyLeft,Settings.PlayerSettings[3].KeyDown,Settings.PlayerSettings[3].KeyRight,Settings.PlayerSettings[3].KeyBomb,Settings.PlayerSettings[4].KeyUp,Settings.PlayerSettings[4].KeyLeft,Settings.PlayerSettings[4].KeyDown,Settings.PlayerSettings[4].KeyRight,Settings.PlayerSettings[4].KeyBomb])+1)/5); // PR: Ermitteln des Spielers
+If Player[i].Alive<>false then
   begin
-  PosMem:=Player1.Position;
-  Case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight]) of
-    0: Player1.Move(U);
-    1: Player1.Move(L);
-    2: Player1.Move(D);
-    3: Player1.Move(R);
+  PosMem:=Player[i].Position;
+  Case AnsiIndexText(Key,[Settings.PlayerSettings[i].KeyUp,Settings.PlayerSettings[i].KeyLeft,Settings.PlayerSettings[i].KeyDown,Settings.PlayerSettings[i].KeyRight]) of
+    0: Player[i].Move(U);
+    1: Player[i].Move(L);
+    2: Player[i].Move(D);
+    3: Player[i].Move(R);
   end;
-  case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb]) of
+  case AnsiIndexText(Key,[Settings.PlayerSettings[i].KeyUp,Settings.PlayerSettings[i].KeyLeft,Settings.PlayerSettings[i].KeyDown,Settings.PlayerSettings[i].KeyRight,Settings.PlayerSettings[i].KeyBomb]) of
     0,1,2,3:
     begin
-      Case Field[Player1.Position.X,Player1.Position.Y].Content of
-        empty,item,player01:
+      Case Field[Player[i].Position.X,Player[i].Position.Y].Content of
+        empty,item,player01,player02,player03,player04:
           begin
           If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
-          Field[Player1.Position.X,Player1.Position.Y].Content:=player01;
+          Case i of
+            1: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player01;
+            2: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player02;
+            3: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player03;
+            4: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player04;
           end;
-        meteorit,earth,bomb: Player1.Position:=PosMem;
+          end;
+        meteorit,earth,bomb: Player[i].Position:=PosMem;
       end;
       BomblessPictures(FormGame);
     end;
     4:
     begin
-    If Player1.NumOfBombsPlanted<Player1.NumOfBombs then
+    If Player[i].NumOfBombsPlanted<Player[i].NumOfBombs then
       begin
-      Player1Bomb[Player1.NumOfBombsPlanted]:=TBomb.Create(Player1,2000);
-      Field[Player1.Position.X,Player1.Position.Y].Content:=bomb;
-      Player1.NumOfBombsPlanted:=Player1.NumOfBombsPlanted+1;
+      SetLength(Bombs,high(Bombs)+1);
+      Bombs[high(Bombs)]:=TBomb.Create(Player[i],2000);
+      Field[Player[i].Position.X,Player[i].Position.Y].Content:=bomb;
+      Player[i].NumOfBombsPlanted:=Player[i].NumOfBombsPlanted+1;
       end;
     end;
   end;
   end;
+Showmessage(Player[i].GetPositionString);
 end;
 
 procedure TFormGame.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig

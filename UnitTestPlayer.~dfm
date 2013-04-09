@@ -9438,7 +9438,7 @@ object FormGame: TFormGame
     BevelOuter = bvNone
     BiDiMode = bdLeftToRight
     Caption = '000'
-    Color = clNavy
+    Color = clGray
     Ctl3D = True
     Font.Charset = ANSI_CHARSET
     Font.Color = clWhite

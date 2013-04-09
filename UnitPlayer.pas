@@ -39,6 +39,7 @@ procedure CreatePlayers(NumOfPlayers:Integer);
 
 var
   Player1,Player2,Player3,Player4: TPlayer;
+  Player: Array of TPlayer;
 
 implementation
 
@@ -118,6 +119,7 @@ procedure CreatePlayers(NumOfPlayers:Integer);  // PR: erzeugt Spieler
 var i: Integer;
     StartPos: TPosition;
 begin
+SetLength(Player,NumOfPlayers+1);
 for i:=1 to NumOfPlayers do
   begin
     Case i of
@@ -126,6 +128,7 @@ for i:=1 to NumOfPlayers do
       StartPos.X:=0;
       StartPos.Y:=0;
       Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Player[1]:=Player1;
       Field[StartPos.X,StartPos.Y].Content:=player01;
       Field[StartPos.X+1,StartPos.Y].Content:=empty; // PR: hier wird sichergestellt, dass der Spieler Platz hat
       Field[StartPos.X,StartPos.Y+1].Content:=empty;
@@ -135,6 +138,7 @@ for i:=1 to NumOfPlayers do
       StartPos.X:=15;
       StartPos.Y:=0;
       Player2:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Player[2]:=Player2;
       Field[StartPos.X,StartPos.Y].Content:=player01;
       Field[StartPos.X-1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y+1].Content:=empty;
@@ -144,6 +148,7 @@ for i:=1 to NumOfPlayers do
       StartPos.X:=0;
       StartPos.Y:=15;
       Player3:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Player[3]:=Player3;
       Field[StartPos.X,StartPos.Y].Content:=player01;
       Field[StartPos.X+1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y-1].Content:=empty;
@@ -153,6 +158,7 @@ for i:=1 to NumOfPlayers do
       StartPos.X:=15;
       StartPos.Y:=15;
       Player4:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
+      Player[4]:=Player4;
       Field[StartPos.X,StartPos.Y].Content:=player01;
       Field[StartPos.X-1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y-1].Content:=empty;
