@@ -19,6 +19,8 @@ type
     ImageBackground: TImage;
     BombTimer: TTimer;
     BomblessTimer: TTimer;
+    CountDownTimer: TTimer;
+    CountdownPanel: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
@@ -28,7 +30,7 @@ type
     procedure BombPictures(Sender: TObject);
     procedure BomblessPictures(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormActivate(Sender: TObject);
+    procedure CountDownTimerTimer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,6 +51,10 @@ uses
 procedure TFormGame.FormCreate(Sender: TObject);
 var i,j: Integer;
 begin
+{Farbe des CountdownPanels}
+  CountdownPanel.Color:=RGB(31,31,31);
+ {}
+
   CreateFields;
   CreatePlayers(1);
   for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
@@ -63,7 +69,8 @@ var PosMem: TPosition;
     Player3Bomb: Array [0..20] of TBomb;
     Player4Bomb: Array [0..20] of TBomb;
 begin
-If Player1.Alive=false then exit;
+If Player1.Alive<>false then
+  begin
   PosMem:=Player1.Position;
   Case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight]) of
     0: Player1.Move(U);
@@ -71,8 +78,8 @@ If Player1.Alive=false then exit;
     2: Player1.Move(D);
     3: Player1.Move(R);
   end;
-  case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight]) of
-    1,2,3,4:
+  case AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb]) of
+    0,1,2,3:
     begin
       Case Field[Player1.Position.X,Player1.Position.Y].Content of
         empty,item,player01:
@@ -84,7 +91,7 @@ If Player1.Alive=false then exit;
       end;
       BomblessPictures(FormGame);
     end;
-    'q':
+    4:
     begin
     If Player1.NumOfBombsPlanted<Player1.NumOfBombs then
       begin
@@ -94,7 +101,7 @@ If Player1.Alive=false then exit;
       end;
     end;
   end;
-
+  end;
 end;
 
 procedure TFormGame.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
@@ -137,6 +144,12 @@ end;
 procedure TFormGame.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
 begin
  LoadInterface(FormGame);
+ {Countdown (BB)}
+ if Settings.SuddenDeathSettings.activated=true then
+  begin
+   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time);
+   CountDownTimer.Enabled:=true;
+  end;
 end;
 
 procedure TFormGame.RefreshTimerTimer(Sender: TObject);
@@ -193,9 +206,14 @@ begin
  FormMenu.WindowState:=WsNormal;
 end;
 
-procedure TFormGame.FormActivate(Sender: TObject);
+procedure TFormGame.CountDownTimerTimer(Sender: TObject);
 begin
- Button1.Click;
+ if StrToInt(CountdownPanel.Caption) = 0 then
+  begin
+   CountDownTimer.Enabled:=false;
+   exit;
+  end;
+ CountdownPanel.Caption := IntTOStr(StrToInt(CountdownPanel.Caption)-1);
 end;
 
 end.

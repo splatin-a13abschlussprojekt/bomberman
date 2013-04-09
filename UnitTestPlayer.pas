@@ -19,6 +19,8 @@ type
     ImageBackground: TImage;
     BombTimer: TTimer;
     BomblessTimer: TTimer;
+    CountDownTimer: TTimer;
+    CountdownPanel: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
@@ -28,7 +30,7 @@ type
     procedure BombPictures(Sender: TObject);
     procedure BomblessPictures(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormActivate(Sender: TObject);
+    procedure CountDownTimerTimer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,6 +51,10 @@ uses
 procedure TFormGame.FormCreate(Sender: TObject);
 var i,j: Integer;
 begin
+{Farbe des CountdownPanels}
+  CountdownPanel.Color:=RGB(31,31,31);
+ {}
+
   CreateFields;
   CreatePlayers(1);
   for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
@@ -138,6 +144,12 @@ end;
 procedure TFormGame.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
 begin
  LoadInterface(FormGame);
+ {Countdown (BB)}
+ if Settings.SuddenDeathSettings.activated=true then
+  begin
+   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time);
+   CountDownTimer.Enabled:=true;
+  end;
 end;
 
 procedure TFormGame.RefreshTimerTimer(Sender: TObject);
@@ -194,9 +206,14 @@ begin
  FormMenu.WindowState:=WsNormal;
 end;
 
-procedure TFormGame.FormActivate(Sender: TObject);
+procedure TFormGame.CountDownTimerTimer(Sender: TObject);
 begin
- Button1.Click;
+ if StrToInt(CountdownPanel.Caption) = 0 then
+  begin
+   CountDownTimer.Enabled:=false;
+   exit;
+  end;
+ CountdownPanel.Caption := IntTOStr(StrToInt(CountdownPanel.Caption)-1);
 end;
 
 end.

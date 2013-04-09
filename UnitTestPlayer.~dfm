@@ -1,10 +1,10 @@
 object FormGame: TFormGame
-  Left = 467
-  Top = 130
-  Width = 472
-  Height = 544
+  Left = 447
+  Top = 102
+  Width = 470
+  Height = 580
   Caption = 'FormGame'
-  Color = clBtnFace
+  Color = clHotLight
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -12,7 +12,6 @@ object FormGame: TFormGame
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
@@ -9412,6 +9411,7 @@ object FormGame: TFormGame
     Top = 63
     Width = 425
     Height = 425
+    BorderStyle = bsNone
     ColCount = 16
     DefaultColWidth = 25
     DefaultRowHeight = 25
@@ -9429,6 +9429,29 @@ object FormGame: TFormGame
     Caption = 'LoadInterface'
     TabOrder = 0
     OnClick = Button1Click
+  end
+  object CountdownPanel: TPanel
+    Left = 352
+    Top = 16
+    Width = 89
+    Height = 41
+    BevelOuter = bvNone
+    BiDiMode = bdLeftToRight
+    Caption = '000'
+    Color = clNavy
+    Ctl3D = True
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWhite
+    Font.Height = -35
+    Font.Name = 'Lucida Console'
+    Font.Style = [fsBold]
+    ParentBiDiMode = False
+    ParentBackground = False
+    ParentCtl3D = False
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = False
+    TabOrder = 2
   end
   object ImageListUfos: TImageList
     Height = 25
@@ -11753,12 +11776,18 @@ object FormGame: TFormGame
   end
   object BombTimer: TTimer
     Interval = 50
-    Left = 360
-    Top = 16
+    Left = 312
+    Top = 8
   end
   object BomblessTimer: TTimer
     Interval = 600
-    Left = 416
-    Top = 16
+    Left = 344
+    Top = 8
+  end
+  object CountDownTimer: TTimer
+    Enabled = False
+    OnTimer = CountDownTimerTimer
+    Left = 376
+    Top = 8
   end
 end
