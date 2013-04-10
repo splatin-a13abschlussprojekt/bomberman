@@ -21,13 +21,20 @@ type
     CountDownTimer: TTimer;
     CountdownPanel: TPanel;
     BomblessTimer: TTimer;
+    ImageListRed: TImageList;
+    ImageListYellow: TImageList;
+    ImageListGreen: TImageList;
+    ImageListBlue: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
     procedure Refresh(Sender: TObject; var Pos: TPosition);
     procedure Button1Click(Sender: TObject);
     procedure RefreshTimerTimer(Sender: TObject);
-    procedure BombPictures(Sender: TObject);
+    procedure Bomb1Pictures(Sender: TObject);
+    procedure Bomb2Pictures(Sender: TObject);
+    procedure Bomb3Pictures(Sender: TObject);
+    procedure Bomb4Pictures(Sender: TObject);
     procedure BomblessPictures(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CountDownTimerTimer(Sender: TObject);
@@ -41,6 +48,7 @@ var
   FormGame: TFormGame;
   BombPos: Array[1..4] of TPosition;
   Bombs: Array[1..4] of TBomb;
+  ImageListPlayer: Array[1..4] of TImageList;
 
 implementation
 
@@ -61,7 +69,14 @@ begin
   for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
   RefreshTimer.Enabled:=true;
   KeyPreview:=true;
-  //for k:=1 to 4 do Bombs[k].Owner:=Player[k]; //RV: Warum geht das nicht? Achso, weil sie noch nich created wurden...
+
+  for k:=1 to 4 do
+  begin
+  If Settings.PlayerSettings[k].UfoColor='red' then ImageListPlayer[k]:=ImageListRed;
+  If Settings.PlayerSettings[k].UfoColor='yellow' then ImageListPlayer[k]:=ImageListYellow;
+  If Settings.PlayerSettings[k].UfoColor='green' then ImageListPlayer[k]:=ImageListGreen;
+  If Settings.PlayerSettings[k].UfoColor='blue' then ImageListPlayer[k]:=ImageListBlue;
+  end;
 end;
 
 procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
@@ -117,7 +132,10 @@ begin
     empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),ImageBackground.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden
     bomb: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit Else ImageListBombs.Draw(StringGrid1.Canvas,Pos.X*26,Pos.Y
     *26,0);
-    player01: ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,0);
+    player01: ImageListPlayer[1].Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,8);
+    player02: ImageListPlayer[2].Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,8);
+    player03: ImageListPlayer[3].Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,8);
+    player04: ImageListPlayer[4].Draw(StringGrid1.Canvas, Pos.X*26,Pos.Y*26,8);
   end;
 end;
 
@@ -140,7 +158,10 @@ for i:=0 to 15 do for j:=0 to 15 do
                 end;
       earth: ImageListObjects.Draw(StringGrid1.Canvas, i*26, j*26,0);
       item: StringGrid1.Cells[i,j]:='I';
-      player01: ImageListUfos.Draw(StringGrid1.Canvas, i*26,j*26,0);
+      player01: ImageListPlayer[1].Draw(StringGrid1.Canvas, i*26,j*26,8);
+      player02: ImageListPlayer[2].Draw(StringGrid1.Canvas, i*26,j*26,8);
+      player03: ImageListPlayer[3].Draw(StringGrid1.Canvas, i*26,j*26,8);
+      player04: ImageListPlayer[4].Draw(StringGrid1.Canvas, i*26,j*26,8);
       bomb: StringGrid1.Cells[i,j]:='B';
     end;
   end;
@@ -171,7 +192,7 @@ for i:=0 to 15 do for j:=0 to 15 do
       //BombPos.Y:=j;
       BombPos[1]:=Bombs[1].Position;
       BombTimer.Enabled:=true;
-      BombTimer.OnTimer:=BombPictures;
+      BombTimer.OnTimer:=Bomb1Pictures;
       Refresh(FormGame,Pos);
     end;
   end;
@@ -179,33 +200,33 @@ for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
 end;
 
 
-procedure TFormGame.BombPictures(Sender: TObject);
+procedure TFormGame.Bomb1Pictures(Sender: TObject);
 //RV: Bombenbilder malen
 begin
   with BombPos[1] do
   begin
-    ImageListBombs.Draw(StringGrid1.Canvas, X*26, Y*26, 2);
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, Y*26, 2);
     If X>0 then If Field[X-1, Y].Content <> earth then
     begin
-      ImageListBombs.Draw(StringGrid1.Canvas, (X-1)*26, Y*26, 5);
+      ImageListPlayer[1].Draw(StringGrid1.Canvas, (X-1)*26, Y*26, 5);
       Field[X-1, Y].Content:=explosion;
     end;
 
     If X<16 then If Field[X+1, Y].Content <> earth then
     begin
-    ImageListBombs.Draw(StringGrid1.Canvas, (X+1)*26, Y*26, 6);
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, (X+1)*26, Y*26, 6);
     Field[X+1, Y].Content:=explosion;
     end;
 
     If Y>0 then If Field[X, Y-1].Content <> earth then
     begin
-    ImageListBombs.Draw(StringGrid1.Canvas, X*26, (Y-1)*26, 7);
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, (Y-1)*26, 7);
     Field[X, Y-1].Content:=explosion;
     end;
 
     If Y<16 then If Field[X, Y+1].Content <> earth then
     begin
-    ImageListBombs.Draw(StringGrid1.Canvas, X*26, (Y+1)*26, 4);
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, (Y+1)*26, 4);
     Field[X, Y+1].Content:=explosion;
     end;
   end;
@@ -214,6 +235,105 @@ begin
 
   BomblessTimer.Enabled:=true;
   BomblessTimer.OnTimer:=BomblessPictures;
+end;
+
+procedure TFormGame.Bomb2Pictures(Sender: TObject);
+//RV: Bombenbilder malen
+begin
+  with BombPos[1] do
+  begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, Y*26, 2);
+    If X>0 then If Field[X-1, Y].Content <> earth then
+    begin
+      ImageListPlayer[1].Draw(StringGrid1.Canvas, (X-1)*26, Y*26, 5);
+      Field[X-1, Y].Content:=explosion;
+    end;
+
+    If X<16 then If Field[X+1, Y].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, (X+1)*26, Y*26, 6);
+    Field[X+1, Y].Content:=explosion;
+    end;
+
+    If Y>0 then If Field[X, Y-1].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, (Y-1)*26, 7);
+    Field[X, Y-1].Content:=explosion;
+    end;
+
+    If Y<16 then If Field[X, Y+1].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, (Y+1)*26, 4);
+    Field[X, Y+1].Content:=explosion;
+    end;
+  end;
+
+end;
+
+procedure TFormGame.Bomb3Pictures(Sender: TObject);
+//RV: Bombenbilder malen
+begin
+  with BombPos[1] do
+  begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, Y*26, 2);
+    If X>0 then If Field[X-1, Y].Content <> earth then
+    begin
+      ImageListPlayer[1].Draw(StringGrid1.Canvas, (X-1)*26, Y*26, 5);
+      Field[X-1, Y].Content:=explosion;
+    end;
+
+    If X<16 then If Field[X+1, Y].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, (X+1)*26, Y*26, 6);
+    Field[X+1, Y].Content:=explosion;
+    end;
+
+    If Y>0 then If Field[X, Y-1].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, (Y-1)*26, 7);
+    Field[X, Y-1].Content:=explosion;
+    end;
+
+    If Y<16 then If Field[X, Y+1].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, (Y+1)*26, 4);
+    Field[X, Y+1].Content:=explosion;
+    end;
+  end;
+
+end;
+
+procedure TFormGame.Bomb4Pictures(Sender: TObject);
+//RV: Bombenbilder malen
+begin
+  with BombPos[1] do
+  begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, Y*26, 2);
+    If X>0 then If Field[X-1, Y].Content <> earth then
+    begin
+      ImageListPlayer[1].Draw(StringGrid1.Canvas, (X-1)*26, Y*26, 5);
+      Field[X-1, Y].Content:=explosion;
+    end;
+
+    If X<16 then If Field[X+1, Y].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, (X+1)*26, Y*26, 6);
+    Field[X+1, Y].Content:=explosion;
+    end;
+
+    If Y>0 then If Field[X, Y-1].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, (Y-1)*26, 7);
+    Field[X, Y-1].Content:=explosion;
+    end;
+
+    If Y<16 then If Field[X, Y+1].Content <> earth then
+    begin
+    ImageListPlayer[1].Draw(StringGrid1.Canvas, X*26, (Y+1)*26, 4);
+    Field[X, Y+1].Content:=explosion;
+    end;
+  end;
+
 end;
 
 procedure TFormGame.BomblessPictures(Sender: TObject);

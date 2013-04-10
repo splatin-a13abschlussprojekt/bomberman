@@ -9,11 +9,11 @@ uses
 type
  TPlayerSettings = record
   Name    : String[15];
-  KeyUp   : String[1];
-  KeyDown :String[1];
-  KeyLeft :String[1];
-  KeyRight:String[1];
-  KeyBomb :String[1];
+  KeyUp   : Char;
+  KeyDown :Char;
+  KeyLeft :Char;
+  KeyRight:Char;
+  KeyBomb :Char;
   UfoColor:String[6];
  end;
 
@@ -396,11 +396,11 @@ begin                                         //damit '[taste]' nicht gespeicher
      With PlayerSettings[i] do
       begin
        Name:=    Playergroupbox[i].NameEdit.Text;
-       KeyUp:=   Playergroupbox[i].ControlPanel[1].Caption;
-       KeyDown:= Playergroupbox[i].ControlPanel[2].Caption;
-       KeyLeft:= Playergroupbox[i].ControlPanel[3].Caption;
-       KeyRight:=Playergroupbox[i].ControlPanel[4].Caption;
-       KeyBomb:= Playergroupbox[i].ControlPanel[5].Caption;
+       KeyUp:=   Playergroupbox[i].ControlPanel[1].Caption[1];
+       KeyDown:= Playergroupbox[i].ControlPanel[2].Caption[1];
+       KeyLeft:= Playergroupbox[i].ControlPanel[3].Caption[1];
+       KeyRight:=Playergroupbox[i].ControlPanel[4].Caption[1];
+       KeyBomb:= Playergroupbox[i].ControlPanel[5].Caption[1];
        UfoColor:=Playergroupbox[i].DragDropImage.Color;
       end;
     end;
