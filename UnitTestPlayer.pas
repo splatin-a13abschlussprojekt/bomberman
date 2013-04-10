@@ -18,9 +18,9 @@ type
     RefreshTimer: TTimer;
     ImageBackground: TImage;
     BombTimer: TTimer;
-    BomblessTimer: TTimer;
     CountDownTimer: TTimer;
     CountdownPanel: TPanel;
+    BomblessTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
@@ -39,8 +39,8 @@ type
 
 var
   FormGame: TFormGame;
-  BombPos: TPosition;
-  Bombs: Array of TBomb;
+  BombPos: Array[1..4] of TPosition;
+  Bombs: Array[1..4] of TBomb;
 
 implementation
 
@@ -50,17 +50,18 @@ uses
 {$R *.dfm}
 
 procedure TFormGame.FormCreate(Sender: TObject);
-var i,j: Integer;
+var i,j,k: Integer;
 begin
 {Farbe des CountdownPanels}
   CountdownPanel.Color:=RGB(31,31,31);
  {}
   CreateFields;
-  CreatePlayers(1);
-  SetLength(Bombs,0);
+  CreatePlayers(Settings.NumOfPlayers);
+  //SetLength(Bombs,0);
   for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
   RefreshTimer.Enabled:=true;
   KeyPreview:=true;
+  //for k:=1 to 4 do Bombs[k].Owner:=Player[k]; //RV: Warum geht das nicht? Achso, weil sie noch nich created wurden...
 end;
 
 procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
@@ -81,26 +82,26 @@ If Player[i].Alive<>false then
     0,1,2,3:
     begin
       Case Field[Player[i].Position.X,Player[i].Position.Y].Content of
-        empty,item,player01,player02,player03,player04:
+        empty,item,player01,player02,player03,player04,explosion:
           begin
           If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
           Case i of
-            1: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player01;
-            2: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player02;
-            3: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player03;
-            4: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player04;
+            1: If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then Player[i].Alive:=false else Field[Player[i].Position.X,Player[i].Position.Y].Content:=player01;
+            2: If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then Player[i].Alive:=false else Field[Player[i].Position.X,Player[i].Position.Y].Content:=player02;
+            3: If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then Player[i].Alive:=false else Field[Player[i].Position.X,Player[i].Position.Y].Content:=player03;
+            4: If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then Player[i].Alive:=false else Field[Player[i].Position.X,Player[i].Position.Y].Content:=player04;
           end;
           end;
         meteorit,earth,bomb: Player[i].Position:=PosMem;
       end;
-      BomblessPictures(FormGame);
     end;
     4:
     begin
     If Player[i].NumOfBombsPlanted<Player[i].NumOfBombs then
       begin
-      SetLength(Bombs,high(Bombs)+2);
-      Bombs[high(Bombs)]:=TBomb.Create(Player[i],2000);
+      //SetLength(Bombs,high(Bombs)+2);
+      //Bombs[high(Bombs)]:=TBomb.Create(Player[i],2000);
+      Bombs[i]:=TBomb.Create(Player[i],2000);
       Field[Player[i].Position.X,Player[i].Position.Y].Content:=bomb;
       Player[i].NumOfBombsPlanted:=Player[i].NumOfBombsPlanted+1;
       end;
@@ -111,9 +112,8 @@ end;
 
 procedure TFormGame.Refresh(Sender: TObject; var Pos: TPosition); // PR: für den Refresh ist nur noch die Position nötig
 begin
-  BomblessTimer.Enabled:=false;
-
   Case Field[Pos.X,Pos.Y].Content of
+    explosion: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit;
     empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26),ImageBackground.Canvas,Rect(Pos.X*26,Pos.Y*26,Pos.X*26+26,Pos.Y*26+26)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden
     bomb: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit Else ImageListBombs.Draw(StringGrid1.Canvas,Pos.X*26,Pos.Y
     *26,0);
@@ -167,8 +167,9 @@ for i:=0 to 15 do for j:=0 to 15 do
   If Field[i,j].Content <> FieldMem[i,j].Content then Refresh(FormGame,Pos);
   If Field[i,j].Content = bomb then
     begin
-      BombPos.X:=i;
-      BombPos.Y:=j;
+      //BombPos.X:=i;
+      //BombPos.Y:=j;
+      BombPos[1]:=Bombs[1].Position;
       BombTimer.Enabled:=true;
       BombTimer.OnTimer:=BombPictures;
       Refresh(FormGame,Pos);
@@ -181,11 +182,33 @@ end;
 procedure TFormGame.BombPictures(Sender: TObject);
 //RV: Bombenbilder malen
 begin
-  ImageListBombs.Draw(StringGrid1.Canvas, BombPos.X*26, BombPos.Y*26, 2);
-  If BombPos.X>0 then If Field[BombPos.X-1, BombPos.Y].Content <> earth then ImageListBombs.Draw(StringGrid1.Canvas, (BombPos.X-1)*26, BombPos.Y*26, 5);
-  If BombPos.X<16 then If Field[BombPos.X+1, BombPos.Y].Content <> earth then ImageListBombs.Draw(StringGrid1.Canvas, (BombPos.X+1)*26, BombPos.Y*26, 6);
-  If BombPos.Y>0 then If Field[BombPos.X, BombPos.Y-1].Content <> earth then ImageListBombs.Draw(StringGrid1.Canvas, BombPos.X*26, (BombPos.Y-1)*26, 7);
-  If BombPos.Y<16 then If Field[BombPos.X, BombPos.Y+1].Content <> earth then ImageListBombs.Draw(StringGrid1.Canvas, BombPos.X*26, (BombPos.Y+1)*26, 4);
+  with BombPos[1] do
+  begin
+    ImageListBombs.Draw(StringGrid1.Canvas, X*26, Y*26, 2);
+    If X>0 then If Field[X-1, Y].Content <> earth then
+    begin
+      ImageListBombs.Draw(StringGrid1.Canvas, (X-1)*26, Y*26, 5);
+      Field[X-1, Y].Content:=explosion;
+    end;
+
+    If X<16 then If Field[X+1, Y].Content <> earth then
+    begin
+    ImageListBombs.Draw(StringGrid1.Canvas, (X+1)*26, Y*26, 6);
+    Field[X+1, Y].Content:=explosion;
+    end;
+
+    If Y>0 then If Field[X, Y-1].Content <> earth then
+    begin
+    ImageListBombs.Draw(StringGrid1.Canvas, X*26, (Y-1)*26, 7);
+    Field[X, Y-1].Content:=explosion;
+    end;
+
+    If Y<16 then If Field[X, Y+1].Content <> earth then
+    begin
+    ImageListBombs.Draw(StringGrid1.Canvas, X*26, (Y+1)*26, 4);
+    Field[X, Y+1].Content:=explosion;
+    end;
+  end;
 
   BombTimer.Enabled:=false;
 
@@ -196,13 +219,33 @@ end;
 procedure TFormGame.BomblessPictures(Sender: TObject);
 //RV: Bombenbilder löschen
 begin
-  With BombPos do
+  With BombPos[1] do
   begin
     If Field[X,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,Y*26,X*26+26,Y*26+26),ImageBackground.Canvas,Rect(X*26,Y*26,X*26+26,Y*26+26));
-    If X>0 then If Field[X-1,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect((X-1)*26,Y*26,X*26,Y*26+26),ImageBackground.Canvas,Rect((X-1)*26,Y*26,X*26,Y*26+26));
-    If X<16 then If Field[X+1,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect((X+1)*26,Y*26,(X+2)*26,Y*26+26),ImageBackground.Canvas,Rect((X+1)*26,Y*26,(X+2)*26,Y*26+26));
-    If Y>0 then If Field[X,Y-1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y-1)*26,X*26+26,Y*26),ImageBackground.Canvas,Rect(X*26,(Y-1)*26,X*26+26,Y*26));
-    If Y<16 then If Field[X,Y+1].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26),ImageBackground.Canvas,Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26));
+
+    If X>0 then If Field[X-1,Y].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect((X-1)*26,Y*26,X*26,Y*26+26),ImageBackground.Canvas,Rect((X-1)*26,Y*26,X*26,Y*26+26));
+      Field[X-1,Y].Content:=empty;
+    end;
+
+    If X<16 then If Field[X+1,Y].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect((X+1)*26,Y*26,(X+2)*26,Y*26+26),ImageBackground.Canvas,Rect((X+1)*26,Y*26,(X+2)*26,Y*26+26));
+      Field[X+1,Y].Content:=empty;
+    end;
+
+    If Y>0 then If Field[X,Y-1].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect(X*26,(Y-1)*26,X*26+26,Y*26),ImageBackground.Canvas,Rect(X*26,(Y-1)*26,X*26+26,Y*26));
+      Field[X,Y-1].Content:=empty;
+    end;
+
+    If Y<16 then If Field[X,Y+1].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26),ImageBackground.Canvas,Rect(X*26,(Y+1)*26,X*26+26,(Y+2)*26));
+      Field[X,Y+1].Content:=empty;
+    end;
   end;
 end;
 
@@ -218,7 +261,7 @@ begin
    CountDownTimer.Enabled:=false;
    exit;
   end;
- CountdownPanel.Caption := IntTOStr(StrToInt(CountdownPanel.Caption)-1);
+ CountdownPanel.Caption := IntToStr(StrToInt(CountdownPanel.Caption)-1);
 end;
 
 end.

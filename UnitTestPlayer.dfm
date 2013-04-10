@@ -11779,15 +11779,16 @@ object FormGame: TFormGame
     Left = 312
     Top = 8
   end
-  object BomblessTimer: TTimer
-    Interval = 600
-    Left = 344
-    Top = 8
-  end
   object CountDownTimer: TTimer
     Enabled = False
     OnTimer = CountDownTimerTimer
     Left = 376
+    Top = 8
+  end
+  object BomblessTimer: TTimer
+    Enabled = False
+    Interval = 600
+    Left = 344
     Top = 8
   end
 end

@@ -33,6 +33,7 @@ type
     property BombRange: Integer read FBombRange write SetBombRange;
     property NumOfBombs: Integer read FNumOfBombs write SetNumOfBombs;
     property NumOfBombsPlanted: Integer read FNumOfBombsPlanted write SetNumOfBombsPlanted;
+    property Number: Integer read FNumber;
   end;
 
 procedure CreatePlayers(NumOfPlayers:Integer);
@@ -119,7 +120,7 @@ procedure CreatePlayers(NumOfPlayers:Integer);  // PR: erzeugt Spieler
 var i: Integer;
     StartPos: TPosition;
 begin
-SetLength(Player,NumOfPlayers);
+SetLength(Player,NumOfPlayers+1);
 for i:=1 to NumOfPlayers do
   begin
     Case i of
@@ -128,7 +129,7 @@ for i:=1 to NumOfPlayers do
       StartPos.X:=0;
       StartPos.Y:=0;
       Player1:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
-      Player[0]:=Player1;
+      Player[1]:=Player1;
       Field[StartPos.X,StartPos.Y].Content:=player01;
       Field[StartPos.X+1,StartPos.Y].Content:=empty; // PR: hier wird sichergestellt, dass der Spieler Platz hat
       Field[StartPos.X,StartPos.Y+1].Content:=empty;
@@ -138,8 +139,8 @@ for i:=1 to NumOfPlayers do
       StartPos.X:=15;
       StartPos.Y:=0;
       Player2:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
-      Player[1]:=Player2;
-      Field[StartPos.X,StartPos.Y].Content:=player01;
+      Player[2]:=Player2;
+      Field[StartPos.X,StartPos.Y].Content:=player02;
       Field[StartPos.X-1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y+1].Content:=empty;
       end;
@@ -148,8 +149,8 @@ for i:=1 to NumOfPlayers do
       StartPos.X:=0;
       StartPos.Y:=15;
       Player3:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
-      Player[2]:=Player3;
-      Field[StartPos.X,StartPos.Y].Content:=player01;
+      Player[3]:=Player3;
+      Field[StartPos.X,StartPos.Y].Content:=player03;
       Field[StartPos.X+1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y-1].Content:=empty;
       end;
@@ -158,8 +159,8 @@ for i:=1 to NumOfPlayers do
       StartPos.X:=15;
       StartPos.Y:=15;
       Player4:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
-      Player[3]:=Player4;
-      Field[StartPos.X,StartPos.Y].Content:=player01;
+      Player[4]:=Player4;
+      Field[StartPos.X,StartPos.Y].Content:=player04;
       Field[StartPos.X-1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y-1].Content:=empty;
       end;

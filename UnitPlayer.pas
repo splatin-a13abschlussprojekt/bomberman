@@ -139,7 +139,7 @@ for i:=1 to NumOfPlayers do
       StartPos.Y:=0;
       Player2:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
       Player[2]:=Player2;
-      Field[StartPos.X,StartPos.Y].Content:=player01;
+      Field[StartPos.X,StartPos.Y].Content:=player02;
       Field[StartPos.X-1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y+1].Content:=empty;
       end;
@@ -149,7 +149,7 @@ for i:=1 to NumOfPlayers do
       StartPos.Y:=15;
       Player3:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
       Player[3]:=Player3;
-      Field[StartPos.X,StartPos.Y].Content:=player01;
+      Field[StartPos.X,StartPos.Y].Content:=player03;
       Field[StartPos.X+1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y-1].Content:=empty;
       end;
@@ -159,7 +159,7 @@ for i:=1 to NumOfPlayers do
       StartPos.Y:=15;
       Player4:=TPlayer.Create(i,'Player'+IntToStr(i),StartPos);
       Player[4]:=Player4;
-      Field[StartPos.X,StartPos.Y].Content:=player01;
+      Field[StartPos.X,StartPos.Y].Content:=player04;
       Field[StartPos.X-1,StartPos.Y].Content:=empty;
       Field[StartPos.X,StartPos.Y-1].Content:=empty;
       end;
