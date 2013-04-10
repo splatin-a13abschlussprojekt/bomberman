@@ -36,11 +36,7 @@ end;
 
 procedure TField.Explode;
 begin
-  case FContent of
-    meteorit,item: self.SetContent(empty);
-    player01: self.SetContent(empty); //Dinge, die passieren, wenn ein Spieler explodiert, quasi sterben und so
-    bomb: self.SetContent(empty);
-  end;
+self.SetContent(explosion);
 end;
 
 procedure TField.SetPosition(Position: TPosition);
