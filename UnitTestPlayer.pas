@@ -221,7 +221,11 @@ procedure TFormGame.BomblessPictures(Sender: TObject);
 begin
   With BombPos[1] do
   begin
-    If Field[X,Y].Content = empty then StringGrid1.Canvas.CopyRect(Rect(X*26,Y*26,X*26+26,Y*26+26),ImageBackground.Canvas,Rect(X*26,Y*26,X*26+26,Y*26+26));
+    If Field[X,Y].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect(X*26,Y*26,X*26+26,Y*26+26),ImageBackground.Canvas,Rect(X*26,Y*26,X*26+26,Y*26+26));
+      Field[X,Y].Content:= empty;
+    end;
 
     If X>0 then If Field[X-1,Y].Content = explosion then
     begin
