@@ -70,12 +70,13 @@ while (i<=FRange) and (FPosition.X+i <= 15) do
     player02: Player2.Alive:=false;
     player03: Player3.Alive:=false;
     player04: Player4.Alive:=false;
+    meteorit:
+      begin
+      Field[FPosition.X+i,FPosition.Y].Explode;
+      break;
+      end;
+    earth, bomb: break;
   end;
-  If (Field[FPosition.X+i,FPosition.Y].Content=meteorit) or (Field[FPosition.X+i,FPosition.Y].Content=earth) then
-    begin
-    Field[FPosition.X+i,FPosition.Y].Explode;
-    break;
-    end;
   Field[FPosition.X+i,FPosition.Y].Explode;
   Inc(i)
   end;
@@ -87,12 +88,13 @@ while (i<=FRange) and (FPosition.X-i >=0) do
     player02: Player2.Alive:=false;
     player03: Player3.Alive:=false;
     player04: Player4.Alive:=false;
+    meteorit:
+      begin
+      Field[FPosition.X-i,FPosition.Y].Explode;
+      break;
+      end;
+    earth, bomb: break;
   end;
-  If (Field[FPosition.X-i,FPosition.Y].Content=meteorit) or (Field[FPosition.X-i,FPosition.Y].Content=earth) then
-    begin
-    Field[FPosition.X-i,FPosition.Y].Explode;
-    break;
-    end;
   Field[FPosition.X-i,FPosition.Y].Explode;
   Inc(i)
   end;
@@ -104,12 +106,13 @@ while (i<=FRange) and (FPosition.Y+i <= 15) do
     player02: Player2.Alive:=false;
     player03: Player3.Alive:=false;
     player04: Player4.Alive:=false;
+    meteorit:
+      begin
+      Field[FPosition.X,FPosition.Y+i].Explode;
+      break;
+      end;
+    earth, bomb: break;
   end;
-  If (Field[FPosition.X,FPosition.Y+i].Content=meteorit) or (Field[FPosition.X,FPosition.Y+i].Content=earth) then
-    begin
-    Field[FPosition.X,FPosition.Y+i].Explode;
-    break;
-    end;
   Field[FPosition.X,FPosition.Y+i].Explode;
   Inc(i)
   end;
@@ -121,12 +124,13 @@ while (i<=FRange) and (FPosition.Y-i >=0) do
     player02: Player2.Alive:=false;
     player03: Player3.Alive:=false;
     player04: Player4.Alive:=false;
+    meteorit:
+      begin
+      Field[FPosition.X,FPosition.Y-i].Explode;
+      break;
+      end;
+    earth, bomb: break;
   end;
-  If (Field[FPosition.X,FPosition.Y-i].Content=meteorit) or (Field[FPosition.X,FPosition.Y-i].Content=earth) then
-    begin
-    Field[FPosition.X,FPosition.Y-i].Explode;
-    break;
-    end;
   Field[FPosition.X,FPosition.Y-i].Explode;
   Inc(i)
   end;
