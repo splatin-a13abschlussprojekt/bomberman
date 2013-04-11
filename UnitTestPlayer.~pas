@@ -81,6 +81,7 @@ var PosMem: TPosition;
     i: Integer;
 begin
 i:=ceil((AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb,Settings.PlayerSettings[2].KeyUp,Settings.PlayerSettings[2].KeyLeft,Settings.PlayerSettings[2].KeyDown,Settings.PlayerSettings[2].KeyRight,Settings.PlayerSettings[2].KeyBomb,Settings.PlayerSettings[3].KeyUp,Settings.PlayerSettings[3].KeyLeft,Settings.PlayerSettings[3].KeyDown,Settings.PlayerSettings[3].KeyRight,Settings.PlayerSettings[3].KeyBomb,Settings.PlayerSettings[4].KeyUp,Settings.PlayerSettings[4].KeyLeft,Settings.PlayerSettings[4].KeyDown,Settings.PlayerSettings[4].KeyRight,Settings.PlayerSettings[4].KeyBomb])+1)/5); // PR: Ermitteln des Spielers
+If i=0 then exit;
 If Player[i].Alive<>false then
   begin
   PosMem:=Player[i].Position;
@@ -94,17 +95,22 @@ If Player[i].Alive<>false then
     0,1,2,3:
     begin
       Case Field[Player[i].Position.X,Player[i].Position.Y].Content of
-        empty,item,player01,player02,player03,player04,explosion:
+        empty,item,player01,player02,player03,player04:
           begin
           If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
+          If (PosMem.X=Player1.Position.X) and (PosMem.Y=Player1.Position.Y) and (Player1.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player01;
+          If (PosMem.X=Player2.Position.X) and (PosMem.Y=Player2.Position.Y) and (Player2.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player02;
+          If (PosMem.X=Player3.Position.X) and (PosMem.Y=Player3.Position.Y) and (Player3.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player03;
+          If (PosMem.X=Player4.Position.X) and (PosMem.Y=Player4.Position.Y) and (Player4.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player04;
           Case i of
-            1: If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then Player[i].Alive:=false else Field[Player[i].Position.X,Player[i].Position.Y].Content:=player01;
-            2: If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then Player[i].Alive:=false else Field[Player[i].Position.X,Player[i].Position.Y].Content:=player02;
-            3: If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then Player[i].Alive:=false else Field[Player[i].Position.X,Player[i].Position.Y].Content:=player03;
-            4: If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then Player[i].Alive:=false else Field[Player[i].Position.X,Player[i].Position.Y].Content:=player04;
+            1: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player01;
+            2: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player02;
+            3: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player03;
+            4: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player04;
           end;
           end;
         meteorit,earth,bomb: Player[i].Position:=PosMem;
+        explosion: Player[i].Alive:=false;
       end;
     end;
     4:
@@ -213,7 +219,7 @@ begin
 
   with Pos do
   begin
-    ImageListExplosion.Draw(StringGrid1.Canvas, X*55, Y*55, 2);
+    ImageListExplosion.Draw(StringGrid1.Canvas, X*size, Y*size, 2);
 
     If X>0 then If Field[X-1, Y].Content <> earth then
     begin
