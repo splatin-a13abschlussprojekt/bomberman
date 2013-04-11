@@ -26,6 +26,8 @@ type TBomb = class
 
 implementation
 
+uses UnitTestPlayer;
+
 constructor TBomb.Create;  //default-constructor
 var pos:TPosition;
 begin
@@ -61,7 +63,12 @@ end;
 
 procedure TBomb.Detonate(Sender:TObject);
 var i:Integer;
+    pos: TPosition;
 begin
+pos.X:=FPosition.X;
+pos.Y:=FPosition.Y;
+FormGame.Bomb1Pictures(FormGame, pos, Self);
+
 i:=1;
 while (i<=FRange) and (FPosition.X+i <= 15) do
   begin
@@ -155,5 +162,4 @@ begin
   FOwner:=Owner;
 end;
 
-end.
- 
+end. 
