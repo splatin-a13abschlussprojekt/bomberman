@@ -29,12 +29,13 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
     procedure Refresh(Sender: TObject; var Pos: TPosition);
-    procedure Button1Click(Sender: TObject);
     procedure RefreshTimerTimer(Sender: TObject);
     procedure Bomb1Pictures(Sender: TObject; var Pos: TPosition; Bomb: TBomb);
     procedure BomblessPictures(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CountDownTimerTimer(Sender: TObject);
+    procedure Button1MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer); //aufrufen mit Button1MouseUp(Sender,mbLeft//linke Maustaste,[]{Shift nicht aktiviert},PosX,PosY{Position, wo geklickt wurde})
   private
     { Private declarations }
   public
@@ -172,17 +173,6 @@ for i:=0 to 15 do for j:=0 to 15 do
   end;
 end;
 
-procedure TFormGame.Button1Click(Sender: TObject); // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
-begin
- LoadInterface(FormGame);
- {Countdown (BB)}
- if Settings.SuddenDeathSettings.activated=true then
-  begin
-   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time); //Zeit bis zum Sudden Death auslesen (wenn aktiviert)
-   CountDownTimer.Enabled:=true; //jede Sekunde die übrige Zeit um 1 verringern
-  end;
-end;
-
 procedure TFormGame.RefreshTimerTimer(Sender: TObject);
 var i,j,k: Integer;
     Pos: TPosition;
@@ -303,6 +293,18 @@ begin
    exit;
   end;
  CountdownPanel.Caption := IntToStr(StrToInt(CountdownPanel.Caption)-1);
+end;
+
+procedure TFormGame.Button1MouseUp(Sender: TObject; Button: TMouseButton; // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
+  Shift: TShiftState; X, Y: Integer);
+begin
+ LoadInterface(FormGame);
+ {Countdown (BB)}
+ if Settings.SuddenDeathSettings.activated=true then
+  begin
+   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time); //Zeit bis zum Sudden Death auslesen (wenn aktiviert)
+   CountDownTimer.Enabled:=true; //jede Sekunde die übrige Zeit um 1 verringern
+  end;
 end;
 
 end.
