@@ -1,9 +1,9 @@
 object FormMenu: TFormMenu
-  Left = 273
-  Top = 181
+  Left = 133
+  Top = 1
   Width = 915
   Height = 718
-  Caption = 'FormMenu'
+  Caption = 'Space-Bomberman: Men'#252
   Color = clHotLight
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18699,7 +18699,7 @@ object FormMenu: TFormMenu
     Font.Name = 'Arial'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
     OnClick = CloseButtonClick
   end
   object TitlePanel: TPanel
@@ -18720,13 +18720,13 @@ object FormMenu: TFormMenu
     ParentFont = False
     ParentShowHint = False
     ShowHint = False
-    TabOrder = 3
+    TabOrder = 4
   end
   object Button1: TButton
     Left = 136
-    Top = 624
+    Top = 622
     Width = 137
-    Height = 49
+    Height = 50
     Caption = 'Handbuch'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -18734,7 +18734,7 @@ object FormMenu: TFormMenu
     Font.Name = 'Arial'
     Font.Style = []
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 2
     OnClick = Button1Click
   end
 end
