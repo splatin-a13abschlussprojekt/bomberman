@@ -1,6 +1,6 @@
 object FormGame: TFormGame
-  Left = 312
-  Top = -3
+  Left = 263
+  Top = 12
   Width = 964
   Height = 1020
   Caption = 'FormGame'

@@ -57,9 +57,8 @@ uses
 procedure TFormGame.FormCreate(Sender: TObject);
 var i,j,k: Integer;
 begin
-{Farbe des CountdownPanels}
-  CountdownPanel.Color:=RGB(31,31,31);
- {}
+
+  CountdownPanel.Color:=RGB(31,31,31); {Farbe des CountdownPanels in Standard-Stil}
   CreateFields;
   CreatePlayers(Settings.NumOfPlayers);
   //SetLength(Bombs,0);
@@ -180,8 +179,8 @@ begin
  {Countdown (BB)}
  if Settings.SuddenDeathSettings.activated=true then
   begin
-   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time);
-   CountDownTimer.Enabled:=true;
+   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time); //Zeit bis zum Sudden Death auslesen (wenn aktiviert)
+   CountDownTimer.Enabled:=true; //jede Sekunde die übrige Zeit um 1 verringern
   end;
 end;
 
@@ -293,7 +292,7 @@ end;
 
 procedure TFormGame.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
- FormMenu.WindowState:=WsNormal;
+ FormMenu.WindowState:=WsNormal;//beim schließen der Formgame-Form, erhät FormMenu wieder Normale größe
 end;
 
 procedure TFormGame.CountDownTimerTimer(Sender: TObject);
@@ -301,6 +300,7 @@ begin
  if StrToInt(CountdownPanel.Caption) = 0 then
   begin
    CountDownTimer.Enabled:=false;
+   //HIER VERLINKUNG ZUR PROZEDUR; DIE SUDDEN DEATH AUSFÜHRT
    exit;
   end;
  CountdownPanel.Caption := IntToStr(StrToInt(CountdownPanel.Caption)-1);

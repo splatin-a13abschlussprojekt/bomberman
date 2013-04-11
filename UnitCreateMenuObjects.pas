@@ -1,23 +1,23 @@
 unit UnitCreateMenuObjects;   //BB - Die Groupboxen für die Spieler Einstellungen werden erstellt, sowie
-                                      // die Images zum auswählen der UFOs (außerhalb der Groupbox)
-interface
+                              // die Images zum auswählen der UFOs (außerhalb der Groupbox)
+interface                     //Objekte für allgemeine Einstellungen
 
 uses Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
      Dialogs, StdCtrls, ExtCtrls;
 
  {Prozeduren zum Erstellen und setzten der Eigenschaften (Groupbox)}
     function StandardFont():TFont; //Arial 12
-    procedure SetDragDropImageforGroupbox(i:Byte); //als 9.
-    procedure SetControlLabel(i,j:Byte);     //als 8.
-    procedure StandardControl(i,j:Byte);
-    procedure SetControlPanel(i,j:Byte);     //als 7.
-    procedure SetControlButton(i:Byte);      //als 6.
-    procedure SetNameEdit(i:Byte);           //als 5.
-    procedure SetNameLabel(i:Byte);          //als 4.
-    procedure SetHeader(i:Byte);             //als 3.
-    procedure SetPanels(i:Byte);             //als 2.
-    procedure CreatePlayerGroupbox(i:Byte);  //als 1.
- {Settings}
+    procedure SetDragDropImageforGroupbox(i:Byte); //als 9. ..
+    procedure SetControlLabel(i,j:Byte);     //als 8. ..
+    procedure StandardControl(i,j:Byte);     //Standardsteuerung
+    procedure SetControlPanel(i,j:Byte);     //als 7. ..
+    procedure SetControlButton(i:Byte);      //als 6. ..
+    procedure SetNameEdit(i:Byte);           //als 5. ..
+    procedure SetNameLabel(i:Byte);          //als 4. ..
+    procedure SetHeader(i:Byte);             //als 3. aufgerufen
+    procedure SetPanels(i:Byte);             //als 2. aufgerufen
+    procedure CreatePlayerGroupbox(i:Byte);  //als 1. aufgerufen
+ {Allgemeine Einstellungen}
     procedure CreateSettingObjects();        //CheckImage für Sudden Death
     procedure SetSettingObjects();
 
@@ -30,15 +30,15 @@ begin
  StandardFont:=FormMenu.Font; //damit andere Font-Eigenschaften gefüllt sind ; sonst Fehler
  Result.Size:=12;
  Result.Name:='Arial';
- Result.Style:=[];
+ Result.Style:=[];   //nicht Fett/Kursiv
 end;
 
 procedure SetDragDropImageforGroupbox(I:Byte);
 begin
- with PlayerGroupbox[i].DragDropImage.Ground do
-  begin
-   Name:='GroundPanel'+IntToStr(i);
-   ParentBackground:=false;
+ with PlayerGroupbox[i].DragDropImage.Ground do  //Jedes Drag drop Image hat einen UNtergrund (Ground) --> ist fest verankert
+  begin                                          //darüber befindet sich ein Panel
+   Name:='GroundPanel'+IntToStr(i);              //in dem Panel das Image
+   ParentBackground:=false;                      //Grund: ein Image kann nicht als vorderstes Objekt eingestellt werden, ein Panel schon
    ParentColor:=false;
    Parent:=PlayerGroupbox[i].Panel;
    BevelInner:=bvNone;
@@ -70,7 +70,6 @@ begin
    BringToFront;
    Visible:=true;
   end;
- //PlayerGroupbox[i].DragDropImage.Panel:=PlayerGroupbox[i].DragDropImage.Ground;
  with PlayerGroupbox[i].DragDropImage.Image do
   begin
    Parent:=TPanel(FormMenu.FindComponent('ImagePanel'+IntToStr(i)));  //PlayerGroupbox[i].DragDropImage.Panel funktioniert nicht..??!!
@@ -83,8 +82,8 @@ begin
    Left:=0;
    case i of
     1: begin
-        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\blue-ufo.bmp');
-        PlayerGroupbox[i].DragDropImage.Color:='blue';
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\blue-ufo.bmp');  //Pfad des Images kann später nicht ermittelt werden, deshalb existiert nächste variable
+        PlayerGroupbox[i].DragDropImage.Color:='blue';                                  //Bild wird nur in den Arbeitsspeicher geladen
        end;
     2: begin
         Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\green-ufo.bmp');
@@ -99,19 +98,19 @@ begin
         PlayerGroupbox[i].DragDropImage.Color:='yellow';
        end;
    end;
-   OnMouseDown:=FormMenu.ImageMouseDown;
+   OnMouseDown:=FormMenu.ImageMouseDown;  //verknüpfen
    OnMouseUp:=FormMenu.ImageMouseUp;
    OnMouseMove:=FormMenu.ImageMouseMove;
    visible:=true;
   end;
 end;
 
-procedure SetControlLabel(i,j:Byte);
+procedure SetControlLabel(i,j:Byte);//Beschriftung
 begin
  with PlayerGroupbox[i].ControlLabel[j] do
   begin
    Parent:=Playergroupbox[i].Panel;
-   case j of
+   case j of                              
     1: Name:='UpLabel'+IntToStr(i);
     2: Name:='DownLabel'+IntToStr(i);
     3: Name:='LeftLabel'+IntToStr(i);
@@ -328,8 +327,8 @@ begin
    Height:=25;
    Top:=FormMenu.NumberOfPlayersLabel.Top-5;
    Left:=10;
-   Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp');
-   OnMouseUp:=FormMenu.SettingSuddendeathMouseUp;
+   Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp'); //standardmäßig ausgeschaltet
+   OnMouseUp:=FormMenu.SettingSuddendeathMouseUp;   //OnMouseUp-Event verknüpfen
    Visible:=true;
   end;
 end;

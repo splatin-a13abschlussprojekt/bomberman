@@ -285,7 +285,7 @@ begin
      width:=200;              //Größe
      Height:=400;
      Left:=20+(20+width)*(i-1);//Panels werden versetzt nebeneinander platziert
-     Top:=175;
+     Top:=210;
      Color:=RGB(31,31,31);
      Visible:=true;
     end;

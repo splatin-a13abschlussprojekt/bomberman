@@ -1,6 +1,6 @@
 object FormMenu: TFormMenu
   Left = 253
-  Top = 135
+  Top = 82
   Width = 915
   Height = 718
   Caption = 'FormMenu'
@@ -18709,7 +18709,7 @@ object FormMenu: TFormMenu
     Height = 89
     Align = alTop
     BevelOuter = bvNone
-    Caption = 'Space-bomberman'
+    Caption = 'Space-Bomberman'
     Color = clDefault
     Font.Charset = ANSI_CHARSET
     Font.Color = clWhite

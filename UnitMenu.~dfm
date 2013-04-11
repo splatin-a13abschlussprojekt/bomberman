@@ -1,6 +1,6 @@
 object FormMenu: TFormMenu
-  Left = 254
-  Top = 5
+  Left = 253
+  Top = 135
   Width = 915
   Height = 718
   Caption = 'FormMenu'

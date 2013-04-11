@@ -1,4 +1,4 @@
-unit UnitMenu;         //BB
+unit UnitMenu;         //BB - Menü
 
 interface
 
@@ -74,7 +74,7 @@ type
     StartButton: TButton;
     CloseButton: TButton;
     Label1: TLabel;
-    RoundsEdit: TEdit;
+    RoundsEdit: TEdit;     //Rounds gibt maximale anzahl der Siege an
     RoundsUpImage: TImage;
     RoundsDownImage: TImage;
     TitlePanel: TPanel;
@@ -128,7 +128,7 @@ var
   FormMenu: TFormMenu;
   PlayerGroupbox : Array[1..4] of TPlayerGroupbox; {Für die Spielereinstellungen}
   SettingSuddendeathImage : TCheckImage; {CheckImage wird als Objekt erstellt}
-  Settings : TSettings;
+  Settings : TSettings; {hier sind alle Einstellungen gespeichert --> zum späteren auslesen}
   GroupNumber: Byte; {Nummer der Gruppe, in dem die Steuerung geändert wird}
   PanelNumber:Byte; {Nummer des Panels, in dem die Steuerung geändert wird}
   MousePos :TPoint; {Zum Drag&Drop für die Ufos}
@@ -373,9 +373,9 @@ begin
  if SettingSuddendeathEdit.Text='' then SettingSuddendeathEdit.Text:='180';//damit Editfeld nicht leer ist
 end;
 
-procedure TFormMenu.UpdateSettings();
+procedure TFormMenu.UpdateSettings(); //Auslesen der Einstellungen und in Settings speichern
  var i,j : Byte;
-begin                                         //damit '[taste]' nicht gespeichert wird
+begin                                         //damit '[taste]' nicht gespeichert wird --> Panel wird dann mit Standardsteuerung belegt
  for i:=1 to 4 do for j:=1 to 5 do if length(PlayerGroupbox[i].COntrolPanel[j].Caption)>1 then UnitCreateMenuObjects.StandardControl(i,j);
  With Settings do
   begin
@@ -389,13 +389,13 @@ begin                                         //damit '[taste]' nicht gespeicher
    else
     begin
      SuddenDeathSettings.activated:=false;
-     SuddenDeathSettings.time:=180;
+     SuddenDeathSettings.time:=180;//Standardlänge bis zum Sudden death
     end;
    for i:=1 to 4 do
     begin
      With PlayerSettings[i] do
       begin
-       Name:=    Playergroupbox[i].NameEdit.Text;
+       Name:=    Playergroupbox[i].NameEdit.Text;              //Spielereinstellungen nacheinander abgehen
        KeyUp:=   Playergroupbox[i].ControlPanel[1].Caption[1];
        KeyDown:= Playergroupbox[i].ControlPanel[2].Caption[1];
        KeyLeft:= Playergroupbox[i].ControlPanel[3].Caption[1];
@@ -413,7 +413,6 @@ begin
  FormMenu.WindowState:=wsMinimized; //minimieren
  {}
  FormGame.FormCreate(FormMenu);
- //FormGame.LoadInterface(FormGame);   // GEHT NICHT???!!!
  {}
  FormGame.ShowModal; //auf FormMenu kann nicht mehr zugegriffen werden
  
