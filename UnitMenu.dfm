@@ -18724,9 +18724,9 @@ object FormMenu: TFormMenu
   end
   object Button1: TButton
     Left = 136
-    Top = 624
+    Top = 622
     Width = 137
-    Height = 49
+    Height = 50
     Caption = 'Handbuch'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
