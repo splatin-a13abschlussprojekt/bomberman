@@ -1,2 +1,0 @@
-[Fehler] UnitTestPlayer.pas(216): Inkompatible Typen: 'TNotifyEvent' und 'procedure, untyped pointer or untyped parameter'
-[Fataler Fehler] ProjectBomberman.dpr(15): Verwendete Unit 'UnitTestPlayer.pas' kann nicht compiliert werden
