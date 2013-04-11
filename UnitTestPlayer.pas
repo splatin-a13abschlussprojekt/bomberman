@@ -46,7 +46,7 @@ var
   BombPos: Array[1..4] of TPosition;
   Bombs: Array[1..4] of TBomb;
   ImageListPlayer: Array[1..4] of TImageList;
-const size=26;
+const size=40;
 implementation
 
 uses
@@ -136,8 +136,7 @@ begin
   Case Field[Pos.X,Pos.Y].Content of
     explosion: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit;
     empty: StringGrid1.Canvas.CopyRect(Rect(Pos.X*size,Pos.Y*size,Pos.X*size+size,Pos.Y*size+size),ImageBackground.Canvas,Rect(Pos.X*size,Pos.Y*size,Pos.X*size+size,Pos.Y*size+size)); // PR: mittels CopyRect Hintergrund aus  | //RV: Hintergrundbild (pict) | laden
-    bomb: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit Else ImageListBombs.Draw(StringGrid1.Canvas,Pos.X*size,Pos.Y
-    *size,0);
+    //bomb: If (Pos.X=Player1.Position.X) and (Pos.Y=Player1.Position.Y) then exit Else ImageListBombs.Draw(StringGrid1.Canvas,Pos.X*size,Pos.Y*size,0);
     player01: ImageListPlayer[1].Draw(StringGrid1.Canvas, Pos.X*size,Pos.Y*size,8);//ImageListUfos.Draw(StringGrid1.Canvas, Pos.X*size,Pos.Y*size,0);
     player02: ImageListPlayer[2].Draw(StringGrid1.Canvas, Pos.X*size,Pos.Y*size,8);
     player03: ImageListPlayer[3].Draw(StringGrid1.Canvas, Pos.X*size,Pos.Y*size,8);
@@ -149,7 +148,7 @@ procedure TFormGame.LoadInterface(Sender: TObject); // PR: Testvisualisierung de
 var i,j,meteoritenauswahl: Integer;
 begin
 //RV: Hintergrund laden
-StringGrid1.Canvas.CopyRect(Rect(0,0,948,948),ImageBackground.Canvas,Rect(0,0,948,948));
+StringGrid1.Canvas.CopyRect(Rect(0,0,750,750),ImageBackground.Canvas,Rect(0,0,750,750));
 //RV: Delphi hat extrem lange geladen, als es versucht hat ein 425x425 Bild aus einer Image-List zu laden...
 
 //RV: Content der Felder anzeigen

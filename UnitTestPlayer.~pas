@@ -46,7 +46,7 @@ var
   BombPos: Array[1..4] of TPosition;
   Bombs: Array[1..4] of TBomb;
   ImageListPlayer: Array[1..4] of TImageList;
-const size=26;
+const size=40;
 implementation
 
 uses
@@ -149,7 +149,7 @@ procedure TFormGame.LoadInterface(Sender: TObject); // PR: Testvisualisierung de
 var i,j,meteoritenauswahl: Integer;
 begin
 //RV: Hintergrund laden
-StringGrid1.Canvas.CopyRect(Rect(0,0,948,948),ImageBackground.Canvas,Rect(0,0,948,948));
+StringGrid1.Canvas.CopyRect(Rect(0,0,750,750),ImageBackground.Canvas,Rect(0,0,750,750));
 //RV: Delphi hat extrem lange geladen, als es versucht hat ein 425x425 Bild aus einer Image-List zu laden...
 
 //RV: Content der Felder anzeigen
