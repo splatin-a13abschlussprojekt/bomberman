@@ -1,8 +1,8 @@
 object FormGame: TFormGame
-  Left = 447
-  Top = 102
-  Width = 470
-  Height = 580
+  Left = 312
+  Top = -3
+  Width = 964
+  Height = 1020
   Caption = 'FormGame'
   Color = clHotLight
   Font.Charset = DEFAULT_CHARSET
@@ -6177,8 +6177,8 @@ object FormGame: TFormGame
   object ImageBackground: TImage
     Left = 16
     Top = 64
-    Width = 425
-    Height = 425
+    Width = 897
+    Height = 897
     Picture.Data = {
       07544269746D617006930100424D06930100000000007600000028000000C401
       0000C4010000010004000000000090920100732C0000732C0000100000000000
@@ -9408,13 +9408,13 @@ object FormGame: TFormGame
   end
   object StringGrid1: TStringGrid
     Left = 16
-    Top = 63
-    Width = 425
-    Height = 425
+    Top = 64
+    Width = 897
+    Height = 897
     BorderStyle = bsNone
     ColCount = 16
-    DefaultColWidth = 25
-    DefaultRowHeight = 25
+    DefaultColWidth = 55
+    DefaultRowHeight = 55
     Enabled = False
     FixedCols = 0
     RowCount = 16
@@ -9431,8 +9431,8 @@ object FormGame: TFormGame
     OnClick = Button1Click
   end
   object CountdownPanel: TPanel
-    Left = 352
-    Top = 16
+    Left = 840
+    Top = 8
     Width = 89
     Height = 41
     BevelOuter = bvNone
@@ -11794,8 +11794,8 @@ object FormGame: TFormGame
   object ImageListRed: TImageList
     Height = 25
     Width = 25
-    Left = 24
-    Top = 504
+    Left = 8
+    Top = 912
     Bitmap = {
       494C010109000E00040019001900FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000064000000640000000100200000000000409C
@@ -13107,8 +13107,8 @@ object FormGame: TFormGame
   object ImageListYellow: TImageList
     Height = 25
     Width = 25
-    Left = 64
-    Top = 504
+    Left = 48
+    Top = 912
     Bitmap = {
       494C010109000E00040019001900FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000064000000640000000100200000000000409C
@@ -14420,8 +14420,8 @@ object FormGame: TFormGame
   object ImageListGreen: TImageList
     Height = 25
     Width = 25
-    Left = 104
-    Top = 504
+    Left = 88
+    Top = 912
     Bitmap = {
       494C010109000E00040019001900FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000064000000640000000100200000000000409C
@@ -15733,8 +15733,8 @@ object FormGame: TFormGame
   object ImageListBlue: TImageList
     Height = 25
     Width = 25
-    Left = 144
-    Top = 504
+    Left = 128
+    Top = 912
     Bitmap = {
       494C010109000E00040019001900FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000064000000640000000100200000000000409C
