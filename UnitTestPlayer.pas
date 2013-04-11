@@ -51,12 +51,12 @@ type
 
 var
   FormGame: TFormGame;
-  BombPos: Array[1..4] of TPosition;
-  Bombs: Array[1..4] of TBomb;
-  ImageListPlayer: Array[1..4] of TImageList;
+  BombPos: Array[1..4] of TPosition;  //RV: z.Z. noch auf 4 beschränkt, da es noch keine Items gibt
+  Bombs: Array[1..4] of TBomb;       //RV: s.o.
+  ImageListPlayer: Array[1..4] of TImageList;  //RV: damit wird dann später dem jeweiligen Player die ImageList der im Menü ausgesuchte Farbe zugeordnet
   BombNum: Integer;
 
-const size=40;
+const size=40;    //RV: gibt die Größe der Felder an, daher nenne ich sie auch Feldfaktor
 implementation
 
 uses
@@ -199,9 +199,9 @@ for i:=0 to 15 do for j:=0 to 15 do
   If Field[i,j].Content <> FieldMem[i,j].Content then Refresh(FormGame,Pos);
   If Field[i,j].Content = bomb then
     begin
-      BombPos[k].X:=i;
-      BombPos[k].Y:=j;
-      inc(k);
+      //BombPos[k].X:=i;
+      //BombPos[k].Y:=j;
+      //inc(k);
       Refresh(FormGame,Pos);
     end;
   end;
@@ -213,7 +213,6 @@ procedure TFormGame.Bomb1Pictures(Sender: TObject; var Pos: TPosition; Bomb: TBo
 //RV: Bombenbilder malen
 var ImageListExplosion: TImageList;
     i,j: Integer;
-    //BomblessTimer: Array[1..4] of TTimer;
 begin
   ImageListExplosion:=TImageList.Create(nil);
   for i:=1 to 4 do If Bomb.Owner=Player[i] then
@@ -253,10 +252,6 @@ begin
     end;
   end;
 
-{  BomblessTimer[1]:=TTimer.Create(nil);
-  BomblessTimer[1].Interval:=600;
-  BomblessTimer[1].Enabled:=false;}
-
   case j of
     1: begin
     BomblessTimer1.Enabled:=true;
@@ -283,7 +278,7 @@ end;
 
 
 procedure TFormGame.BomblessPictures1(Sender: TObject);
-//RV: Bombenbilder löschen
+//RV: Bombenbilder der Bombe von Player1 löschen
 begin
   With BombPos[1] do
   begin
@@ -321,7 +316,7 @@ begin
 end;
 
 procedure TFormGame.BomblessPictures2(Sender: TObject);
-//RV: Bombenbilder löschen
+//RV: Bombenbilder der Bombe von Player2 löschen
 begin
   With BombPos[2] do
   begin
@@ -359,7 +354,7 @@ begin
 end;
 
 procedure TFormGame.BomblessPictures3(Sender: TObject);
-//RV: Bombenbilder löschen
+//RV: Bombenbilder der Bombe von Player3 löschen
 begin
   With BombPos[3] do
   begin
@@ -397,7 +392,7 @@ begin
 end;
 
 procedure TFormGame.BomblessPictures4(Sender: TObject);
-//RV: Bombenbilder löschen
+//RV: Bombenbilder der Bombe von Player4 löschen
 begin
   With BombPos[4] do
   begin
@@ -436,7 +431,7 @@ end;
 
 procedure TFormGame.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
- FormMenu.WindowState:=WsNormal;//beim schließen der Formgame-Form, erhät FormMenu wieder Normale größe
+ FormMenu.WindowState:=WsNormal;//BB: beim Schließen der Formgame-Form, erhät FormMenu wieder Normale größe
 end;
 
 procedure TFormGame.CountDownTimerTimer(Sender: TObject);
@@ -444,7 +439,7 @@ begin
  if StrToInt(CountdownPanel.Caption) = 0 then
   begin
    CountDownTimer.Enabled:=false;
-   //HIER VERLINKUNG ZUR PROZEDUR; DIE SUDDEN DEATH AUSFÜHRT
+   //BB: HIER VERLINKUNG ZUR PROZEDUR; DIE SUDDEN DEATH AUSFÜHRT
    exit;
   end;
  CountdownPanel.Caption := IntToStr(StrToInt(CountdownPanel.Caption)-1);
@@ -457,8 +452,8 @@ begin
  {Countdown (BB)}
  if Settings.SuddenDeathSettings.activated=true then
   begin
-   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time); //Zeit bis zum Sudden Death auslesen (wenn aktiviert)
-   CountDownTimer.Enabled:=true; //jede Sekunde die übrige Zeit um 1 verringern
+   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time); //BB: Zeit bis zum Sudden Death auslesen (wenn aktiviert)
+   CountDownTimer.Enabled:=true; //BB: jede Sekunde die übrige Zeit um 1 verringern
   end;
 end;
 

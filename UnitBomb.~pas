@@ -67,7 +67,6 @@ var i:Integer;
 begin
 pos.X:=FPosition.X;
 pos.Y:=FPosition.Y;
-FormGame.Bomb1Pictures(FormGame, pos, Self);
 
 i:=1;
 while (i<=FRange) and (FPosition.X+i <= 15) do
@@ -144,6 +143,7 @@ while (i<=FRange) and (FPosition.Y-i >=0) do
 If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false;
 Field[FPosition.X,FPosition.Y].Explode;
 Owner.NumOfBombsPlanted:=Owner.NumOfBombsPlanted-1;
+FormGame.Bomb1Pictures(FormGame, pos, Self);
 self.Destroy;
 end;
 
