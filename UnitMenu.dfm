@@ -1,6 +1,6 @@
 object FormMenu: TFormMenu
-  Left = 253
-  Top = 82
+  Left = 273
+  Top = 181
   Width = 915
   Height = 718
   Caption = 'FormMenu'
@@ -18721,5 +18721,20 @@ object FormMenu: TFormMenu
     ParentShowHint = False
     ShowHint = False
     TabOrder = 3
+  end
+  object Button1: TButton
+    Left = 136
+    Top = 624
+    Width = 137
+    Height = 49
+    Caption = 'Handbuch'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Arial'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+    OnClick = Button1Click
   end
 end

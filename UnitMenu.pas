@@ -78,6 +78,7 @@ type
     RoundsUpImage: TImage;
     RoundsDownImage: TImage;
     TitlePanel: TPanel;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure ControlButtonKeyPress(Sender: TObject; var Key: Char);
     procedure PanelExpectKey();
@@ -118,6 +119,7 @@ type
     procedure SetSettings();
     procedure LoadSettings();
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -519,6 +521,11 @@ begin
  UpdateSettings();
  SaveSettings();
  DeleteAllMenuObjects();
+end;
+
+procedure TFormMenu.Button1Click(Sender: TObject);
+begin
+ShellExecute(Handle,NIL,PCHAR(ExtractFilePath(ParamStr(0))+'Files\Nutzerhandbuch.pdf'),PCHAR(''),NIL, SW_Show);
 end;
 
 end.
