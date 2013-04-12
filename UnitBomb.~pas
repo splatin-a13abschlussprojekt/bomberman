@@ -63,9 +63,9 @@ end;
 
 procedure TBomb.Detonate(Sender:TObject);
 var i:Integer;
-    pos: TPosition;
+    pos: TPosition;    //RV: Position der Bombe, wird später mit übergeben
 begin
-pos.X:=FPosition.X;
+pos.X:=FPosition.X;   //RV: Festsetzen der Position
 pos.Y:=FPosition.Y;
 
 i:=1;

@@ -67,7 +67,7 @@ var i:Integer;
 begin
 pos.X:=FPosition.X;   //RV: Festsetzen der Position
 pos.Y:=FPosition.Y;
-
+// PR: Bei Explosion wird Umfeld der Bombe in jede Richtung untersucht und je nach Inhalt der Felder entsprechend verfahren
 i:=1;
 while (i<=FRange) and (FPosition.X+i <= 15) do
   begin
@@ -140,7 +140,7 @@ while (i<=FRange) and (FPosition.Y-i >=0) do
   Field[FPosition.X,FPosition.Y-i].Explode;
   Inc(i)
   end;
-If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false;
+If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false; // PR: Überprüfung der Bombenposition, falls sich dort Spieler aufhält
 Field[FPosition.X,FPosition.Y].Explode;
 Owner.NumOfBombsPlanted:=Owner.NumOfBombsPlanted-1;
 FormGame.Bomb1Pictures(FormGame, pos, Self);

@@ -90,11 +90,11 @@ var PosMem: TPosition;
     i: Integer;
 begin
 i:=ceil((AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb,Settings.PlayerSettings[2].KeyUp,Settings.PlayerSettings[2].KeyLeft,Settings.PlayerSettings[2].KeyDown,Settings.PlayerSettings[2].KeyRight,Settings.PlayerSettings[2].KeyBomb,Settings.PlayerSettings[3].KeyUp,Settings.PlayerSettings[3].KeyLeft,Settings.PlayerSettings[3].KeyDown,Settings.PlayerSettings[3].KeyRight,Settings.PlayerSettings[3].KeyBomb,Settings.PlayerSettings[4].KeyUp,Settings.PlayerSettings[4].KeyLeft,Settings.PlayerSettings[4].KeyDown,Settings.PlayerSettings[4].KeyRight,Settings.PlayerSettings[4].KeyBomb])+1)/5); // PR: Ermitteln des Spielers
-If i=0 then exit;
+If i=0 then exit; // PR: Abbruch, falls ungültige Eingabe
 If Player[i].Alive<>false then
   begin
-  PosMem:=Player[i].Position;
-  Case AnsiIndexText(Key,[Settings.PlayerSettings[i].KeyUp,Settings.PlayerSettings[i].KeyLeft,Settings.PlayerSettings[i].KeyDown,Settings.PlayerSettings[i].KeyRight]) of
+  PosMem:=Player[i].Position; // PR: Speicherung der alten Position
+  Case AnsiIndexText(Key,[Settings.PlayerSettings[i].KeyUp,Settings.PlayerSettings[i].KeyLeft,Settings.PlayerSettings[i].KeyDown,Settings.PlayerSettings[i].KeyRight]) of // PR: Auslesen der Steuerungseinstellungen und Vergleich mit Eingabe bestimmt Bewegungsrichtung
     0: Player[i].Move(U);
     1: Player[i].Move(L);
     2: Player[i].Move(D);
@@ -103,7 +103,7 @@ If Player[i].Alive<>false then
   case AnsiIndexText(Key,[Settings.PlayerSettings[i].KeyUp,Settings.PlayerSettings[i].KeyLeft,Settings.PlayerSettings[i].KeyDown,Settings.PlayerSettings[i].KeyRight,Settings.PlayerSettings[i].KeyBomb]) of
     0,1,2,3:
     begin
-      Case Field[Player[i].Position.X,Player[i].Position.Y].Content of
+      Case Field[Player[i].Position.X,Player[i].Position.Y].Content of // PR: unterschiedliches Verhalten je nach Inhalt des Zielfeldes
         empty,item,player01,player02,player03,player04:
           begin
           If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
@@ -128,7 +128,7 @@ If Player[i].Alive<>false then
     end;
     4:
     begin
-    If Player[i].NumOfBombsPlanted<Player[i].NumOfBombs then
+    If Player[i].NumOfBombsPlanted<Player[i].NumOfBombs then // PR: Anzahl der gelegten Bomben darf Maximalanzahl nicht überschreiten
       begin
       //SetLength(Bombs,high(Bombs)+2);
       //Bombs[high(Bombs)]:=TBomb.Create(Player[i],2000);
