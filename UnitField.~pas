@@ -35,8 +35,20 @@ begin
 end;
 
 procedure TField.Explode;
+var i: Integer;
 begin
-self.SetContent(explosion);
+If content<>meteorit then
+  begin
+  self.SetContent(explosion);
+  exit;
+  end;
+Randomize;
+i:=Random(30)+1;
+Case i of
+  1..5: self.SetContent(bombup);
+  6..11: self.SetContent(energyup);
+  12..30: self.SetContent(explosion);
+end;
 end;
 
 procedure TField.SetPosition(Position: TPosition);

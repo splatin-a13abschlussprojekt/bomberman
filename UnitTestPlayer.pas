@@ -115,13 +115,20 @@ If Player[i].Alive<>false then
     0,1,2,3:
     begin
       Case Field[Player[i].Position.X,Player[i].Position.Y].Content of // PR: unterschiedliches Verhalten je nach Inhalt des Zielfeldes
-        empty,item,player01,player02,player03,player04:
+        empty,bombup,energyup,explosion,player01,player02,player03,player04:
           begin
           If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
           If (PosMem.X=Player1.Position.X) and (PosMem.Y=Player1.Position.Y) and (Player1.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player01;
           If (PosMem.X=Player2.Position.X) and (PosMem.Y=Player2.Position.Y) and (Player2.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player02;
           If (PosMem.X=Player3.Position.X) and (PosMem.Y=Player3.Position.Y) and (Player3.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player03;
           If (PosMem.X=Player4.Position.X) and (PosMem.Y=Player4.Position.Y) and (Player4.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player04;
+          If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then
+            begin
+            Player[i].Alive:=false;
+            exit;
+            end;
+          If Field[Player[i].Position.X,Player[i].Position.Y].Content=bombup then Player[i].NumOfBombs:=Player[i].NumOfBombs+1;
+          If Field[Player[i].Position.X,Player[i].Position.Y].Content=energyup then Player[i].BombRange:=Player[i].BombRange+1;
           Case i of
             1: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player01;
             2: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player02;
@@ -130,11 +137,6 @@ If Player[i].Alive<>false then
           end;
           end;
         meteorit,earth,bomb: Player[i].Position:=PosMem;
-        explosion:
-          begin
-          Player[i].Alive:=false;
-          If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
-          end;
       end;
     end;
     4:
@@ -191,7 +193,7 @@ for i:=0 to 15 do for j:=0 to 15 do
                   ImageListObjects.Draw(StringGrid1.Canvas, i*size, j*size, meteoritenauswahl);
                 end;
       earth: ImageListObjects.Draw(StringGrid1.Canvas, i*size, j*size,0);
-      item: StringGrid1.Cells[i,j]:='I';
+      bombup,energyup: StringGrid1.Cells[i,j]:='I';
       player01: ImageListPlayer[1].Draw(StringGrid1.Canvas, i*size,j*size,8);
       player02: ImageListPlayer[2].Draw(StringGrid1.Canvas, i*size,j*size,8);
       player03: ImageListPlayer[3].Draw(StringGrid1.Canvas, i*size,j*size,8);

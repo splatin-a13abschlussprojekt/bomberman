@@ -35,8 +35,20 @@ begin
 end;
 
 procedure TField.Explode;
+var i: Integer;
 begin
-self.SetContent(explosion);
+If content<>meteorit then
+  begin
+  self.SetContent(explosion);
+  exit;
+  end;
+Randomize;
+i:=Random(30)+1; // PR: zufälliges Erscheinen eines Items, wenn ein Meteorit zerstört wird
+Case i of
+  1..4: self.SetContent(bombup); // PR: P=2/15
+  5..10: self.SetContent(energyup); // PR: P=1/5
+  11..30: self.SetContent(explosion); // PR: P=2/3
+end;
 end;
 
 procedure TField.SetPosition(Position: TPosition);

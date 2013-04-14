@@ -326,7 +326,7 @@ begin
   begin
    with SuddenDeathImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
      SettingSuddenDeathLabel2.Visible:=true;  //Objekte sichtbar machen
      SettingSuddenDeathLabel3.Visible:=true;
      SettingSuddendeathEdit.Visible:=true;
@@ -339,7 +339,7 @@ begin
   begin
    with SuddenDeathImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp');
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-unchecked.bmp');
      SettingSuddenDeathLabel2.Visible:=false; //Objekte unsichtbar machen
      SettingSuddenDeathLabel3.Visible:=false;
      SettingSuddendeathEdit.Visible:=false;
@@ -500,7 +500,7 @@ begin
    PlayerGroupbox[i].ControlPanel[3].Caption:=Settings.PlayerSettings[i].KeyLeft;
    PlayerGroupbox[i].ControlPanel[4].Caption:=Settings.PlayerSettings[i].KeyRight;
    PlayerGroupbox[i].ControlPanel[5].Caption:=Settings.PlayerSettings[i].KeyBomb;
-   PlayerGroupbox[i].DragDropImage.Image.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\'+Settings.PlayerSettings[i].UfoColor+'-ufo.bmp');
+   PlayerGroupbox[i].DragDropImage.Image.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\'+Settings.PlayerSettings[i].UfoColor+'-ufo.bmp');
    PlayerGroupbox[i].DragDropImage.Color:=Settings.PlayerSettings[i].UfoColor;
   end;
 end;
@@ -537,7 +537,7 @@ begin
   begin
    with SFXImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
      Checked:=true; //Checkbox ist "gechecked"
     end;
   end
@@ -545,7 +545,7 @@ begin
   begin
    with SFXImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp');
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-unchecked.bmp');
      Checked:=false; //Checkbox ist nicht "gechecked"
     end;
   end;
