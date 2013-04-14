@@ -79,11 +79,13 @@ while (i<=FRange) and (FPosition.X+i <= 15) do
     meteorit:
       begin
       Field[FPosition.X+i,FPosition.Y].Explode;
+      Field[FPosition.X+i,FPosition.Y].Content:=explosion;
       break;
       end;
     earth, bomb: break;
   end;
   Field[FPosition.X+i,FPosition.Y].Explode;
+  Field[FPosition.X+i,FPosition.Y].Content:=explosion;
   Inc(i)
   end;
 i:=1;
@@ -97,11 +99,13 @@ while (i<=FRange) and (FPosition.X-i >=0) do
     meteorit:
       begin
       Field[FPosition.X-i,FPosition.Y].Explode;
+      Field[FPosition.X-i,FPosition.Y].Content:=explosion;
       break;
       end;
     earth, bomb: break;
   end;
   Field[FPosition.X-i,FPosition.Y].Explode;
+  Field[FPosition.X-i,FPosition.Y].Content:=explosion;
   Inc(i)
   end;
 i:=1;
@@ -115,11 +119,13 @@ while (i<=FRange) and (FPosition.Y+i <= 15) do
     meteorit:
       begin
       Field[FPosition.X,FPosition.Y+i].Explode;
+      Field[FPosition.X,FPosition.Y+i].Content:=explosion;
       break;
       end;
     earth, bomb: break;
   end;
   Field[FPosition.X,FPosition.Y+i].Explode;
+  Field[FPosition.X,FPosition.Y+i].Content:=explosion;
   Inc(i)
   end;
 i:=1;
@@ -133,11 +139,13 @@ while (i<=FRange) and (FPosition.Y-i >=0) do
     meteorit:
       begin
       Field[FPosition.X,FPosition.Y-i].Explode;
+      Field[FPosition.X,FPosition.Y-i].Content:=explosion;
       break;
       end;
     earth, bomb: break;
   end;
   Field[FPosition.X,FPosition.Y-i].Explode;
+  Field[FPosition.X,FPosition.Y-i].Content:=explosion;
   Inc(i)
   end;
 If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false; // PR: Überprüfung der Bombenposition, falls sich dort Spieler aufhält

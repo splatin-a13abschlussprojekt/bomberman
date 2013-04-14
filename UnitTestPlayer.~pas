@@ -20,7 +20,6 @@ type
     BombTimer: TTimer;
     CountDownTimer: TTimer;
     CountdownPanel: TPanel;
-    BomblessTimer: TTimer;
     ImageListRed: TImageList;
     ImageListYellow: TImageList;
     ImageListGreen: TImageList;
@@ -55,8 +54,9 @@ var
   Bombs: Array[1..4] of TBomb;       //RV: s.o.
   ImageListPlayer: Array[1..4] of TImageList;  //RV: damit wird dann später dem jeweiligen Player die ImageList der im Menü ausgesuchte Farbe zugeordnet
   BombNum: Integer;
+  BomblessTimer: Array of TTimer;
 
-const size=40;    //RV: gibt die Größe der Felder an, daher nenne ich sie auch Feldfaktor
+const size=40;    //HS: gibt die Größe der Felder an, daher nenne ich sie auch Feldfaktor
 implementation
 
 uses
@@ -67,7 +67,6 @@ uses
 procedure TFormGame.FormCreate(Sender: TObject);
 var i,j,k: Integer;
 begin
-
   CountdownPanel.Color:=RGB(31,31,31); {Farbe des CountdownPanels in Standard-Stil}
   CreateFields;
   CreatePlayers(Settings.NumOfPlayers);
@@ -75,6 +74,8 @@ begin
   for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
   RefreshTimer.Enabled:=true;
   KeyPreview:=true;
+  BombNum:=4;
+  SetLength(BomblessTimer,BombNum);
 
   for k:=1 to 4 do
   begin
@@ -82,6 +83,9 @@ begin
     If Settings.PlayerSettings[k].UfoColor='yellow' then ImageListPlayer[k]:=ImageListYellow;
     If Settings.PlayerSettings[k].UfoColor='green' then ImageListPlayer[k]:=ImageListGreen;
     If Settings.PlayerSettings[k].UfoColor='blue' then ImageListPlayer[k]:=ImageListBlue;
+    BomblessTimer[k]:=TTimer.Create(nil);
+    BomblessTimer[k].Interval:=600;
+    BomblessTimer[k].Enabled:=false;
   end;
 end;
 
@@ -90,11 +94,11 @@ var PosMem: TPosition;
     i: Integer;
 begin
 i:=ceil((AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb,Settings.PlayerSettings[2].KeyUp,Settings.PlayerSettings[2].KeyLeft,Settings.PlayerSettings[2].KeyDown,Settings.PlayerSettings[2].KeyRight,Settings.PlayerSettings[2].KeyBomb,Settings.PlayerSettings[3].KeyUp,Settings.PlayerSettings[3].KeyLeft,Settings.PlayerSettings[3].KeyDown,Settings.PlayerSettings[3].KeyRight,Settings.PlayerSettings[3].KeyBomb,Settings.PlayerSettings[4].KeyUp,Settings.PlayerSettings[4].KeyLeft,Settings.PlayerSettings[4].KeyDown,Settings.PlayerSettings[4].KeyRight,Settings.PlayerSettings[4].KeyBomb])+1)/5); // PR: Ermitteln des Spielers
-If i=0 then exit;
+If i=0 then exit; // PR: Abbruch, falls ungültige Eingabe
 If Player[i].Alive<>false then
   begin
-  PosMem:=Player[i].Position;
-  Case AnsiIndexText(Key,[Settings.PlayerSettings[i].KeyUp,Settings.PlayerSettings[i].KeyLeft,Settings.PlayerSettings[i].KeyDown,Settings.PlayerSettings[i].KeyRight]) of
+  PosMem:=Player[i].Position; // PR: Speicherung der alten Position
+  Case AnsiIndexText(Key,[Settings.PlayerSettings[i].KeyUp,Settings.PlayerSettings[i].KeyLeft,Settings.PlayerSettings[i].KeyDown,Settings.PlayerSettings[i].KeyRight]) of // PR: Auslesen der Steuerungseinstellungen und Vergleich mit Eingabe bestimmt Bewegungsrichtung
     0: Player[i].Move(U);
     1: Player[i].Move(L);
     2: Player[i].Move(D);
@@ -103,7 +107,7 @@ If Player[i].Alive<>false then
   case AnsiIndexText(Key,[Settings.PlayerSettings[i].KeyUp,Settings.PlayerSettings[i].KeyLeft,Settings.PlayerSettings[i].KeyDown,Settings.PlayerSettings[i].KeyRight,Settings.PlayerSettings[i].KeyBomb]) of
     0,1,2,3:
     begin
-      Case Field[Player[i].Position.X,Player[i].Position.Y].Content of
+      Case Field[Player[i].Position.X,Player[i].Position.Y].Content of // PR: unterschiedliches Verhalten je nach Inhalt des Zielfeldes
         empty,item,player01,player02,player03,player04:
           begin
           If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
@@ -128,7 +132,7 @@ If Player[i].Alive<>false then
     end;
     4:
     begin
-    If Player[i].NumOfBombsPlanted<Player[i].NumOfBombs then
+    If Player[i].NumOfBombsPlanted<Player[i].NumOfBombs then // PR: Anzahl der gelegten Bomben darf Maximalanzahl nicht überschreiten
       begin
       //SetLength(Bombs,high(Bombs)+2);
       //Bombs[high(Bombs)]:=TBomb.Create(Player[i],2000);
@@ -212,7 +216,7 @@ end;
 procedure TFormGame.Bomb1Pictures(Sender: TObject; var Pos: TPosition; Bomb: TBomb);
 //RV: Bombenbilder malen
 var ImageListExplosion: TImageList;
-    i,j: Integer;
+    i,j,k: Integer;
 begin
   ImageListExplosion:=TImageList.Create(nil);
   for i:=1 to 4 do If Bomb.Owner=Player[i] then
@@ -227,51 +231,29 @@ begin
   begin
     ImageListExplosion.Draw(StringGrid1.Canvas, X*size, Y*size, 2);
 
-    If X>0 then If Field[X-1, Y].Content <> earth then
+    for k:=1 to Bombs[j].Range do
     begin
-      ImageListExplosion.Draw(StringGrid1.Canvas, (X-1)*size, Y*size, 5);
-      Field[X-1, Y].Content:=explosion;
-    end;
+      If X>k-1 then If Field[X-k, Y].Content = explosion then
+      ImageListExplosion.Draw(StringGrid1.Canvas, (X-k)*size, Y*size, 5);
 
-    If X<16 then If Field[X+1, Y].Content <> earth then
-    begin
-    ImageListExplosion.Draw(StringGrid1.Canvas, (X+1)*size, Y*size, 6);
-    Field[X+1, Y].Content:=explosion;
-    end;
+      If X<17-k then If Field[X+k, Y].Content = explosion then
+      ImageListExplosion.Draw(StringGrid1.Canvas, (X+k)*size, Y*size, 6);
 
-    If Y>0 then If Field[X, Y-1].Content <> earth then
-    begin
-    ImageListExplosion.Draw(StringGrid1.Canvas, X*size, (Y-1)*size, 7);
-    Field[X, Y-1].Content:=explosion;
-    end;
+      If Y-k>=0 then If Field[X, Y-k].Content = explosion then
+      ImageListExplosion.Draw(StringGrid1.Canvas, X*size, (Y-k)*size, 7);
 
-    If Y<16 then If Field[X, Y+1].Content <> earth then
-    begin
-    ImageListExplosion.Draw(StringGrid1.Canvas, X*size, (Y+1)*size, 4);
-    Field[X, Y+1].Content:=explosion;
+      If Y+k<=15 then If Field[X, Y+k].Content = explosion then
+      ImageListExplosion.Draw(StringGrid1.Canvas, X*size, (Y+k)*size, 4);
     end;
   end;
 
+  BomblessTimer[j].Enabled:=true;
+
   case j of
-    1: begin
-    BomblessTimer1.Enabled:=true;
-    BomblessTimer1.OnTimer:=BomblessPictures1;
-    end;
-
-    2:  begin
-    BomblessTimer2.Enabled:=true;;
-    BomblessTimer2.OnTimer:=BomblessPictures2;
-    end;
-
-    3:  begin
-    BomblessTimer3.Enabled:=true;
-    BomblessTimer3.OnTimer:=BomblessPictures3;
-    end;
-
-    4:  begin
-    BomblessTimer4.Enabled:=true;
-    BomblessTimer4.OnTimer:=BomblessPictures4;
-    end;
+    1: BomblessTimer[j].OnTimer:=BomblessPictures1;
+    2: BomblessTimer[j].OnTimer:=BomblessPictures2;
+    3: BomblessTimer[j].OnTimer:=BomblessPictures3;
+    4: BomblessTimer[j].OnTimer:=BomblessPictures4;
   end;
 
 end;
@@ -279,6 +261,7 @@ end;
 
 procedure TFormGame.BomblessPictures1(Sender: TObject);
 //RV: Bombenbilder der Bombe von Player1 löschen
+var k: Integer;
 begin
   With BombPos[1] do
   begin
@@ -288,31 +271,34 @@ begin
       Field[X,Y].Content:= empty;
     end;
 
-    If X>0 then If Field[X-1,Y].Content = explosion then
+    for k:=1 to Bombs[1].Range do
     begin
-      StringGrid1.Canvas.CopyRect(Rect((X-1)*size,Y*size,X*size,Y*size+size),ImageBackground.Canvas,Rect((X-1)*size,Y*size,X*size,Y*size+size));
-      Field[X-1,Y].Content:=empty;
+    If X>k-1 then If Field[X-k,Y].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect((X-k)*size,Y*size,(X-k+1)*size,Y*size+size),ImageBackground.Canvas,Rect((X-k)*size,Y*size,(X-k+1)*size,Y*size+size));
+      Field[X-k,Y].Content:=empty;
     end;
 
-    If X<16 then If Field[X+1,Y].Content = explosion then
+    If X<17-k then If Field[X+k,Y].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect((X+1)*size,Y*size,(X+2)*size,Y*size+size),ImageBackground.Canvas,Rect((X+1)*size,Y*size,(X+2)*size,Y*size+size));
-      Field[X+1,Y].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect((X+k)*size,Y*size,(X+k+1)*size,Y*size+size),ImageBackground.Canvas,Rect((X+k)*size,Y*size,(X+k+1)*size,Y*size+size));
+      Field[X+k,Y].Content:=empty;
     end;
 
-    If Y>0 then If Field[X,Y-1].Content = explosion then
+    If Y>k-1 then If Field[X,Y-k].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y-1)*size,X*size+size,Y*size),ImageBackground.Canvas,Rect(X*size,(Y-1)*size,X*size+size,Y*size));
-      Field[X,Y-1].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y-k)*size,X*size+size,(Y-k+1)*size),ImageBackground.Canvas,Rect(X*size,(Y-k)*size,X*size+size,(Y-k+1)*size));
+      Field[X,Y-k].Content:=empty;
     end;
 
-    If Y<16 then If Field[X,Y+1].Content = explosion then
+    If Y<17-k then If Field[X,Y+k].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y+1)*size,X*size+size,(Y+2)*size),ImageBackground.Canvas,Rect(X*size,(Y+1)*size,X*size+size,(Y+2)*size));
-      Field[X,Y+1].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y+k)*size,X*size+size,(Y+k+1)*size),ImageBackground.Canvas,Rect(X*size,(Y+k)*size,X*size+size,(Y+k+1)*size));
+      Field[X,Y+k].Content:=empty;
+    end;
     end;
   end;
-  BomblessTimer1.Enabled:=false;
+  BomblessTimer[1].Enabled:=false;
 end;
 
 procedure TFormGame.BomblessPictures2(Sender: TObject);
@@ -326,31 +312,34 @@ begin
       Field[X,Y].Content:= empty;
     end;
 
-    If X>0 then If Field[X-1,Y].Content = explosion then
+    for k:=1 to Bombs[2].Range do
     begin
-      StringGrid1.Canvas.CopyRect(Rect((X-1)*size,Y*size,X*size,Y*size+size),ImageBackground.Canvas,Rect((X-1)*size,Y*size,X*size,Y*size+size));
-      Field[X-1,Y].Content:=empty;
+    If X>k-1 then If Field[X-k,Y].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect((X-k)*size,Y*size,(X-k+1)*size,Y*size+size),ImageBackground.Canvas,Rect((X-k)*size,Y*size,(X-k+1)*size,Y*size+size));
+      Field[X-k,Y].Content:=empty;
     end;
 
-    If X<16 then If Field[X+1,Y].Content = explosion then
+    If X<17-k then If Field[X+k,Y].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect((X+1)*size,Y*size,(X+2)*size,Y*size+size),ImageBackground.Canvas,Rect((X+1)*size,Y*size,(X+2)*size,Y*size+size));
-      Field[X+1,Y].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect((X+k)*size,Y*size,(X+k+1)*size,Y*size+size),ImageBackground.Canvas,Rect((X+k)*size,Y*size,(X+k+1)*size,Y*size+size));
+      Field[X+k,Y].Content:=empty;
     end;
 
-    If Y>0 then If Field[X,Y-1].Content = explosion then
+    If Y>k-1 then If Field[X,Y-k].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y-1)*size,X*size+size,Y*size),ImageBackground.Canvas,Rect(X*size,(Y-1)*size,X*size+size,Y*size));
-      Field[X,Y-1].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y-k)*size,X*size+size,(Y-k+1)*size),ImageBackground.Canvas,Rect(X*size,(Y-k)*size,X*size+size,(Y-k+1)*size));
+      Field[X,Y-k].Content:=empty;
     end;
 
-    If Y<16 then If Field[X,Y+1].Content = explosion then
+    If Y<17-k then If Field[X,Y+k].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y+1)*size,X*size+size,(Y+2)*size),ImageBackground.Canvas,Rect(X*size,(Y+1)*size,X*size+size,(Y+2)*size));
-      Field[X,Y+1].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y+k)*size,X*size+size,(Y+k+1)*size),ImageBackground.Canvas,Rect(X*size,(Y+k)*size,X*size+size,(Y+k+1)*size));
+      Field[X,Y+k].Content:=empty;
+    end;
     end;
   end;
-  BomblessTimer2.Enabled:=false;
+  BomblessTimer[2].Enabled:=false;
 end;
 
 procedure TFormGame.BomblessPictures3(Sender: TObject);
@@ -364,31 +353,34 @@ begin
       Field[X,Y].Content:= empty;
     end;
 
-    If X>0 then If Field[X-1,Y].Content = explosion then
+    for k:=1 to Bombs[3].Range do
     begin
-      StringGrid1.Canvas.CopyRect(Rect((X-1)*size,Y*size,X*size,Y*size+size),ImageBackground.Canvas,Rect((X-1)*size,Y*size,X*size,Y*size+size));
-      Field[X-1,Y].Content:=empty;
+    If X>k-1 then If Field[X-k,Y].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect((X-k)*size,Y*size,(X-k+1)*size,Y*size+size),ImageBackground.Canvas,Rect((X-k)*size,Y*size,(X-k+1)*size,Y*size+size));
+      Field[X-k,Y].Content:=empty;
     end;
 
-    If X<16 then If Field[X+1,Y].Content = explosion then
+    If X<17-k then If Field[X+k,Y].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect((X+1)*size,Y*size,(X+2)*size,Y*size+size),ImageBackground.Canvas,Rect((X+1)*size,Y*size,(X+2)*size,Y*size+size));
-      Field[X+1,Y].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect((X+k)*size,Y*size,(X+k+1)*size,Y*size+size),ImageBackground.Canvas,Rect((X+k)*size,Y*size,(X+k+1)*size,Y*size+size));
+      Field[X+k,Y].Content:=empty;
     end;
 
-    If Y>0 then If Field[X,Y-1].Content = explosion then
+    If Y>k-1 then If Field[X,Y-k].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y-1)*size,X*size+size,Y*size),ImageBackground.Canvas,Rect(X*size,(Y-1)*size,X*size+size,Y*size));
-      Field[X,Y-1].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y-k)*size,X*size+size,(Y-k+1)*size),ImageBackground.Canvas,Rect(X*size,(Y-k)*size,X*size+size,(Y-k+1)*size));
+      Field[X,Y-k].Content:=empty;
     end;
 
-    If Y<16 then If Field[X,Y+1].Content = explosion then
+    If Y<17-k then If Field[X,Y+k].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y+1)*size,X*size+size,(Y+2)*size),ImageBackground.Canvas,Rect(X*size,(Y+1)*size,X*size+size,(Y+2)*size));
-      Field[X,Y+1].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y+k)*size,X*size+size,(Y+k+1)*size),ImageBackground.Canvas,Rect(X*size,(Y+k)*size,X*size+size,(Y+k+1)*size));
+      Field[X,Y+k].Content:=empty;
+    end;
     end;
   end;
-  BomblessTimer3.Enabled:=false;
+  BomblessTimer[3].Enabled:=false;
 end;
 
 procedure TFormGame.BomblessPictures4(Sender: TObject);
@@ -402,31 +394,34 @@ begin
       Field[X,Y].Content:= empty;
     end;
 
-    If X>0 then If Field[X-1,Y].Content = explosion then
+    for k:=1 to Bombs[4].Range do
     begin
-      StringGrid1.Canvas.CopyRect(Rect((X-1)*size,Y*size,X*size,Y*size+size),ImageBackground.Canvas,Rect((X-1)*size,Y*size,X*size,Y*size+size));
-      Field[X-1,Y].Content:=empty;
+    If X>k-1 then If Field[X-k,Y].Content = explosion then
+    begin
+      StringGrid1.Canvas.CopyRect(Rect((X-k)*size,Y*size,(X-k+1)*size,Y*size+size),ImageBackground.Canvas,Rect((X-k)*size,Y*size,(X-k+1)*size,Y*size+size));
+      Field[X-k,Y].Content:=empty;
     end;
 
-    If X<16 then If Field[X+1,Y].Content = explosion then
+    If X<17-k then If Field[X+k,Y].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect((X+1)*size,Y*size,(X+2)*size,Y*size+size),ImageBackground.Canvas,Rect((X+1)*size,Y*size,(X+2)*size,Y*size+size));
-      Field[X+1,Y].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect((X+k)*size,Y*size,(X+k+1)*size,Y*size+size),ImageBackground.Canvas,Rect((X+k)*size,Y*size,(X+k+1)*size,Y*size+size));
+      Field[X+k,Y].Content:=empty;
     end;
 
-    If Y>0 then If Field[X,Y-1].Content = explosion then
+    If Y>k-1 then If Field[X,Y-k].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y-1)*size,X*size+size,Y*size),ImageBackground.Canvas,Rect(X*size,(Y-1)*size,X*size+size,Y*size));
-      Field[X,Y-1].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y-k)*size,X*size+size,(Y-k+1)*size),ImageBackground.Canvas,Rect(X*size,(Y-k)*size,X*size+size,(Y-k+1)*size));
+      Field[X,Y-k].Content:=empty;
     end;
 
-    If Y<16 then If Field[X,Y+1].Content = explosion then
+    If Y<17-k then If Field[X,Y+k].Content = explosion then
     begin
-      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y+1)*size,X*size+size,(Y+2)*size),ImageBackground.Canvas,Rect(X*size,(Y+1)*size,X*size+size,(Y+2)*size));
-      Field[X,Y+1].Content:=empty;
+      StringGrid1.Canvas.CopyRect(Rect(X*size,(Y+k)*size,X*size+size,(Y+k+1)*size),ImageBackground.Canvas,Rect(X*size,(Y+k)*size,X*size+size,(Y+k+1)*size));
+      Field[X,Y+k].Content:=empty;
+    end;
     end;
   end;
-  BomblessTimer4.Enabled:=false;
+  BomblessTimer[4].Enabled:=false;
 end;
 
 procedure TFormGame.FormClose(Sender: TObject; var Action: TCloseAction);

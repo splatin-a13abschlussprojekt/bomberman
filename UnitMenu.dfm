@@ -1,6 +1,6 @@
 object FormMenu: TFormMenu
   Left = 354
-  Top = 82
+  Top = 21
   Width = 915
   Height = 718
   Caption = 'Space-Bomberman: Men'#252
