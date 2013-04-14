@@ -33,7 +33,6 @@ type
     property BombRange: Integer read FBombRange write SetBombRange;
     property NumOfBombs: Integer read FNumOfBombs write SetNumOfBombs;
     property NumOfBombsPlanted: Integer read FNumOfBombsPlanted write SetNumOfBombsPlanted;
-    property Number: Integer read FNumber;
   end;
 
 procedure CreatePlayers(NumOfPlayers:Integer);
