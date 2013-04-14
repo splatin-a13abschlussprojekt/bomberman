@@ -17,35 +17,31 @@ type
   UfoColor:String[6];
  end;
 
-type
  TSuddenDeathSettings = record
   activated : Boolean;
   time : Word;
  end;
 
-type
  TSettings = record
   SuddenDeathSettings : TSuddenDeathSettings;
+  SFX : Boolean;
   NumOfWins : Word; //Sieglimit
   NumOfPlayers : Word;
   PlayerSettings : Array[1..4] of TPlayerSettings;
  end;
 
-type
  TCheckImage = record
   CheckImage : TImage;
   Checked: Boolean;
  end;
 
-type  
  TDragDropImage = record
   Panel : TPanel;
   Color : String[6];
   Image : TImage;//Image befindet sich auf Panel --> kann dann über alles bewegt werden
   Ground: TPanel;//Ground hält Standardposition --> ist dann ein weißes Feld
  end;
- 
-type
+
  TPlayerGroupbox = record     //wird in UnitCreatePlayerGroupbox erstellt
   Panel       : TPanel;
   Header      : TPanel;
@@ -57,7 +53,6 @@ type
   DragDropImage :  TDragDropImage;
  end;
 
-type
   TFormMenu = class(TForm)
     NumberOfPlayersEdit: TEdit;
     NumberOfPlayersLabel: TLabel;
@@ -79,6 +74,7 @@ type
     RoundsDownImage: TImage;
     TitlePanel: TPanel;
     Button1: TButton;
+    SFXLabel: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure ControlButtonKeyPress(Sender: TObject; var Key: Char);
     procedure PanelExpectKey();
@@ -120,6 +116,8 @@ type
     procedure LoadSettings();
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
+    procedure SFXMouseUp(Sender: TObject;
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     { Private-Deklarationen }
   public
@@ -129,8 +127,9 @@ type
 var
   FormMenu: TFormMenu;
   PlayerGroupbox : Array[1..4] of TPlayerGroupbox; {Für die Spielereinstellungen}
-  SettingSuddendeathImage : TCheckImage; {CheckImage wird als Objekt erstellt}
-  Settings : TSettings; {hier sind alle Einstellungen gespeichert --> zum späteren auslesen}
+  SuddenDeathImage : TCheckImage; {CheckImage wird als Objekt erstellt}
+  SFXImage : TCheckImage; {Um SFX an/aus zu schalten}
+  Settings : TSettings; {hier Umsind alle Einstellungen gespeichert --> zum späteren auslesen}
   GroupNumber: Byte; {Nummer der Gruppe, in dem die Steuerung geändert wird}
   PanelNumber:Byte; {Nummer des Panels, in dem die Steuerung geändert wird}
   MousePos :TPoint; {Zum Drag&Drop für die Ufos}
@@ -323,11 +322,11 @@ end;
 procedure TFormMenu.SettingSuddendeathMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
- if SettingSuddendeathImage.Checked=false then
+ if SuddenDeathImage.Checked=false then
   begin
-   with SettingSuddendeathImage do
+   with SuddenDeathImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
      SettingSuddenDeathLabel2.Visible:=true;  //Objekte sichtbar machen
      SettingSuddenDeathLabel3.Visible:=true;
      SettingSuddendeathEdit.Visible:=true;
@@ -338,9 +337,9 @@ begin
   end
  else
   begin
-   with SettingSuddendeathImage do
+   with SuddenDeathImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp');
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-unchecked.bmp');
      SettingSuddenDeathLabel2.Visible:=false; //Objekte unsichtbar machen
      SettingSuddenDeathLabel3.Visible:=false;
      SettingSuddendeathEdit.Visible:=false;
@@ -383,7 +382,7 @@ begin                                         //damit '[taste]' nicht gespeicher
   begin
    NumOfWins:=StrToInt(RoundsEdit.text);
    NumOfPlayers:=StrToInt(NumberOfPlayersEdit.Text);
-   if SettingSuddenDeathImage.Checked=true then
+   if SuddenDeathImage.Checked=true then
     begin
      SuddenDeathSettings.activated:=true;
      SuddenDeathSettings.time:=StrToInt(SettingSuddendeathEdit.Text);
@@ -393,6 +392,7 @@ begin                                         //damit '[taste]' nicht gespeicher
      SuddenDeathSettings.activated:=false;
      SuddenDeathSettings.time:=180;//Standardlänge bis zum Sudden death
     end;
+   SFX:=SFXImage.Checked;
    for i:=1 to 4 do
     begin
      With PlayerSettings[i] do
@@ -468,7 +468,8 @@ begin
   begin
    with PlayerGroupbox[i] do Panel.Free;//Objekte, die auf dem Panel liegen, werden ebenfalls gelöscht
   end;
- SettingSuddendeathImage.CheckImage.Free;
+ SuddenDeathImage.CheckImage.Free;
+ SFXImage.CheckImage.Free;
 end;
 
 procedure TFormMenu.SaveSettings();
@@ -487,6 +488,7 @@ procedure TFOrmMenu.SetSettings();
  var i: Byte;
 begin
  if Settings.SuddenDeathSettings.activated = true then SettingSuddendeathMouseUp(FormMenu,mbLeft,[]{ShiftState = Leer (Ctrl/Shift/alt) nicht nötigt},10,10{Position});
+ if Settings.SFX = false then SFXMouseUp(FormMenu,mbLeft,[],10,10);
  SettingSuddendeathEdit.Text:=IntToStr(Settings.SuddenDeathSettings.time);
  NumberOfPlayersEdit.Text:=IntToStr(Settings.NumOfPlayers);
  RoundsEdit.Text:=IntToStr(Settings.NumOfPlayers);
@@ -498,7 +500,7 @@ begin
    PlayerGroupbox[i].ControlPanel[3].Caption:=Settings.PlayerSettings[i].KeyLeft;
    PlayerGroupbox[i].ControlPanel[4].Caption:=Settings.PlayerSettings[i].KeyRight;
    PlayerGroupbox[i].ControlPanel[5].Caption:=Settings.PlayerSettings[i].KeyBomb;
-   PlayerGroupbox[i].DragDropImage.Image.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\'+Settings.PlayerSettings[i].UfoColor+'-ufo.bmp');
+   PlayerGroupbox[i].DragDropImage.Image.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\'+Settings.PlayerSettings[i].UfoColor+'-ufo.bmp');
    PlayerGroupbox[i].DragDropImage.Color:=Settings.PlayerSettings[i].UfoColor;
   end;
 end;
@@ -526,6 +528,27 @@ end;
 procedure TFormMenu.Button1Click(Sender: TObject);
 begin
 ShellExecute(Handle,NIL,PCHAR(ExtractFilePath(ParamStr(0))+'Files\Nutzerhandbuch.pdf'),PCHAR(''),NIL, SW_Show);
+end;
+
+procedure TFormMenu.SFXMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if SFXImage.Checked = false then
+  begin
+   with SFXImage do
+    begin
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
+     Checked:=true; //Checkbox ist "gechecked"
+    end;
+  end
+ else
+  begin
+   with SFXImage do
+    begin
+     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-unchecked.bmp');
+     Checked:=false; //Checkbox ist nicht "gechecked"
+    end;
+  end;
 end;
 
 end.

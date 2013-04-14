@@ -1,8 +1,8 @@
 object FormMenu: TFormMenu
-  Left = 354
-  Top = 82
+  Left = 351
+  Top = 9
   Width = 915
-  Height = 718
+  Height = 707
   Caption = 'Space-Bomberman: Men'#252
   Color = clHotLight
   Font.Charset = DEFAULT_CHARSET
@@ -26,7 +26,7 @@ object FormMenu: TFormMenu
     ParentBackground = False
     TabOrder = 0
     object NumberOfPlayersLabel: TLabel
-      Left = 368
+      Left = 344
       Top = 58
       Width = 131
       Height = 18
@@ -39,7 +39,7 @@ object FormMenu: TFormMenu
       ParentFont = False
     end
     object NumberOfPlayersUpImage: TImage
-      Left = 534
+      Left = 510
       Top = 58
       Width = 19
       Height = 9
@@ -3123,7 +3123,7 @@ object FormMenu: TFormMenu
       OnMouseUp = NumberOfPlayersUpImageMouseUp
     end
     object NumberOfPlayersDownImage: TImage
-      Left = 534
+      Left = 510
       Top = 67
       Width = 19
       Height = 9
@@ -18599,8 +18599,21 @@ object FormMenu: TFormMenu
       Proportional = True
       OnMouseUp = RoundsDownImageMouseUp
     end
+    object SFXLabel: TLabel
+      Left = 630
+      Top = 59
+      Width = 32
+      Height = 18
+      Caption = 'SFX'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -16
+      Font.Name = 'Arial'
+      Font.Style = []
+      ParentFont = False
+    end
     object NumberOfPlayersEdit: TEdit
-      Left = 508
+      Left = 484
       Top = 58
       Width = 26
       Height = 18
@@ -18676,7 +18689,7 @@ object FormMenu: TFormMenu
     Left = 810
     Top = 622
     Width = 70
-    Height = 50
+    Height = 40
     Caption = 'Start'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -18691,7 +18704,7 @@ object FormMenu: TFormMenu
     Left = 18
     Top = 622
     Width = 100
-    Height = 50
+    Height = 40
     Caption = 'Beenden'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -18726,7 +18739,7 @@ object FormMenu: TFormMenu
     Left = 136
     Top = 622
     Width = 137
-    Height = 50
+    Height = 40
     Caption = 'Handbuch'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText

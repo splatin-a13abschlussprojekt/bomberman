@@ -82,19 +82,19 @@ begin
    Left:=0;
    case i of
     1: begin
-        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\blue-ufo.bmp');  //Pfad des Images kann später nicht ermittelt werden, deshalb existiert nächste variable
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\blue-ufo.bmp');  //Pfad des Images kann später nicht ermittelt werden, deshalb existiert nächste variable
         PlayerGroupbox[i].DragDropImage.Color:='blue';                                  //Bild wird nur in den Arbeitsspeicher geladen
        end;
     2: begin
-        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\green-ufo.bmp');
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\green-ufo.bmp');
         PlayerGroupbox[i].DragDropImage.Color:='green';
        end;
     3: begin
-        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\red-ufo.bmp');
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\red-ufo.bmp');
         PlayerGroupbox[i].DragDropImage.Color:='red';
        end;
     4: begin
-        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\ufos\yellow-ufo.bmp');
+        Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\yellow-ufo.bmp');
         PlayerGroupbox[i].DragDropImage.Color:='yellow';
        end;
    end;
@@ -310,25 +310,41 @@ end;
 
 procedure CreateSettingObjects();
 begin
- SettingSuddendeathImage.CheckImage:=TImage.Create(FormMenu.SettingsPanel);
- SettingSuddendeathImage.Checked:=false;
+ SuddenDeathImage.CheckImage:=TImage.Create(FormMenu.SettingsPanel);
+ SuddenDeathImage.Checked:=false;
+ SFXImage.CheckImage:=TImage.Create(FormMenu.SettingsPanel);
+ SFXImage.Checked:=true;//standardmäßig an
  SetsettingObjects();
 end;
 
 procedure SetSettingObjects();
 begin
- with SettingSuddendeathImage.CheckImage do
+ with SuddenDeathImage.CheckImage do
   begin
    Parent:=FormMenu.SettingsPanel;
-   Name := 'SettingSuddendeathImage';
+   Name := 'SuddenDeathImage';
    AutoSize:=false;
    Proportional:=true;
    width:=25;
    Height:=25;
-   Top:=FormMenu.NumberOfPlayersLabel.Top-5;
+   Top:=FormMenu.NumberOfPlayersLabel.Top-3;
    Left:=10;
-   Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Images\menu\checkbox-unchecked.bmp'); //standardmäßig ausgeschaltet
+   Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-unchecked.bmp'); //standardmäßig ausgeschaltet
    OnMouseUp:=FormMenu.SettingSuddendeathMouseUp;   //OnMouseUp-Event verknüpfen
+   Visible:=true;
+  end;
+  with SFXImage.CheckImage do
+  begin
+   Parent:=FormMenu.SettingsPanel;
+   Name := 'SFXImage';
+   AutoSize:=false;
+   Proportional:=true;
+   width:=25;
+   Height:=25;
+   Top:=FormMenu.NumberOfPlayersLabel.Top-3;
+   Left:=600;
+   Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-checked.bmp'); //standardmäßig ausgeschaltet
+   OnMouseUp:=FormMenu.SFXMouseUp;   //OnMouseUp-Event verknüpfen
    Visible:=true;
   end;
 end;

@@ -2,7 +2,6 @@ program ProjectBomberman;
 
 uses
   Forms,
-  UnitInterface in 'UnitInterface.pas' {Form1},
   UnitPlayer in 'UnitPlayer.pas',
   UnitTestPlayer in 'UnitTestPlayer.pas' {FormGame},
   UnitPosition in 'UnitPosition.pas',
@@ -19,7 +18,6 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TFormMenu, FormMenu);
-  Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TFormGame, FormGame);
   Application.Run;
 end.

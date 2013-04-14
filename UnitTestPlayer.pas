@@ -87,7 +87,6 @@ begin
   SetLength(BombPos3,StrToInt(BombNum[1]));
   SetLength(BombPos4,StrToInt(BombNum[1]));
 
-
   for k:=1 to 4 do
   begin
     If Settings.PlayerSettings[k].UfoColor='red' then ImageListPlayer[k]:=ImageListRed;

@@ -4,7 +4,7 @@ uses
   Forms,
   UnitInterface in 'UnitInterface.pas' {Form1},
   UnitPlayer in 'UnitPlayer.pas',
-  UnitTestPlayer in 'UnitTestPlayer.pas' {Form2},
+  UnitTestPlayer in 'UnitTestPlayer.pas' {FormGame},
   UnitPosition in 'UnitPosition.pas',
   UnitDirection in 'UnitDirection.pas',
   UnitCoordinate in 'UnitCoordinate.pas',
@@ -18,8 +18,7 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TFormMenu, FormMenu);
+  Application.CreateForm(TFormGame, FormGame);
   Application.Run;
 end.

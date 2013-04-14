@@ -87,7 +87,6 @@ begin
   SetLength(BombPos3,StrToInt(BombNum[1]));
   SetLength(BombPos4,StrToInt(BombNum[1]));
 
-
   for k:=1 to 4 do
   begin
     If Settings.PlayerSettings[k].UfoColor='red' then ImageListPlayer[k]:=ImageListRed;
@@ -297,7 +296,7 @@ var k: Integer;
 begin
   If BombPlayer=1 then
   begin
-    With BombPos1[Player[1].NumOfBombsPlanted+1] do
+    With BombPos1[Player[1].NumOfBombsPlanted] do
     begin
       If Field[X,Y].Content = explosion then
       begin
@@ -332,12 +331,12 @@ begin
         end;
       end;
     end;
-  BomblessTimer1[Player[1].NumOfBombsPlanted+1].Destroy;
+  BomblessTimer1[Player[1].NumOfBombsPlanted].Destroy;
   end
 
   else if BombPlayer=2 then
   begin
-    With BombPos2[Player[2].NumOfBombsPlanted+1] do
+    With BombPos2[Player[2].NumOfBombsPlanted] do
     begin
       If Field[X,Y].Content = explosion then
       begin
@@ -372,12 +371,12 @@ begin
         end;
       end;
     end;
-  BomblessTimer2[Player[2].NumOfBombsPlanted+1].Destroy;
+  BomblessTimer2[Player[2].NumOfBombsPlanted].Destroy;
   end
 
   else if BombPlayer=3 then
   begin
-    With BombPos3[Player[3].NumOfBombsPlanted+1] do
+    With BombPos3[Player[3].NumOfBombsPlanted] do
     begin
       If Field[X,Y].Content = explosion then
       begin
@@ -412,7 +411,7 @@ begin
         end;
       end;
     end;
-  BomblessTimer3[Player[3].NumOfBombsPlanted+1].Destroy;
+  BomblessTimer3[Player[3].NumOfBombsPlanted].Destroy;
   end
 
   else if BombPlayer=4 then
