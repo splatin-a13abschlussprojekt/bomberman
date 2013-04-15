@@ -442,8 +442,8 @@ begin
  FormGame.KeyPreview:=false;
  FormGame.BeginGameTimer.Enabled:=true;
  FormGame.NewGameButton.Enabled:=false;
- FormMenu.WindowState:=wsMinimized; //minimieren
- if not FormGame.Visible then FormGame.ShowModal; //auf FormMenu kann nicht mehr zugegriffen werden (vom User)
+ if FormMenu.WindowState<>wsMinimized then FormMenu.WindowState:=wsMinimized; //minimieren
+ if FormGame.Visible=false then FormGame.Showmodal; //auf FormMenu kann nicht mehr zugegriffen werden (vom User)
 end;
 
 procedure TFormMenu.CloseButtonClick(Sender: TObject);

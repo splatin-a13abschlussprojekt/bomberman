@@ -437,13 +437,13 @@ begin
     end;
   end;
  {}
- if Settings.SuddenDeathSettings.activated=true then FormGame.CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time) else FormGame.CountdownPanel.Caption:='000';
+ if Settings.SuddenDeathSettings.activated=true then FormGame.CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time) else FormGame.CountdownPanel.Caption:='0';
  FormGame.CreateBeginGamePanel();
  FormGame.KeyPreview:=false;
  FormGame.BeginGameTimer.Enabled:=true;
  FormGame.NewGameButton.Enabled:=false;
- FormMenu.WindowState:=wsMinimized; //minimieren
- if not FormGame.Visible then FormGame.ShowModal; //auf FormMenu kann nicht mehr zugegriffen werden (vom User)
+ if FormMenu.WindowState<>wsMinimized then FormMenu.WindowState:=wsMinimized; //minimieren
+ if not FormGame.Visible then FormGame.Showmodal; //auf FormMenu kann nicht mehr zugegriffen werden (vom User)
 end;
 
 procedure TFormMenu.CloseButtonClick(Sender: TObject);

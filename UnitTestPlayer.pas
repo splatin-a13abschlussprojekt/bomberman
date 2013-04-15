@@ -528,8 +528,13 @@ procedure TFormGame.FormClose(Sender: TObject; var Action: TCloseAction);
 var i: Integer;
 begin
   FormMenu.WindowState:=WsNormal;//BB: beim Schließen der Formgame-Form, erhät FormMenu wieder Normale größe
-  If Assigned(EndGamePanel) then EndGamePanel.Free;
-  CountDownTimer.Enabled:=false;
+  if BeginGameTimer.Enabled then BeginGameTimer.Enabled:=false;
+  If not Assigned(BeginGamePanel) then BeginGamePanel.Free;
+
+ { 
+  If Assigned(BeginGamePanel) then BeginGamePanel.Free;
+  if Assigned(TTimer(FormGame.FindComponent('GameEndsTimer'))) then TTimer(FormGame.FindComponent('GameEndsTimer')).Free;
+  if CountDownTimer.Enabled then CountDownTimer.Enabled:=false; }
 end;
 
 procedure TFormGame.CountDownTimerTimer(Sender: TObject);
@@ -550,6 +555,7 @@ end;
 
 procedure TFOrmGame.CreateBeginGamePanel();
 begin
+ FormGame.NewGameButton.Enabled:=false;
  BeginGamePanel:=TPanel.Create(FormGame);
  with BeginGamePanel do
   begin
@@ -594,7 +600,11 @@ begin
   begin
    TimerLoadInterface();//einzige Methode, die Funktionierte, um das Interface automatisch zu laden
    FormGame.KeyPreview:=true;
-   if Settings.SuddenDeathSettings.activated=true then CountDownTimer.Enabled:=true; //Inhalt: jede Sekunde die übrige Zeit um 1 verringern
+   if Settings.SuddenDeathSettings.activated=true then
+    begin
+     CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time);
+     CountDownTimer.Enabled:=true; //Inhalt: jede Sekunde die übrige Zeit um 1 verringern
+    end;
    PauseButton.Enabled:=true;
    BeginGamePanel.Free;
    PauseButton.SetFocus;//sonstfunktioniert Stuerung nicht
@@ -623,7 +633,7 @@ end;
 procedure TFormGame.NewGameButtonMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
- EndGamePanel.Free;
+ if Assigned(EndGamePanel) then EndGamePanel.Free;
  FormMenu.StartButtonClick(FormGame);
 end;
 
@@ -646,21 +656,40 @@ begin
    Font.Size:=25;
    Font.Color:=clWhite;
    Font.Style:=[];
-   Caption:=Settings.Playersettings[Winner].Name+' hat gewonnen';
+   if Winner = 0 then Caption:='kein Spieler hat gewonnen' else
+   if (Winner>=1) and (Winner<=4) then Caption:=Settings.Playersettings[Winner].Name+' hat die Runde gewonnen' else
+   if (Winner>=5) and (Winner<=8) then Caption:=Settings.Playersettings[Winner-4].Name+' hat gewonnen';
    Visible:=false;
   end;
 end;
 
+function PlayerWinsWholeGame(Player : Byte):Boolean;
+begin
+ if StrToInt(Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Player))).Caption)=Settings.NumOfWins then Result:=true else Result:= false;
+end;
+
 procedure TFormGame.GameEndsOnTimer(Sender : TObject);
 begin
+ if EndGamePanel.Visible then
+  begin
+   if Pos('Runde',EndGamePanel.Caption)>0 then //ich weiß, nicht die eleganteste lösung
+    begin
+     CreateBeginGamePanel();
+     BeginGameTimer.Enabled:=true;
+     EndGamePanel.Free;
+     NewGameButton.Enabled:=false;
+     TTimer(Sender).Free;
+    end;
+  end;
  EndGamePanel.Visible:=true;
  NewGameButton.Enabled:=true;
- Sender.Free;
+ 
 end;
 
 procedure TFormGame.GameEndsTimer();
   var Timer : TTimer;
 begin
+ //if Assigned(Timer) then exit;
  Timer:=TTimer.Create(FormGame);
  Timer.Name:='GameEndsTimer';
  Timer.Interval:=3000;
@@ -670,9 +699,13 @@ end;
 
 procedure TFormGame.WinnerExists(Winner : Byte);
 begin
+ Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption:=IntToStr(StrToInt(Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption)+1);
+ if PlayerWinsWholeGame(Winner) = true then Winner:=Winner+4;
+ TimerLoadInterface;
  PauseButton.Enabled:=false;
- CreateEndGamePanel(1);
+ CreateEndGamePanel(Winner);
  GameEndsTimer();
+
 end;
 
 procedure TFormGame.SuddenDeathTimerTimer(Sender: TObject); // PR: Ziel der ganzen Sache ist es das Spielfeld spiralenförmig zu begrenzen.
