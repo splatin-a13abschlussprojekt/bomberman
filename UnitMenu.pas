@@ -437,6 +437,7 @@ begin
     end;
   end;
  {}
+ if Settings.SuddenDeathSettings.activated=true then FormGame.CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time) else FormGame.CountdownPanel.Caption:='0';
  FormGame.CreateBeginGamePanel();
  FormGame.KeyPreview:=false;
  FormGame.BeginGameTimer.Enabled:=true;

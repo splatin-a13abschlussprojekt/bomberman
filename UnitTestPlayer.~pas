@@ -124,6 +124,7 @@ procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläu
 var PosMem: TPosition;
     i,j: Integer;
 begin
+if (Sender <> FormGame) and KeyPreview=false then exit;
 i:=ceil((AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb,Settings.PlayerSettings[2].KeyUp,Settings.PlayerSettings[2].KeyLeft,Settings.PlayerSettings[2].KeyDown,Settings.PlayerSettings[2].KeyRight,Settings.PlayerSettings[2].KeyBomb,Settings.PlayerSettings[3].KeyUp,Settings.PlayerSettings[3].KeyLeft,Settings.PlayerSettings[3].KeyDown,Settings.PlayerSettings[3].KeyRight,Settings.PlayerSettings[3].KeyBomb,Settings.PlayerSettings[4].KeyUp,Settings.PlayerSettings[4].KeyLeft,Settings.PlayerSettings[4].KeyDown,Settings.PlayerSettings[4].KeyRight,Settings.PlayerSettings[4].KeyBomb])+1)/5); // PR: Ermitteln des Spielers
 If i=0 then exit; // PR: Abbruch, falls ungültige Eingabe
 If Player[i].Alive<>false then
@@ -528,6 +529,7 @@ var i: Integer;
 begin
   FormMenu.WindowState:=WsNormal;//BB: beim Schließen der Formgame-Form, erhät FormMenu wieder Normale größe
   If Assigned(EndGamePanel) then EndGamePanel.Free;
+  CountDownTimer.Enabled:=false;
 end;
 
 procedure TFormGame.CountDownTimerTimer(Sender: TObject);
@@ -592,14 +594,10 @@ begin
   begin
    TimerLoadInterface();//einzige Methode, die Funktionierte, um das Interface automatisch zu laden
    FormGame.KeyPreview:=true;
-  {Countdown (BB)}
-   if Settings.SuddenDeathSettings.activated=true then
-    begin
-     CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time); //Zeit bis zum Sudden Death auslesen (wenn aktiviert)
-     CountDownTimer.Enabled:=true; //Inhalt: jede Sekunde die übrige Zeit um 1 verringern
-    end;
+   if Settings.SuddenDeathSettings.activated=true then CountDownTimer.Enabled:=true; //Inhalt: jede Sekunde die übrige Zeit um 1 verringern
    PauseButton.Enabled:=true;
    BeginGamePanel.Free;
+   PauseButton.SetFocus;//sonstfunktioniert Stuerung nicht
    BeginGameTimer.Enabled:=false;
   end
  else BeginGamePanel.Caption:=IntToStr(StrToInt(BeginGamePanel.Caption)-1);
@@ -608,7 +606,18 @@ end;
 procedure TFormGame.PauseButtonMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
- //Spiel pausieren
+ if KeyPreview=true then
+  begin
+   KeyPreview:=false;
+   If Settings.SuddenDeathSettings.activated=true then CountDownTimer.Enabled:=false;
+   PauseButton.Caption:='Spiel fortsetzen';
+  end
+ else
+  begin
+   KeyPreview:=true;
+   If Settings.SuddenDeathSettings.activated=true then CountDownTimer.Enabled:=true;
+   PauseButton.Caption:='Spiel pausieren';
+  end;
 end;
 
 procedure TFormGame.NewGameButtonMouseUp(Sender: TObject;
@@ -668,6 +677,12 @@ end;
 
 procedure TFormGame.SuddenDeathTimerTimer(Sender: TObject); // PR: Ziel der ganzen Sache ist es das Spielfeld spiralenförmig zu begrenzen.
 begin
+Case Field[SuddenDeathPos.X,SuddenDeathPos.Y].Content of
+  player01: Player1.Die;
+  player02: Player2.Die;
+  player03: Player3.Die;
+  player04: Player4.Die;
+end;
 Field[SuddenDeathPos.X,SuddenDeathPos.Y].Content:=death;
 SuddenDeathPos.X:=SuddenDeathPos.X+xdirection;
 SuddenDeathPos.Y:=SuddenDeathPos.Y+ydirection;
