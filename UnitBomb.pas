@@ -142,8 +142,9 @@ while (i<=FRange) and (FPosition.Y-i >=0) do
   end;
 If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false; // PR: Überprüfung der Bombenposition, falls sich dort Spieler aufhält
 Field[FPosition.X,FPosition.Y].Explode;
-Owner.NumOfBombsPlanted:=Owner.NumOfBombsPlanted-1;
 FormGame.Bomb1Pictures(FormGame, pos, Self);
+//Owner.NumOfBombsPlanted:=Owner.NumOfBombsPlanted-1;
+//FormGame.Bomb1Pictures(FormGame, pos, Self);
 self.Destroy;
 end;
 

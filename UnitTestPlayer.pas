@@ -24,6 +24,7 @@ type
     ImageListYellow: TImageList;
     ImageListGreen: TImageList;
     ImageListBlue: TImageList;
+    ImageListItems: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
@@ -83,9 +84,9 @@ begin
   SetLength(BomblessTimer3,StrToInt(BombNum[3]));
   SetLength(BomblessTimer4,StrToInt(BombNum[4]));
   SetLength(BombPos1,StrToInt(BombNum[1]));
-  SetLength(BombPos2,StrToInt(BombNum[1]));
-  SetLength(BombPos3,StrToInt(BombNum[1]));
-  SetLength(BombPos4,StrToInt(BombNum[1]));
+  SetLength(BombPos2,StrToInt(BombNum[2]));
+  SetLength(BombPos3,StrToInt(BombNum[3]));
+  SetLength(BombPos4,StrToInt(BombNum[4]));
 
   for k:=1 to 4 do
   begin
@@ -98,7 +99,7 @@ end;
 
 procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
 var PosMem: TPosition;
-    i: Integer;
+    i,j: Integer;
 begin
 i:=ceil((AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb,Settings.PlayerSettings[2].KeyUp,Settings.PlayerSettings[2].KeyLeft,Settings.PlayerSettings[2].KeyDown,Settings.PlayerSettings[2].KeyRight,Settings.PlayerSettings[2].KeyBomb,Settings.PlayerSettings[3].KeyUp,Settings.PlayerSettings[3].KeyLeft,Settings.PlayerSettings[3].KeyDown,Settings.PlayerSettings[3].KeyRight,Settings.PlayerSettings[3].KeyBomb,Settings.PlayerSettings[4].KeyUp,Settings.PlayerSettings[4].KeyLeft,Settings.PlayerSettings[4].KeyDown,Settings.PlayerSettings[4].KeyRight,Settings.PlayerSettings[4].KeyBomb])+1)/5); // PR: Ermitteln des Spielers
 If i=0 then exit; // PR: Abbruch, falls ungültige Eingabe
@@ -127,7 +128,29 @@ If Player[i].Alive<>false then
             Player[i].Alive:=false;
             exit;
             end;
-          If Field[Player[i].Position.X,Player[i].Position.Y].Content=bombup then Player[i].NumOfBombs:=Player[i].NumOfBombs+1;
+          If Field[Player[i].Position.X,Player[i].Position.Y].Content=bombup then
+          begin
+            Player[i].NumOfBombs:=Player[i].NumOfBombs+1;
+            j:=StrToInt(BombNum[i]);
+            inc(j);
+            Delete(BombNum,i,1);
+            Insert(IntToStr(j),BombNum,i);
+            //showmessage(BombNum);
+            Case i of
+              1: begin
+              SetLength(BombPos1, Player[1].NumOfBombs);
+              end;
+              2: begin
+              SetLength(BombPos2, StrToInt(BombNum[2]));
+              end;
+              3: begin
+              SetLength(BombPos3, Player[i].NumOfBombs);
+              end;
+              4: begin
+              SetLength(BombPos4, Player[i].NumOfBombs);
+              end;
+            end;
+          end;
           If Field[Player[i].Position.X,Player[i].Position.Y].Content=energyup then Player[i].BombRange:=Player[i].BombRange+1;
           Case i of
             1: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player01;
@@ -237,10 +260,10 @@ begin
   end;
 
   case BombPlayer of
-  1: BombPos1[Player[1].NumOfBombsPlanted]:=Pos;
-  2: BombPos2[Player[2].NumOfBombsPlanted]:=Pos;
-  3: BombPos3[Player[3].NumOfBombsPlanted]:=Pos;
-  4: BombPos4[Player[4].NumOfBombsPlanted]:=Pos;
+  1: BombPos1[StrToInt(BombNum[1])-Player[1].NumOfBombsPlanted]:=Pos;
+  2: BombPos2[StrToInt(BombNum[2])-Player[2].NumOfBombsPlanted]:=Pos;
+  3: BombPos3[StrToInt(BombNum[3])-Player[3].NumOfBombsPlanted]:=Pos;
+  4: BombPos4[StrToInt(BombNum[4])-Player[4].NumOfBombsPlanted]:=Pos;
   end;
 
   with Pos do
@@ -250,43 +273,51 @@ begin
     for k:=1 to Bomb.Range do
     begin
       If X>k-1 then If Field[X-k, Y].Content = explosion then
-      ImageListExplosion.Draw(StringGrid1.Canvas, (X-k)*size, Y*size, 5);
+      ImageListExplosion.Draw(StringGrid1.Canvas, (X-k)*size, Y*size, 5)
+      else if Field[X-k, Y].Content = energyup then ImageListItems.Draw(StringGrid1.Canvas, (X-k)*size, Y*size, 1)
+      else if Field[X-k, Y].Content = bombup then ImageListItems.Draw(StringGrid1.Canvas, (X-k)*size, Y*size, 0);
 
       If X<17-k then If Field[X+k, Y].Content = explosion then
-      ImageListExplosion.Draw(StringGrid1.Canvas, (X+k)*size, Y*size, 6);
+      ImageListExplosion.Draw(StringGrid1.Canvas, (X+k)*size, Y*size, 6)
+      else if Field[X+k, Y].Content = energyup then ImageListItems.Draw(StringGrid1.Canvas, (X+k)*size, Y*size, 1)
+      else if Field[X+k, Y].Content = bombup then ImageListItems.Draw(StringGrid1.Canvas, (X+k)*size, Y*size, 0);
 
       If Y-k>=0 then If Field[X, Y-k].Content = explosion then
-      ImageListExplosion.Draw(StringGrid1.Canvas, X*size, (Y-k)*size, 7);
+      ImageListExplosion.Draw(StringGrid1.Canvas, X*size, (Y-k)*size, 7)
+      else if Field[X, Y-k].Content = energyup then ImageListItems.Draw(StringGrid1.Canvas, X*size, (Y-k)*size, 1)
+      else if Field[X, Y-k].Content = bombup then ImageListItems.Draw(StringGrid1.Canvas, X*size, (Y-k)*size, 0);
 
       If Y+k<=15 then If Field[X, Y+k].Content = explosion then
-      ImageListExplosion.Draw(StringGrid1.Canvas, X*size, (Y+k)*size, 4);
+      ImageListExplosion.Draw(StringGrid1.Canvas, X*size, (Y+k)*size, 4)
+      else if Field[X, Y+k].Content = energyup then ImageListItems.Draw(StringGrid1.Canvas, X*size, (Y+k)*size, 1)
+      else if Field[X, Y+k].Content = bombup then ImageListItems.Draw(StringGrid1.Canvas, X*size, (Y+k)*size, 0);
     end;
   end;
 
   case BombPlayer of
     1: begin
-    BomblessTimer1[Bomb.Owner.NumOfBombsPlanted]:=TTimer.Create(nil);
-    BomblessTimer1[Bomb.Owner.NumOfBombsPlanted].Interval:=100;
-    BomblessTimer1[Bomb.Owner.NumOfBombsPlanted].Enabled:=true;
-    BomblessTimer1[Bomb.Owner.NumOfBombsPlanted].OnTimer:=BomblessPictures1;
+    BomblessTimer1[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted]:=TTimer.Create(nil);
+    BomblessTimer1[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].Interval:=600;
+    BomblessTimer1[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].Enabled:=true;
+    BomblessTimer1[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].OnTimer:=BomblessPictures1;
     end;
     2:  begin
-    BomblessTimer2[Bomb.Owner.NumOfBombsPlanted]:=TTimer.Create(nil);
-    BomblessTimer2[Bomb.Owner.NumOfBombsPlanted].Interval:=100;
-    BomblessTimer2[Bomb.Owner.NumOfBombsPlanted].Enabled:=true;
-    BomblessTimer2[Bomb.Owner.NumOfBombsPlanted].OnTimer:=BomblessPictures1;
+    BomblessTimer2[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted]:=TTimer.Create(nil);
+    BomblessTimer2[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].Interval:=600;
+    BomblessTimer2[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].Enabled:=true;
+    BomblessTimer2[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].OnTimer:=BomblessPictures1;
     end;
     3:  begin
-    BomblessTimer3[Bomb.Owner.NumOfBombsPlanted]:=TTimer.Create(nil);
-    BomblessTimer3[Bomb.Owner.NumOfBombsPlanted].Interval:=100;
-    BomblessTimer3[Bomb.Owner.NumOfBombsPlanted].Enabled:=true;
-    BomblessTimer3[Bomb.Owner.NumOfBombsPlanted].OnTimer:=BomblessPictures1;
+    BomblessTimer3[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted]:=TTimer.Create(nil);
+    BomblessTimer3[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].Interval:=600;
+    BomblessTimer3[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].Enabled:=true;
+    BomblessTimer3[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].OnTimer:=BomblessPictures1;
     end;
     4:  begin
-    BomblessTimer4[Bomb.Owner.NumOfBombsPlanted]:=TTimer.Create(nil);
-    BomblessTimer4[Bomb.Owner.NumOfBombsPlanted].Interval:=100;
-    BomblessTimer4[Bomb.Owner.NumOfBombsPlanted].Enabled:=true;
-    BomblessTimer4[Bomb.Owner.NumOfBombsPlanted].OnTimer:=BomblessPictures1;
+    BomblessTimer4[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted]:=TTimer.Create(nil);
+    BomblessTimer4[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].Interval:=600;
+    BomblessTimer4[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].Enabled:=true;
+    BomblessTimer4[Bomb.Owner.NumOfBombs-Bomb.Owner.NumOfBombsPlanted].OnTimer:=BomblessPictures1;
     end;
   end;
 end;
@@ -298,7 +329,7 @@ var k: Integer;
 begin
   If BombPlayer=1 then
   begin
-    With BombPos1[Player[1].NumOfBombsPlanted] do
+    With BombPos1[StrToInt(BombNum[1])-Player[1].NumOfBombsPlanted] do
     begin
       If Field[X,Y].Content = explosion then
       begin
@@ -333,12 +364,13 @@ begin
         end;
       end;
     end;
-  BomblessTimer1[Player[1].NumOfBombsPlanted].Destroy;
+  BomblessTimer1[StrToInt(BombNum[1])-Player[1].NumOfBombsPlanted].Destroy;
+  Player[1].NumOfBombsPlanted:=Player[1].NumOfBombsPlanted-1;
   end
 
   else if BombPlayer=2 then
   begin
-    With BombPos2[Player[2].NumOfBombsPlanted] do
+    With BombPos2[StrToInt(BombNum[2])-Player[2].NumOfBombsPlanted] do
     begin
       If Field[X,Y].Content = explosion then
       begin
@@ -373,12 +405,14 @@ begin
         end;
       end;
     end;
-  BomblessTimer2[Player[2].NumOfBombsPlanted].Destroy;
+  //showmessage(IntToStr(Player[2].NumOfBombsPlanted));
+  BomblessTimer2[StrToInt(BombNum[2])-Player[2].NumOfBombsPlanted].Destroy;
+  Player[2].NumOfBombsPlanted:=Player[2].NumOfBombsPlanted-1;
   end
 
   else if BombPlayer=3 then
   begin
-    With BombPos3[Player[3].NumOfBombsPlanted] do
+    With BombPos3[StrToInt(BombNum[3])-Player[3].NumOfBombsPlanted] do
     begin
       If Field[X,Y].Content = explosion then
       begin
@@ -413,12 +447,13 @@ begin
         end;
       end;
     end;
-  BomblessTimer3[Player[3].NumOfBombsPlanted].Destroy;
+  BomblessTimer3[StrToInt(BombNum[3])-Player[3].NumOfBombsPlanted].Destroy;
+  Player[3].NumOfBombsPlanted:=Player[3].NumOfBombsPlanted-1;
   end
 
   else if BombPlayer=4 then
   begin
-    With BombPos4[Player[4].NumOfBombsPlanted] do
+    With BombPos4[StrToInt(BombNum[4])-Player[4].NumOfBombsPlanted] do
     begin
       If Field[X,Y].Content = explosion then
       begin
@@ -454,7 +489,8 @@ begin
         end;
       end;
     end;
-  BomblessTimer4[Player[4].NumOfBombsPlanted].Destroy;
+  BomblessTimer4[StrToInt(BombNum[4])-Player[4].NumOfBombsPlanted].Destroy;
+  Player[4].NumOfBombsPlanted:=Player[4].NumOfBombsPlanted-1;
   end;
 end;
 
