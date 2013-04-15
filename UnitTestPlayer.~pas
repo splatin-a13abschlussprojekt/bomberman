@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
-  UnitPosition, Grids, ImgList, UnitBomb, Math;
+  UnitPosition, Grids, ImgList, UnitBomb, Math, MMSystem;
 
 type
   TFormGame = class(TForm)
@@ -149,6 +149,7 @@ If Player[i].Alive<>false then
             end;
           If Field[Player[i].Position.X,Player[i].Position.Y].Content=bombup then
           begin
+            sndPlaySound('Files\Sounds\itemcollect.wav', SND_ASYNC); //HS: Abspielen des Sounds "itemcollect"
             Player[i].NumOfBombs:=Player[i].NumOfBombs+1;
             j:=StrToInt(BombNum[i]);
             inc(j);
@@ -170,7 +171,11 @@ If Player[i].Alive<>false then
               end;
             end;
           end;
-          If Field[Player[i].Position.X,Player[i].Position.Y].Content=energyup then Player[i].BombRange:=Player[i].BombRange+1;
+          If Field[Player[i].Position.X,Player[i].Position.Y].Content=energyup then
+          begin
+             sndPlaySound('Files\Sounds\itemcollect.wav', SND_ASYNC); //HS: Abspielen des Sounds "itemcollect"
+             Player[i].BombRange:=Player[i].BombRange+1;
+          end;
           Case i of
             1: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player01;
             2: Field[Player[i].Position.X,Player[i].Position.Y].Content:=player02;
