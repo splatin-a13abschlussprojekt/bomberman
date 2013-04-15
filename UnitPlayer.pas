@@ -2,7 +2,7 @@ unit UnitPlayer;
 
 interface
 
-uses SysUtils, UnitPosition, UnitDirection, UnitCoordinate, UnitContent, UnitField;
+uses SysUtils, UnitPosition, UnitDirection, UnitCoordinate, UnitContent, UnitField, MMSystem;
 
 
 type
@@ -33,6 +33,7 @@ type
     property BombRange: Integer read FBombRange write SetBombRange;
     property NumOfBombs: Integer read FNumOfBombs write SetNumOfBombs;
     property NumOfBombsPlanted: Integer read FNumOfBombsPlanted write SetNumOfBombsPlanted;
+    procedure Die;
   end;
 
 procedure CreatePlayers(NumOfPlayers:Integer);
@@ -108,6 +109,12 @@ begin
     D : if FPosition.Y < 15 then inc(FPosition.Y);
     R : if FPosition.X < 15 then inc(FPosition.X);
   end;
+end;
+
+procedure TPlayer.Die;
+begin
+  SetAlive(false);
+  sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
 end;
 
 function TPlayer.GetPositionString : String;

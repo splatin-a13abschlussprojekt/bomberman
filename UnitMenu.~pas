@@ -526,7 +526,6 @@ begin
    PlayerGroupbox[i].ControlPanel[4].Caption:=Settings.PlayerSettings[i].KeyRight;
    PlayerGroupbox[i].ControlPanel[5].Caption:=Settings.PlayerSettings[i].KeyBomb;
    PlayerGroupbox[i].DragDropImage.Image.Picture:=TImage(FormMenu.FindComponent('Ufo'+Settings.PlayerSettings[i].UfoColor+'Image')).Picture;
-   //PlayerGroupbox[i].DragDropImage.Image.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\'+Settings.PlayerSettings[i].UfoColor+'-ufo.bmp');
    PlayerGroupbox[i].DragDropImage.Color:=Settings.PlayerSettings[i].UfoColor;
   end;
 end;

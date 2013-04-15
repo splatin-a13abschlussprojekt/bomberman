@@ -73,26 +73,10 @@ i:=1;
 while (i<=FRange) and (FPosition.X+i <= 15) do
   begin
   Case Field[FPosition.X+i,FPosition.Y].Content of
-    player01:
-      begin
-      Player1.Alive:=false;
-      sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
-      end;
-    player02:
-      begin
-      Player2.Alive:=false;
-      sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
-      end;
-    player03:
-      begin
-      Player3.Alive:=false;
-      sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
-      end;
-    player04:
-      begin
-      Player4.Alive:=false;
-      sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
-      end;
+    player01: Player1.Die;
+    player02: Player2.Die;
+    player03: Player3.Die;
+    player04: Player4.Die;
     meteorit:
       begin
       Field[FPosition.X+i,FPosition.Y].Explode;
@@ -107,10 +91,10 @@ i:=1;
 while (i<=FRange) and (FPosition.X-i >=0) do
   begin
   Case Field[FPosition.X-i,FPosition.Y].Content of
-    player01: Player1.Alive:=false;
-    player02: Player2.Alive:=false;
-    player03: Player3.Alive:=false;
-    player04: Player4.Alive:=false;
+    player01: Player1.Die;
+    player02: Player2.Die;
+    player03: Player3.Die;
+    player04: Player4.Die;
     meteorit:
       begin
       Field[FPosition.X-i,FPosition.Y].Explode;
@@ -125,10 +109,10 @@ i:=1;
 while (i<=FRange) and (FPosition.Y+i <= 15) do
   begin
   Case Field[FPosition.X,FPosition.Y+i].Content of
-    player01: Player1.Alive:=false;
-    player02: Player2.Alive:=false;
-    player03: Player3.Alive:=false;
-    player04: Player4.Alive:=false;
+    player01: Player1.Die;
+    player02: Player2.Die;
+    player03: Player3.Die;
+    player04: Player4.Die;
     meteorit:
       begin
       Field[FPosition.X,FPosition.Y+i].Explode;
@@ -143,10 +127,10 @@ i:=1;
 while (i<=FRange) and (FPosition.Y-i >=0) do
   begin
   Case Field[FPosition.X,FPosition.Y-i].Content of
-    player01: Player1.Alive:=false;
-    player02: Player2.Alive:=false;
-    player03: Player3.Alive:=false;
-    player04: Player4.Alive:=false;
+    player01: Player1.Die;
+    player02: Player2.Die;
+    player03: Player3.Die;
+    player04: Player4.Die;
     meteorit:
       begin
       Field[FPosition.X,FPosition.Y-i].Explode;
@@ -157,11 +141,10 @@ while (i<=FRange) and (FPosition.Y-i >=0) do
   Field[FPosition.X,FPosition.Y-i].Explode;
   Inc(i)
   end;
-If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Alive:=false; // PR: Überprüfung der Bombenposition, falls sich dort Spieler aufhält
+If (FPosition.X=Owner.Position.X) and (FPosition.Y=Owner.Position.Y) then Owner.Die; // PR: Überprüfung der Bombenposition, falls sich dort Spieler aufhält
 Field[FPosition.X,FPosition.Y].Explode;
 FormGame.Bomb1Pictures(FormGame, pos, Self);
 //Owner.NumOfBombsPlanted:=Owner.NumOfBombsPlanted-1;
-//FormGame.Bomb1Pictures(FormGame, pos, Self);
 self.Destroy;
 end;
 

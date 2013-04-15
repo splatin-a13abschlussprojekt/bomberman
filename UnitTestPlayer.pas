@@ -34,6 +34,7 @@ type
     BeginGameTimer: TTimer;
     NewGameButton: TButton;
     PauseButton: TButton;
+    SuddenDeathTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
@@ -55,6 +56,7 @@ type
     procedure GameEndsOnTimer(Sender : TObject);
     procedure GameEndsTimer();
     procedure WinnerExists(Winner : Byte);
+    procedure SuddenDeathTimerTimer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -78,6 +80,8 @@ var
   BomblessTimer4: Array of TTimer;
   BeginGamePanel: TPanel;
   EndGamePanel  : TPanel;
+  SuddenDeathPos: TPosition;
+  xdirection, ydirection: Integer; // PR: Für die Richtungsumkehr bei SuddenDeath nötig --> damit Spirale entsteht
 
 const size=40;    //HS: gibt die Größe der Felder an, daher nenne ich sie auch Feldfaktor
 implementation
@@ -144,7 +148,7 @@ If Player[i].Alive<>false then
           If (PosMem.X=Player4.Position.X) and (PosMem.Y=Player4.Position.Y) and (Player4.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player04;
           If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then
             begin
-            Player[i].Alive:=false;
+            Player[i].Die;
             exit;
             end;
           If Field[Player[i].Position.X,Player[i].Position.Y].Content=bombup then
@@ -531,7 +535,12 @@ begin
  if StrToInt(CountdownPanel.Caption) = 0 then
   begin
    CountDownTimer.Enabled:=false;
-   //BB: HIER VERLINKUNG ZUR PROZEDUR; DIE SUDDEN DEATH AUSFÜHRT
+   SuddenDeathPos.X:=0;
+   SuddenDeathPos.Y:=0;
+   xdirection:=1;
+   ydirection:=0;
+   SuddenDeathTimer.Tag:=0;
+   SuddenDeathTimer.Enabled:=true;
    exit;
   end;
  CountdownPanel.Caption := IntToStr(StrToInt(CountdownPanel.Caption)-1);
@@ -655,6 +664,47 @@ begin
  PauseButton.Enabled:=false;
  CreateEndGamePanel(1);
  GameEndsTimer();
+end;
+
+procedure TFormGame.SuddenDeathTimerTimer(Sender: TObject); // PR: Ziel der ganzen Sache ist es das Spielfeld spiralenförmig zu begrenzen.
+begin
+Case Field[SuddenDeathPos.X,SuddenDeathPos.Y].Content of
+  player01: Player1.Die;
+  player02: Player2.Die;
+  player03: Player3.Die;
+  player04: Player4.Die;
+end;
+Field[SuddenDeathPos.X,SuddenDeathPos.Y].Content:=death;
+SuddenDeathPos.X:=SuddenDeathPos.X+xdirection;
+SuddenDeathPos.Y:=SuddenDeathPos.Y+ydirection;
+If (SuddenDeathPos.X>15) or (SuddenDeathPos.Y>15) or (SuddenDeathPos.X<0) or (SuddenDeathPos.Y<0) or (Field[SuddenDeathPos.X,SuddenDeathPos.Y].Content=death) then SuddenDeathTimer.Tag:=1;
+while SuddenDeathTimer.Tag=1 do
+  begin
+  SuddenDeathPos.X:=SuddenDeathPos.X-xdirection;
+  SuddenDeathPos.Y:=SuddenDeathPos.Y-ydirection;
+  SuddenDeathTimer.Tag:=0;
+  If ydirection=-1 then
+    begin
+    ydirection:=0;
+    xdirection:=1;
+    break
+    end;
+  If xdirection=-1 then
+    begin
+    ydirection:=-1;
+    xdirection:=0;
+    end;
+  If ydirection=1 then
+    begin
+    ydirection:=0;
+    xdirection:=-1;
+    end;
+  If xdirection=1 then
+    begin
+    xdirection:=0;
+    ydirection:=1;
+    end;
+  end;
 end;
 
 end.
