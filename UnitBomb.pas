@@ -2,7 +2,7 @@ unit UnitBomb;
 
 interface
 
-uses SysUtils, UnitPosition, UnitDirection, UnitCoordinate, UnitPlayer, ExtCtrls, UnitField, UnitContent;
+uses SysUtils, UnitPosition, UnitDirection, UnitCoordinate, UnitPlayer, ExtCtrls, UnitField, UnitContent, MMSystem;
 
 type TBomb = class
   private
@@ -68,14 +68,31 @@ begin
 pos.X:=FPosition.X;   //RV: Festsetzen der Position
 pos.Y:=FPosition.Y;
 // PR: Bei Explosion wird Umfeld der Bombe in jede Richtung untersucht und je nach Inhalt der Felder entsprechend verfahren
+sndPlaySound('Files\Sounds\laser.wav', SND_ASYNC); //HS: Abspielen des Sounds "laser"
 i:=1;
 while (i<=FRange) and (FPosition.X+i <= 15) do
   begin
   Case Field[FPosition.X+i,FPosition.Y].Content of
-    player01: Player1.Alive:=false;
-    player02: Player2.Alive:=false;
-    player03: Player3.Alive:=false;
-    player04: Player4.Alive:=false;
+    player01:
+      begin
+      Player1.Alive:=false;
+      sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
+      end;
+    player02:
+      begin
+      Player2.Alive:=false;
+      sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
+      end;
+    player03:
+      begin
+      Player3.Alive:=false;
+      sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
+      end;
+    player04:
+      begin
+      Player4.Alive:=false;
+      sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
+      end;
     meteorit:
       begin
       Field[FPosition.X+i,FPosition.Y].Explode;
