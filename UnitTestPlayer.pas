@@ -9,12 +9,10 @@ uses
 
 type
   TFormGame = class(TForm)
-    Image1: TImage;
     StringGrid1: TStringGrid;
     ImageListUfos: TImageList;
     ImageListObjects: TImageList;
     ImageListBombs: TImageList;
-    Button1: TButton;
     RefreshTimer: TTimer;
     ImageBackground: TImage;
     BombTimer: TTimer;
@@ -25,6 +23,17 @@ type
     ImageListGreen: TImageList;
     ImageListBlue: TImageList;
     ImageListItems: TImageList;
+    PointsLabel1: TLabel;
+    PointsLabel3: TLabel;
+    PointsLabel2: TLabel;
+    PointsLabel4: TLabel;
+    PointsPanel1: TPanel;
+    PointsPanel2: TPanel;
+    PointsPanel3: TPanel;
+    PointsPanel4: TPanel;
+    BeginGameTimer: TTimer;
+    NewGameButton: TButton;
+    PauseButton: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
@@ -34,8 +43,18 @@ type
     procedure BomblessPictures1(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CountDownTimerTimer(Sender: TObject);
-    procedure Button1MouseUp(Sender: TObject; Button: TMouseButton;
+    procedure CreateBeginGamePanel();
+    procedure OnLoadINterfaceTimer(Sender : TObject);
+    procedure TimerLoadInterface();
+    procedure BeginGameTimerTimer(Sender: TObject);
+    procedure PauseButtonMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure NewGameButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); //aufrufen mit Button1MouseUp(Sender,mbLeft//linke Maustaste,[]{Shift nicht aktiviert},PosX,PosY{Position, wo geklickt wurde})
+    procedure CreateEndGamePanel(Winner : Byte);
+    procedure GameEndsOnTimer(Sender : TObject);
+    procedure GameEndsTimer();
+    procedure WinnerExists(Winner : Byte);
   private
     { Private declarations }
   public
@@ -57,12 +76,14 @@ var
   BomblessTimer2: Array of TTimer;
   BomblessTimer3: Array of TTimer;
   BomblessTimer4: Array of TTimer;
+  BeginGamePanel: TPanel;
+  EndGamePanel  : TPanel;
 
 const size=40;    //HS: gibt die Größe der Felder an, daher nenne ich sie auch Feldfaktor
 implementation
 
 uses
-  UnitMenu, StrUtils;
+  UnitMenu, StrUtils, UnitCreateMenuObjects;
 
 {$R *.dfm}
 
@@ -70,6 +91,7 @@ procedure TFormGame.FormCreate(Sender: TObject);
 var i,j,k: Integer;
 begin
   CountdownPanel.Color:=RGB(31,31,31); {Farbe des CountdownPanels in Standard-Stil}
+  for i:=1 to 4 do TPanel(FormGame.FindComponent('PointsPanel'+IntToStr(i))).Color:=RGB(31,31,31);
   CreateFields;
   CreatePlayers(Settings.NumOfPlayers);
   //SetLength(Bombs,0);
@@ -90,10 +112,7 @@ begin
 
   for k:=1 to 4 do
   begin
-    If Settings.PlayerSettings[k].UfoColor='red' then ImageListPlayer[k]:=ImageListRed;
-    If Settings.PlayerSettings[k].UfoColor='yellow' then ImageListPlayer[k]:=ImageListYellow;
-    If Settings.PlayerSettings[k].UfoColor='green' then ImageListPlayer[k]:=ImageListGreen;
-    If Settings.PlayerSettings[k].UfoColor='blue' then ImageListPlayer[k]:=ImageListBlue;
+   ImageListPlayer[k]:=TImageList(FormGame.FindComponent('ImageList'+Settings.PlayerSettings[k].UfoColor));
   end;
 end;
 
@@ -499,6 +518,7 @@ procedure TFormGame.FormClose(Sender: TObject; var Action: TCloseAction);
 var i: Integer;
 begin
   FormMenu.WindowState:=WsNormal;//BB: beim Schließen der Formgame-Form, erhät FormMenu wieder Normale größe
+  If Assigned(EndGamePanel) then EndGamePanel.Free;
 end;
 
 procedure TFormGame.CountDownTimerTimer(Sender: TObject);
@@ -512,16 +532,124 @@ begin
  CountdownPanel.Caption := IntToStr(StrToInt(CountdownPanel.Caption)-1);
 end;
 
-procedure TFormGame.Button1MouseUp(Sender: TObject; Button: TMouseButton; // PR: Laden des Interface über Button - perspektivisch elegantere Lösung
+procedure TFOrmGame.CreateBeginGamePanel();
+begin
+ BeginGamePanel:=TPanel.Create(FormGame);
+ with BeginGamePanel do
+  begin
+   Parent:=FormGame;
+   ParentBackground:=false;
+   ParentColor:=false;
+   BevelInner:=bvNone;
+   BevelOuter:=bvNone;
+   Height:=StringGrid1.Height;
+   Width:=StringGrid1.Width;
+   Left:=StringGrid1.Left;
+   Top:=StringGrid1.Top;
+   Color:=RGB(31,31,31);
+   Font.Name:='Arial';
+   Font.Size:=100;
+   Font.Color:=clWhite;
+   Font.Style:=[];
+   Caption:='3';
+   Visible:=true;
+  end;
+end;
+
+procedure TFormGame.OnLoadINterfaceTimer(Sender : TObject);
+begin
+ FormGame.LoadInterface(FormGame);
+ Sender.Free;
+end;
+
+procedure TFormGame.TimerLoadInterface();
+ var Timer : TTimer;
+begin
+ Timer:=TTimer.Create(FormGame);
+ Timer.Name:='LoadInterfaceTimer';
+ Timer.Interval:=1;
+ Timer.Enabled:=true;
+ Timer.OnTimer:=OnLoadINterfaceTimer;
+end;
+
+procedure TFormGame.BeginGameTimerTimer(Sender: TObject);//BB
+begin
+ if BeginGamePanel.Caption = '1' then
+  begin
+   TimerLoadInterface();//einzige Methode, die Funktionierte, um das Interface automatisch zu laden
+   FormGame.KeyPreview:=true;
+  {Countdown (BB)}
+   if Settings.SuddenDeathSettings.activated=true then
+    begin
+     CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time); //Zeit bis zum Sudden Death auslesen (wenn aktiviert)
+     CountDownTimer.Enabled:=true; //Inhalt: jede Sekunde die übrige Zeit um 1 verringern
+    end;
+   PauseButton.Enabled:=true;
+   BeginGamePanel.Free;
+   BeginGameTimer.Enabled:=false;
+  end
+ else BeginGamePanel.Caption:=IntToStr(StrToInt(BeginGamePanel.Caption)-1);
+end;
+
+procedure TFormGame.PauseButtonMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
- LoadInterface(FormGame);
- {Countdown (BB)}
- if Settings.SuddenDeathSettings.activated=true then
+ //Spiel pausieren
+end;
+
+procedure TFormGame.NewGameButtonMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+ EndGamePanel.Free;
+ FormMenu.StartButtonClick(FormGame);
+end;
+
+procedure TFOrmGame.CreateEndGamePanel(Winner : Byte);
+begin
+ EndGamePanel:=TPanel.Create(FormGame);
+ with EndGamePanel do
   begin
-   CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time); //BB: Zeit bis zum Sudden Death auslesen (wenn aktiviert)
-   CountDownTimer.Enabled:=true; //BB: jede Sekunde die übrige Zeit um 1 verringern
+   Parent:=FormGame;
+   ParentBackground:=false;
+   ParentColor:=false;
+   BevelInner:=bvNone;
+   BevelOuter:=bvNone;
+   Height:=StringGrid1.Height;
+   Width:=StringGrid1.Width;
+   Left:=StringGrid1.Left;
+   Top:=StringGrid1.Top;
+   Color:=RGB(31,31,31);
+   Font.Name:='Arial';
+   Font.Size:=25;
+   Font.Color:=clWhite;
+   Font.Style:=[];
+   Caption:=Settings.Playersettings[Winner].Name+' hat gewonnen';
+   Visible:=false;
   end;
+end;
+
+procedure TFormGame.GameEndsOnTimer(Sender : TObject);
+begin
+ EndGamePanel.Visible:=true;
+ NewGameButton.Enabled:=true;
+ Sender.Free;
+end;
+
+procedure TFormGame.GameEndsTimer();
+  var Timer : TTimer;
+begin
+ Timer:=TTimer.Create(FormGame);
+ Timer.Name:='GameEndsTimer';
+ Timer.Interval:=3000;
+ Timer.Enabled:=true;
+ Timer.OnTimer:=GameEndsOnTimer;
+end;
+
+procedure TFormGame.WinnerExists(Winner : Byte);
+begin
+ PauseButton.Enabled:=false;
+ CreateEndGamePanel(1);
+ GameEndsTimer();
 end;
 
 end.

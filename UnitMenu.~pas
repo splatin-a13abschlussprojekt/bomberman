@@ -75,6 +75,12 @@ type
     TitlePanel: TPanel;
     Button1: TButton;
     SFXLabel: TLabel;
+    CheckboxCheckedImage: TImage;
+    CheckboxUncheckedImage: TImage;
+    UfoblueImage: TImage;
+    UfogreenImage: TImage;
+    UforedImage: TImage;
+    UfoyellowImage: TImage;
     procedure FormCreate(Sender: TObject);
     procedure ControlButtonKeyPress(Sender: TObject; var Key: Char);
     procedure PanelExpectKey();
@@ -137,7 +143,7 @@ var
 
 implementation
 
-uses UnitInterface, UnitCreateMenuObjects, UnitTestPlayer, Math;
+uses UnitCreateMenuObjects, UnitTestPlayer, Math;
 
 {$R *.dfm}
 
@@ -326,7 +332,7 @@ begin
   begin
    with SuddenDeathImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
+     CheckImage.Picture:=CheckboxCheckedImage.Picture; //Bild für Image Laden
      SettingSuddenDeathLabel2.Visible:=true;  //Objekte sichtbar machen
      SettingSuddenDeathLabel3.Visible:=true;
      SettingSuddendeathEdit.Visible:=true;
@@ -339,7 +345,7 @@ begin
   begin
    with SuddenDeathImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-unchecked.bmp');
+     CheckImage.Picture:=CheckboxUnCheckedImage.Picture;
      SettingSuddenDeathLabel2.Visible:=false; //Objekte unsichtbar machen
      SettingSuddenDeathLabel3.Visible:=false;
      SettingSuddendeathEdit.Visible:=false;
@@ -410,14 +416,33 @@ begin                                         //damit '[taste]' nicht gespeicher
 end;
 
 procedure TFormMenu.StartButtonClick(Sender: TObject);
+ var i:Byte;
 begin
  UpdateSettings();
- FormMenu.WindowState:=wsMinimized; //minimieren
- {}
  FormGame.FormCreate(FormMenu);
+ {Panels/Labels für die Punkte}
+ for i:=1 to 4 do
+  begin
+   If i<=Settings.NumOfPlayers then
+    begin
+     TPanel(FormGame.FindComponent('PointsPanel'+IntToStr(i))).Visible:=true;
+     TPanel(FormGame.FindComponent('PointsPanel'+IntToStr(i))).Caption:='0';
+     TLabel(FormGame.FindComponent('PointsLabel'+IntToStr(i))).Visible:=true;
+     TLabel(FormGame.FindComponent('PointsLabel'+IntToStr(i))).Caption:=Settings.Playersettings[i].Name;
+    end
+   else
+    begin
+     TPanel(FormGame.FindComponent('PointsPanel'+IntToStr(i))).Visible:=false;
+     TLabel(FormGame.FindComponent('PointsLabel'+IntToStr(i))).Visible:=false;
+    end;
+  end;
  {}
- FormGame.ShowModal; //auf FormMenu kann nicht mehr zugegriffen werden
- 
+ FormGame.CreateBeginGamePanel();
+ FormGame.KeyPreview:=false;
+ FormGame.BeginGameTimer.Enabled:=true;
+ FormGame.NewGameButton.Enabled:=false;
+ FormMenu.WindowState:=wsMinimized; //minimieren
+ if not FormGame.Visible then FormGame.ShowModal; //auf FormMenu kann nicht mehr zugegriffen werden (vom User)
 end;
 
 procedure TFormMenu.CloseButtonClick(Sender: TObject);
@@ -500,7 +525,8 @@ begin
    PlayerGroupbox[i].ControlPanel[3].Caption:=Settings.PlayerSettings[i].KeyLeft;
    PlayerGroupbox[i].ControlPanel[4].Caption:=Settings.PlayerSettings[i].KeyRight;
    PlayerGroupbox[i].ControlPanel[5].Caption:=Settings.PlayerSettings[i].KeyBomb;
-   PlayerGroupbox[i].DragDropImage.Image.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\'+Settings.PlayerSettings[i].UfoColor+'-ufo.bmp');
+   PlayerGroupbox[i].DragDropImage.Image.Picture:=TImage(FormMenu.FindComponent('Ufo'+Settings.PlayerSettings[i].UfoColor+'Image')).Picture;
+   //PlayerGroupbox[i].DragDropImage.Image.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\ufos\'+Settings.PlayerSettings[i].UfoColor+'-ufo.bmp');
    PlayerGroupbox[i].DragDropImage.Color:=Settings.PlayerSettings[i].UfoColor;
   end;
 end;
@@ -537,7 +563,7 @@ begin
   begin
    with SFXImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-checked.bmp'); //Bild für Image Laden
+     CheckImage.Picture:=CheckboxCheckedImage.Picture; //Bild für Image Laden
      Checked:=true; //Checkbox ist "gechecked"
     end;
   end
@@ -545,7 +571,7 @@ begin
   begin
    with SFXImage do
     begin
-     CheckImage.Picture.LoadFromFile(ExtractFilePath(ParamStr(0))+'Files\Images\menu\checkbox-unchecked.bmp');
+     CheckImage.Picture:=CheckboxUnCheckedImage.Picture;
      Checked:=false; //Checkbox ist nicht "gechecked"
     end;
   end;
