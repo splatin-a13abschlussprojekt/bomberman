@@ -42,12 +42,11 @@ If content<>meteorit then
   self.SetContent(explosion);
   exit;
   end;
-Randomize;
-i:=Random(30)+1;
+i:=Random(15)+1; // PR: zufälliges Erscheinen eines Items, wenn ein Meteorit zerstört wird
 Case i of
-  1..5: self.SetContent(bombup);
-  6..11: self.SetContent(energyup);
-  12..30: self.SetContent(explosion);
+  1..2: self.SetContent(bombup); // PR: P=2/15
+  3..5: self.SetContent(energyup); // PR: P=1/5
+  6..15: self.SetContent(explosion); // PR: P=2/3
 end;
 end;
 

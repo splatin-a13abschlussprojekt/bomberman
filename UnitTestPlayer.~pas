@@ -32,7 +32,6 @@ type
     PointsPanel3: TPanel;
     PointsPanel4: TPanel;
     BeginGameTimer: TTimer;
-    NewGameButton: TButton;
     PauseButton: TButton;
     SuddenDeathTimer: TTimer;
     procedure FormCreate(Sender: TObject);
@@ -49,8 +48,6 @@ type
     procedure TimerLoadInterface();
     procedure BeginGameTimerTimer(Sender: TObject);
     procedure PauseButtonMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure NewGameButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); //aufrufen mit Button1MouseUp(Sender,mbLeft//linke Maustaste,[]{Shift nicht aktiviert},PosX,PosY{Position, wo geklickt wurde})
     procedure CreateEndGamePanel(Winner : Byte);
     procedure GameEndsOnTimer(Sender : TObject);
@@ -555,7 +552,6 @@ end;
 
 procedure TFOrmGame.CreateBeginGamePanel();
 begin
- FormGame.NewGameButton.Enabled:=false;
  BeginGamePanel:=TPanel.Create(FormGame);
  with BeginGamePanel do
   begin
@@ -598,6 +594,7 @@ procedure TFormGame.BeginGameTimerTimer(Sender: TObject);//BB
 begin
  if BeginGamePanel.Caption = '1' then
   begin
+   FormGame.FormCreate(FormGame);
    TimerLoadInterface();//einzige Methode, die Funktionierte, um das Interface automatisch zu laden
    FormGame.KeyPreview:=true;
    if Settings.SuddenDeathSettings.activated=true then
@@ -628,13 +625,6 @@ begin
    If Settings.SuddenDeathSettings.activated=true then CountDownTimer.Enabled:=true;
    PauseButton.Caption:='Spiel pausieren';
   end;
-end;
-
-procedure TFormGame.NewGameButtonMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
- if Assigned(EndGamePanel) then EndGamePanel.Free;
- FormMenu.StartButtonClick(FormGame);
 end;
 
 procedure TFOrmGame.CreateEndGamePanel(Winner : Byte);
@@ -677,12 +667,10 @@ begin
      CreateBeginGamePanel();
      BeginGameTimer.Enabled:=true;
      EndGamePanel.Free;
-     NewGameButton.Enabled:=false;
      TTimer(Sender).Free;
     end;
   end;
  EndGamePanel.Visible:=true;
- NewGameButton.Enabled:=true;
  
 end;
 
@@ -700,7 +688,7 @@ end;
 procedure TFormGame.WinnerExists(Winner : Byte);
 begin
  Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption:=IntToStr(StrToInt(Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption)+1);
- if winner <> 0 then if PlayerWinsWholeGame(Winner) = true then Winner:=Winner+4) ;
+ if winner <> 0 then if PlayerWinsWholeGame(Winner) = true then Winner:=Winner+4;
  TimerLoadInterface;
  PauseButton.Enabled:=false;
  CreateEndGamePanel(Winner);

@@ -441,7 +441,6 @@ begin
  FormGame.CreateBeginGamePanel();
  FormGame.KeyPreview:=false;
  FormGame.BeginGameTimer.Enabled:=true;
- FormGame.NewGameButton.Enabled:=false;
  if FormMenu.WindowState<>wsMinimized then FormMenu.WindowState:=wsMinimized; //minimieren
  if FormGame.Visible=false then FormGame.Showmodal; //auf FormMenu kann nicht mehr zugegriffen werden (vom User)
 end;
