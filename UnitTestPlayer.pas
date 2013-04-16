@@ -700,7 +700,7 @@ end;
 procedure TFormGame.WinnerExists(Winner : Byte);
 begin
  Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption:=IntToStr(StrToInt(Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption)+1);
- if PlayerWinsWholeGame(Winner) = true then Winner:=Winner+4;
+ if winner <> 0 then if PlayerWinsWholeGame(Winner) = true then Winner:=Winner+4;
  TimerLoadInterface;
  PauseButton.Enabled:=false;
  CreateEndGamePanel(Winner);

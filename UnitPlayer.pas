@@ -44,6 +44,8 @@ var
 
 implementation
 
+uses UnitTestPlayer, UnitMenu;
+
 constructor TPlayer.Create;
 var pos:TPosition;
 begin
@@ -112,9 +114,25 @@ begin
 end;
 
 procedure TPlayer.Die;
+var i,x: Integer;
 begin
   SetAlive(false);
   sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
+  x:=0;
+  for i:=1 to Settings.NumOfPlayers do
+    begin
+    If Player[i].Alive then Inc(x)
+    end;
+  Case x of
+    0: FormGame.WinnerExists(0);
+    1:
+      begin
+      If Player1.Alive then FormGame.WinnerExists(1);
+      If Player2.Alive then FormGame.WinnerExists(2);
+      If Player3.Alive then FormGame.WinnerExists(3);
+      If Player4.Alive then FormGame.WinnerExists(4);
+      end;
+  end;
 end;
 
 function TPlayer.GetPositionString : String;
