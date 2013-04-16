@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, UnitPlayer, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
+  Dialogs, UnitDirection, StdCtrls, ExtCtrls, UnitField, UnitContent,
   UnitPosition, Grids, ImgList, UnitBomb, Math, MMSystem;
 
 type
@@ -34,6 +34,7 @@ type
     BeginGameTimer: TTimer;
     PauseButton: TButton;
     SuddenDeathTimer: TTimer;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
     procedure LoadInterface(Sender: TObject);
@@ -54,6 +55,8 @@ type
     procedure GameEndsTimer();
     procedure WinnerExists(Winner : Byte);
     procedure SuddenDeathTimerTimer(Sender: TObject);
+    procedure Button1MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { Private declarations }
   public
@@ -81,19 +84,26 @@ var
   xdirection, ydirection: Integer; // PR: Für die Richtungsumkehr bei SuddenDeath nötig --> damit Spirale entsteht
 
 const size=40;    //HS: gibt die Größe der Felder an, daher nenne ich sie auch Feldfaktor
+
 implementation
 
 uses
-  UnitMenu, StrUtils, UnitCreateMenuObjects;
+  UnitMenu, StrUtils, UnitCreateMenuObjects, UnitPlayer;
 
 {$R *.dfm}
 
 procedure TFormGame.FormCreate(Sender: TObject);
 var i,j,k: Integer;
+    FirstExecute : Boolean;
 begin
   CountdownPanel.Color:=RGB(31,31,31); {Farbe des CountdownPanels in Standard-Stil}
   for i:=1 to 4 do TPanel(FormGame.FindComponent('PointsPanel'+IntToStr(i))).Color:=RGB(31,31,31);
   CreateFields;
+  If FirstExecute=false then
+   begin
+    CreatePlayers(4);//sonst Fehler
+    FirstExecute:=true;
+   end;
   CreatePlayers(Settings.NumOfPlayers);
   //SetLength(Bombs,0);
   for i:=0 to 15 do for j:=0 to 15 do FieldMem[i,j].Content:=Field[i,j].Content;
@@ -115,6 +125,7 @@ begin
   begin
    ImageListPlayer[k]:=TImageList(FormGame.FindComponent('ImageList'+Settings.PlayerSettings[k].UfoColor));
   end;
+
 end;
 
 procedure TFormGame.FormKeyPress(Sender: TObject; var Key: Char);  // PR: vorläufige Steuerung
@@ -142,8 +153,8 @@ If Player[i].Alive<>false then
           If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
           If (PosMem.X=Player1.Position.X) and (PosMem.Y=Player1.Position.Y) and (Player1.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player01;
           If (PosMem.X=Player2.Position.X) and (PosMem.Y=Player2.Position.Y) and (Player2.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player02;
-          If (PosMem.X=Player3.Position.X) and (PosMem.Y=Player3.Position.Y) and (Player3.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player03;
-          If (PosMem.X=Player4.Position.X) and (PosMem.Y=Player4.Position.Y) and (Player4.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player04;
+          If (Assigned(Player3)) and (PosMem.X=Player3.Position.X) and (PosMem.Y=Player3.Position.Y) and (Player3.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player03;
+          If (Assigned(Player4)) and (PosMem.X=Player4.Position.X) and (PosMem.Y=Player4.Position.Y) and (Player4.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player04;
           If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then
             begin
             Player[i].Die;
@@ -594,7 +605,7 @@ procedure TFormGame.BeginGameTimerTimer(Sender: TObject);//BB
 begin
  if BeginGamePanel.Caption = '1' then
   begin
-   FormGame.FormCreate(FormGame);
+   //FormGame.FormCreate(FormGame);
    TimerLoadInterface();//einzige Methode, die Funktionierte, um das Interface automatisch zu laden
    FormGame.KeyPreview:=true;
    if Settings.SuddenDeathSettings.activated=true then
@@ -687,7 +698,7 @@ end;
 
 procedure TFormGame.WinnerExists(Winner : Byte);
 begin
- Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption:=IntToStr(StrToInt(Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption)+1);
+ if (Winner <> 0) and (Assigned(Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))))) then Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption:=IntToStr(StrToInt(Tpanel(FormGame.FindComponent('PointsPanel'+IntToStr(Winner))).Caption)+1);
  if winner <> 0 then if PlayerWinsWholeGame(Winner) = true then Winner:=Winner+4;
  TimerLoadInterface;
  PauseButton.Enabled:=false;
@@ -735,6 +746,12 @@ while SuddenDeathTimer.Tag=1 do
     ydirection:=1;
     end;
   end;
+end;
+
+procedure TFormGame.Button1MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+ close;
 end;
 
 end.

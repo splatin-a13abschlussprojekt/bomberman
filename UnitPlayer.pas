@@ -127,10 +127,10 @@ begin
     0: FormGame.WinnerExists(0);
     1:
       begin
-      If Player1.Alive then FormGame.WinnerExists(1);
-      If Player2.Alive then FormGame.WinnerExists(2);
-      If Player3.Alive then FormGame.WinnerExists(3);
-      If Player4.Alive then FormGame.WinnerExists(4);
+       If Player1.Alive then FormGame.WinnerExists(1) else
+       If Player2.Alive then FormGame.WinnerExists(2) else
+       If Player3.Alive then FormGame.WinnerExists(3) else
+       If Player4.Alive then FormGame.WinnerExists(4);
       end;
   end;
 end;
