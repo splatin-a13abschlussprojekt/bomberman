@@ -148,14 +148,14 @@ If Player[i].Alive<>false then
     0,1,2,3:
     begin
       Case Field[Player[i].Position.X,Player[i].Position.Y].Content of // PR: unterschiedliches Verhalten je nach Inhalt des Zielfeldes
-        empty,bombup,energyup,explosion,player01,player02,player03,player04:
+        empty,bombup,energyup,explosion,death,player01,player02,player03,player04:
           begin
           If Field[PosMem.X,PosMem.Y].Content<>bomb then Field[PosMem.X,PosMem.Y].Content:=empty;
           If (PosMem.X=Player1.Position.X) and (PosMem.Y=Player1.Position.Y) and (Player1.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player01;
           If (PosMem.X=Player2.Position.X) and (PosMem.Y=Player2.Position.Y) and (Player2.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player02;
           If (Assigned(Player3)) and (PosMem.X=Player3.Position.X) and (PosMem.Y=Player3.Position.Y) and (Player3.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player03;
           If (Assigned(Player4)) and (PosMem.X=Player4.Position.X) and (PosMem.Y=Player4.Position.Y) and (Player4.Alive=true) then Field[PosMem.X,PosMem.Y].Content:=player04;
-          If Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion then
+          If (Field[Player[i].Position.X,Player[i].Position.Y].Content=explosion) or (Field[Player[i].Position.X,Player[i].Position.Y].Content=death) then
             begin
             Player[i].Die;
             exit;
@@ -230,6 +230,7 @@ begin
     player02: ImageListPlayer[2].Draw(StringGrid1.Canvas, Pos.X*size,Pos.Y*size,8);
     player03: ImageListPlayer[3].Draw(StringGrid1.Canvas, Pos.X*size,Pos.Y*size,8);
     player04: ImageListPlayer[4].Draw(StringGrid1.Canvas, Pos.X*size,Pos.Y*size,8);
+    death: ImageListObjects.Draw(StringGrid1.Canvas, Pos.X*size, Pos.Y*size, 6);
   end;
   BombNum:=IntToStr(Player[1].NumOfBombs)+IntToStr(Player[2].NumOfBombs)+IntToStr(Player[3].NumOfBombs)+IntToStr(Player[4].NumOfBombs);
   //BombPlayer:=StrToInt(BombNum[1]+BombNum[2]+BombNum[3]+BombNum[4]);
@@ -247,18 +248,16 @@ for i:=0 to 15 do for j:=0 to 15 do
   begin
     Randomize;
     Case Field[i,j].Content of
-      empty: ImageListObjects.Draw(StringGrid1.Canvas, i*size, j*size, 5);
+      empty: StringGrid1.Canvas.CopyRect(Rect(i*size,j*size,i*size+size,j*size+size),ImageBackground.Canvas,Rect(i*size,j*size,i*size+size,j*size+size));
       meteorit: begin
                   meteoritenauswahl:=Random(4)+1;
                   ImageListObjects.Draw(StringGrid1.Canvas, i*size, j*size, meteoritenauswahl);
                 end;
       earth: ImageListObjects.Draw(StringGrid1.Canvas, i*size, j*size,0);
-      bombup,energyup: StringGrid1.Cells[i,j]:='I';
       player01: ImageListPlayer[1].Draw(StringGrid1.Canvas, i*size,j*size,8);
       player02: ImageListPlayer[2].Draw(StringGrid1.Canvas, i*size,j*size,8);
       player03: ImageListPlayer[3].Draw(StringGrid1.Canvas, i*size,j*size,8);
       player04: ImageListPlayer[4].Draw(StringGrid1.Canvas, i*size,j*size,8);
-      bomb: StringGrid1.Cells[i,j]:='B';
     end;
   end;
 end;
@@ -605,7 +604,8 @@ procedure TFormGame.BeginGameTimerTimer(Sender: TObject);//BB
 begin
  if BeginGamePanel.Caption = '1' then
   begin
-   //FormGame.FormCreate(FormGame);
+   FormGame.FormCreate(FormGame);
+   SuddenDeathTimer.Enabled:=false;
    TimerLoadInterface();//einzige Methode, die Funktionierte, um das Interface automatisch zu laden
    FormGame.KeyPreview:=true;
    if Settings.SuddenDeathSettings.activated=true then
@@ -682,7 +682,6 @@ begin
     end;
   end;
  EndGamePanel.Visible:=true;
- 
 end;
 
 procedure TFormGame.GameEndsTimer();
