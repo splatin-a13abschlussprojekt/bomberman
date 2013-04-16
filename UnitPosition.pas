@@ -5,7 +5,7 @@ interface
 uses UnitCoordinate;
 
 type
-  TPosition = record            // record, der Koordinaten eines Objektes hält
+  TPosition = record            //me record, der Koordinaten eines Objektes hält
     X : TCoordinate;
     Y : TCoordinate;
   end;

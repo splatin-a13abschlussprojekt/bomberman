@@ -46,7 +46,7 @@ implementation
 
 uses UnitTestPlayer, UnitMenu;
 
-constructor TPlayer.Create;
+constructor TPlayer.Create;       //me: default-konstruktor
 var pos:TPosition;
 begin
   self.SetNumber(0);
@@ -56,7 +56,7 @@ begin
   self.SetPosition(pos);
   self.SetAlive(true);
 end;
-
+                                 //me konstruktor mit eigenschaften, erstellt ein TPlayer-Objekt
 constructor TPlayer.Create(Number:Integer;Name:String;Position:TPosition);
 begin
   self.SetNumber(Number);
@@ -68,17 +68,17 @@ begin
   self.SetAlive(true);
 end;
 
-procedure TPlayer.SetNumber(Number:Integer);
+procedure TPlayer.SetNumber(Number:Integer); //me setter für die spielernummer
 begin
   FNumber:=Number;
 end;
 
-procedure TPlayer.SetName(Name: String);
+procedure TPlayer.SetName(Name: String); //me setter für den spielernamen
 begin
   FName:=Name;
 end;
 
-procedure TPlayer.SetPosition(Position: TPosition);
+procedure TPlayer.SetPosition(Position: TPosition);  //me setzt die position
 begin
   FPosition:=Position;
 end;
@@ -103,7 +103,7 @@ begin
   FNumOfBombsPlanted:=NumOfBombsPlanted;
 end;
 
-procedure TPlayer.Move(direction: TDirection);
+procedure TPlayer.Move(direction: TDirection);    //me bewegt einen spieler
 begin
   case direction of
     U : if FPosition.Y > 0  then dec(FPosition.Y);
