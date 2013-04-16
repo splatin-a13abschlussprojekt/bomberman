@@ -55,6 +55,8 @@ type
     procedure GameEndsTimer();
     procedure WinnerExists(Winner : Byte);
     procedure SuddenDeathTimerTimer(Sender: TObject);
+    procedure Button1MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { Private declarations }
   public
@@ -132,7 +134,7 @@ var PosMem: TPosition;
 begin
 if (Sender <> FormGame) and KeyPreview=false then exit;//sonst stürzt das Programm ab
 i:=ceil((AnsiIndexText(Key,[Settings.PlayerSettings[1].KeyUp,Settings.PlayerSettings[1].KeyLeft,Settings.PlayerSettings[1].KeyDown,Settings.PlayerSettings[1].KeyRight,Settings.PlayerSettings[1].KeyBomb,Settings.PlayerSettings[2].KeyUp,Settings.PlayerSettings[2].KeyLeft,Settings.PlayerSettings[2].KeyDown,Settings.PlayerSettings[2].KeyRight,Settings.PlayerSettings[2].KeyBomb,Settings.PlayerSettings[3].KeyUp,Settings.PlayerSettings[3].KeyLeft,Settings.PlayerSettings[3].KeyDown,Settings.PlayerSettings[3].KeyRight,Settings.PlayerSettings[3].KeyBomb,Settings.PlayerSettings[4].KeyUp,Settings.PlayerSettings[4].KeyLeft,Settings.PlayerSettings[4].KeyDown,Settings.PlayerSettings[4].KeyRight,Settings.PlayerSettings[4].KeyBomb])+1)/5); // PR: Ermitteln des Spielers
-If i=0 then exit; // PR: Abbruch, falls ungültige Eingabe
+If (i=0) or (i>Settings.NumOfPlayers) then exit; // PR: Abbruch, falls ungültige Eingabe
 If Player[i].Alive<>false then
   begin
   PosMem:=Player[i].Position; // PR: Speicherung der alten Position
@@ -160,7 +162,7 @@ If Player[i].Alive<>false then
             end;
           If Field[Player[i].Position.X,Player[i].Position.Y].Content=bombup then
           begin
-            sndPlaySound('Files\Sounds\itemcollect.wav', SND_ASYNC); //HS: Abspielen des Sounds "itemcollect"
+            If Settings.SFX then sndPlaySound('Files\Sounds\itemcollect.wav', SND_ASYNC); //HS: Abspielen des Sounds "itemcollect"
             Player[i].NumOfBombs:=Player[i].NumOfBombs+1;
             j:=StrToInt(BombNum[i]);
             inc(j);
@@ -184,7 +186,7 @@ If Player[i].Alive<>false then
           end;
           If Field[Player[i].Position.X,Player[i].Position.Y].Content=energyup then
           begin
-             sndPlaySound('Files\Sounds\itemcollect.wav', SND_ASYNC); //HS: Abspielen des Sounds "itemcollect"
+             If Settings.SFX then sndPlaySound('Files\Sounds\itemcollect.wav', SND_ASYNC); //HS: Abspielen des Sounds "itemcollect"
              Player[i].BombRange:=Player[i].BombRange+1;
           end;
           Case i of
@@ -744,6 +746,12 @@ while SuddenDeathTimer.Tag=1 do
     ydirection:=1;
     end;
   end;
+end;
+
+procedure TFormGame.Button1MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+ close;
 end;
 
 end.

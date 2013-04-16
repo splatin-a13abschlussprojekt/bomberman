@@ -117,7 +117,7 @@ procedure TPlayer.Die;
 var i,x: Integer;
 begin
   SetAlive(false);
-  sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
+  If Settings.SFX then sndPlaySound('Files\Sounds\explosion.wav', SND_ASYNC); //HS: Abspielen des Sounds "explosion"
   x:=0;
   for i:=1 to Settings.NumOfPlayers do
     begin
