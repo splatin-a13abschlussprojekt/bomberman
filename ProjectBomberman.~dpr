@@ -2,6 +2,7 @@ program ProjectBomberman;
 
 uses
   Forms,
+  UnitInterface in 'UnitInterface.pas' {Form1},
   UnitPlayer in 'UnitPlayer.pas',
   UnitTestPlayer in 'UnitTestPlayer.pas' {FormGame},
   UnitPosition in 'UnitPosition.pas',

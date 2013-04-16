@@ -28,7 +28,7 @@ implementation
 
 uses UnitTestPlayer;
 
-constructor TBomb.Create;  //default-constructor
+constructor TBomb.Create;  //me default-constructor
 var pos:TPosition;
 begin
   pos.x:=0;
@@ -38,7 +38,7 @@ begin
   self.StartTimer(1000);
 end;
 
-                                 //normaler Konstruktor
+                                 //me normaler Konstruktor
 constructor TBomb.Create(Owner:TPlayer;Time:Integer);
 begin
   self.SetOwner(Owner);
@@ -47,21 +47,21 @@ begin
   self.StartTimer(Time);
 end;
 
-destructor TBomb.Destroy;       //Desktruktor
+destructor TBomb.Destroy;       //me Desktruktor
 begin
   FTimer.Free;
   inherited;
 end;
 
 procedure TBomb.StartTimer(Time:Integer);
-begin                          //Timer starten
+begin                          //me Timer starten
   FTimer := TTimer.Create(nil);
   FTimer.Interval:=Time;
   FTimer.OnTimer:=Detonate;
   FTimer.Enabled:=true;
 end;
 
-procedure TBomb.Detonate(Sender:TObject);
+procedure TBomb.Detonate(Sender:TObject); //me bombe detonieren lassen
 var i:Integer;
     pos: TPosition;    //RV: Position der Bombe, wird später mit übergeben
 begin
@@ -148,17 +148,17 @@ FormGame.Bomb1Pictures(FormGame, pos, Self);
 self.Destroy;
 end;
 
-procedure TBomb.SetPosition(Position:TPosition);
+procedure TBomb.SetPosition(Position:TPosition);   //me setter für die position
 begin
   FPosition:=Position;
 end;
 
-procedure TBomb.SetRange(Range:Integer);
+procedure TBomb.SetRange(Range:Integer);           //me setter für die reichweite
 begin
   FRange:=Range;
 end;
 
-procedure TBomb.SetOwner(Owner:TPlayer);
+procedure TBomb.SetOwner(Owner:TPlayer);           //me setter für den besitzer
 begin
   FOwner:=Owner;
 end;

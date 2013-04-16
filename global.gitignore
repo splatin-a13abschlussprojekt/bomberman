@@ -1,4 +1,5 @@
 *.dcu
+*.ddp
 *.~*~
 *.local
 *.identcache

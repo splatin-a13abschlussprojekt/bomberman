@@ -419,7 +419,6 @@ procedure TFormMenu.StartButtonClick(Sender: TObject);
  var i:Byte;
 begin
  UpdateSettings();
- 
  FormGame.FormCreate(FormMenu);
  {Panels/Labels für die Punkte}
  for i:=1 to 4 do
@@ -438,7 +437,6 @@ begin
     end;
   end;
  {}
-
  if Settings.SuddenDeathSettings.activated=true then FormGame.CountDownPanel.Caption:=IntToStr(Settings.SuddenDeathSettings.time) else FormGame.CountdownPanel.Caption:='0';
  FormGame.CreateBeginGamePanel();
  FormGame.KeyPreview:=false;
