@@ -37,6 +37,7 @@ end;
 procedure TField.Explode;
 var i: Integer;
 begin
+If content=death then exit;
 If content<>meteorit then
   begin
   self.SetContent(explosion);
